@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Urban AI — An Interactive Reading of Liang (2025)</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#f7f3ec;
+    --paper-2:#efe9dd;
+    --rule:#d8cfbb;
+    --accent:#c0392b;
+    --accent-2:#1f6f8b;
+    --accent-3:#2d6a4f;
+    --muted:#6b6357;
+    --hi:#ffe98a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:18px;line-height:1.55;}
+  .wrap{max-width:880px;margin:0 auto;padding:64px 28px 120px;}
+  h1{font-size:46px;line-height:1.05;letter-spacing:-0.01em;margin:0 0 8px;font-weight:600;}
+  h2{font-size:30px;letter-spacing:-0.005em;margin:64px 0 6px;font-weight:600;border-top:1px solid var(--rule);padding-top:36px;}
+  h3{font-size:21px;margin:32px 0 8px;font-weight:600;color:var(--accent-2);}
+  .lede{font-size:22px;color:var(--muted);font-style:italic;margin-top:0;}
+  .byline{color:var(--muted);font-size:14px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:48px;}
+  p{margin:14px 0}
+  a{color:var(--accent-2)}
+  .pull{font-family:"Iowan Old Style",Georgia,serif;font-size:24px;line-height:1.35;color:var(--ink);
+    border-left:3px solid var(--accent);padding:6px 0 6px 18px;margin:28px 0;font-style:italic;}
+  .small{font-size:14px;color:var(--muted)}
+  code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+  .figure{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:22px;margin:24px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .cap{font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:0.02em}
+  button{font:inherit;font-size:14px;background:var(--paper-2);border:1px solid var(--rule);padding:6px 12px;border-radius:4px;cursor:pointer;color:var(--ink)}
+  button:hover{background:#fff}
+  button.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  input[type=range]{width:100%}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:680px){.grid2{grid-template-columns:1fr}}
+  .tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;background:var(--paper-2);color:var(--muted);border:1px solid var(--rule)}
+  .hl{background:var(--hi);padding:0 2px}
+  /* matrix */
+  .cmatrix{display:grid;grid-template-columns:120px repeat(5,1fr);gap:4px;align-items:stretch;font-size:13px}
+  .cmatrix .cell{background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;padding:8px;min-height:60px;cursor:pointer;transition:transform .08s;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted)}
+  .cmatrix .cell:hover{transform:translateY(-1px)}
+  .cmatrix .cell.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .cmatrix .lbl{background:transparent;border:none;color:var(--muted);font-size:12px;justify-content:flex-end;padding-right:10px}
+  .cmatrix .colhead{background:transparent;border:none;color:var(--muted);font-size:12px;min-height:auto;padding:4px 0}
+  .panel{background:var(--paper-2);border-left:3px solid var(--accent);padding:14px 16px;border-radius:0 6px 6px 0;margin-top:16px;font-size:15px}
+  .panel b{display:block;margin-bottom:4px}
+  .tension{border:1px solid var(--rule);background:#fff;border-radius:6px;padding:14px 18px;margin:14px 0}
+  .tension .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:6px}
+  .tension .out{margin-top:10px;font-size:15px;min-height:48px;color:var(--ink)}
+  .dc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .dc-stats .stat{background:var(--paper-2);border-radius:6px;padding:12px;text-align:center}
+  .dc-stats .num{font-size:28px;font-weight:600;color:var(--accent)}
+  .dc-stats .unit{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em}
+  .zoning{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#fff;border:1px dashed var(--rule);padding:14px;border-radius:4px;line-height:1.65;white-space:pre-wrap}
+  .zoning span.mark{background:var(--hi);cursor:pointer;border-radius:2px;padding:0 2px}
+  .zoning span.mark.bad{background:#ffb3a8}
+  .zoning span.mark.good{background:#b6e3c4}
+  .tasks{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tasks .col{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:12px}
+  .tasks h4{margin:4px 0 8px;font-size:14px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+  .task{padding:7px 10px;margin:5px 0;border-radius:4px;background:var(--paper-2);font-size:14px;cursor:grab;border:1px solid transparent}
+  .task.up{border-color:var(--accent-3);background:#eaf6ee}
+  .task.down{border-color:var(--accent);background:#fbece9}
+  .field-radar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+  .field{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:10px;font-size:13px;cursor:pointer;transition:all .12s}
+  .field.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+  .field h5{margin:0 0 4px;font-size:14px}
+  .field .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .bar{height:8px;background:var(--paper-2);border-radius:4px;overflow:hidden;margin:3px 0}
+  .bar > i{display:block;height:100%;background:var(--accent-2)}
+  .legend{font-size:12px;color:var(--muted)}
+  details{margin:10px 0}
+  summary{cursor:pointer;color:var(--accent-2);font-size:14px}
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);color:var(--muted);font-size:13px}
+  .topnav{max-width:880px;margin:0 auto;padding:18px 28px 0;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .topnav .crumb{letter-spacing:0.06em;text-transform:uppercase}
+  .topnav a{color:var(--accent-2);text-decoration:none;border:1px solid var(--rule);background:#fff;padding:6px 12px;border-radius:4px}
+  .topnav a:hover{border-color:var(--accent-2)}
+</style>
+<style data-theme="tropical-modernist">
+:root{
+  --ink:#1a1a1a;
+  --paper:#fafaf7;
+  --paper-2:#f0ede4;
+  --paper-3:#e2dec8;
+  --rule:#d6d2c0;
+  --accent:#1f3d2b;
+  --accent-2:#3e6a3a;
+  --accent-3:#94a87a;
+  --muted:#6b6a5e;
+  --hi:#e8dec0;
+}
+body{
+  font-family:"Söhne","Neue Haas Grotesk Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight:400;
+  letter-spacing:-0.005em;
+}
+h1,h2,h3{
+  font-family:"Söhne","Neue Haas Grotesk Display","Inter","Helvetica Neue",sans-serif;
+  font-weight:500;
+  letter-spacing:-0.02em;
+}
+h1{letter-spacing:-0.035em;font-weight:600}
+h2{font-weight:500;border-top-width:1px}
+h3{color:var(--accent);font-weight:600;letter-spacing:0}
+.lede{font-style:normal;color:var(--accent-2);font-weight:400}
+.byline{font-weight:500;letter-spacing:0.1em}
+.pull{font-family:"Söhne","Inter",sans-serif;font-style:normal;font-weight:500;border-left-color:var(--accent);color:var(--ink);font-size:22px;line-height:1.4}
+.figure{border-radius:0;background:#fff;border-color:var(--rule);box-shadow:none}
+.cap{font-style:normal;font-size:13px}
+button{border-radius:0;font-weight:500}
+.tag{border-radius:0;font-weight:500}
+.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.task,.dc-stats .stat,.tasks .col,.field,.panel,.frame{border-radius:0}
+.topnav a{border-radius:0;background:#fff;font-weight:500}
+.cmatrix .cell{border-radius:0}
+.cmatrix .cell.on{background:var(--accent);border-color:var(--accent)}
+.dc-stats .num{color:var(--accent);font-weight:500;letter-spacing:-0.02em;font-family:inherit}
+.zoning{font-family:"JetBrains Mono","SF Mono",ui-monospace,Menlo,monospace;background:#fff}
+.zoning span.mark{background:var(--hi)}
+.zoning span.mark.good{background:#c5d4b0}
+.zoning span.mark.bad{background:#e6c4b8}
+.task.up{background:#e0e6d4;border-color:var(--accent-2)}
+.task.down{background:#e8d4c8;border-color:#8a4a2a}
+.field.on{box-shadow:0 0 0 1.5px var(--accent) inset;border-color:var(--accent)}
+input[type=range]{accent-color:var(--accent)}
+.hl{background:var(--hi)}
+.panel{background:var(--paper-2);border-left-color:var(--accent)}
+</style>
+<style data-theme="tropical-modernist-ura">
+/* URA accents layered onto Tropical Modernist.
+   Jungle-green stays primary. URA red appears only at decision/emphasis points.
+   Architectural grey takes over hierarchy work from beige. */
+:root{
+  --ura-red:#c8102e;        /* URA mark red */
+  --ura-red-deep:#8a0c20;
+  --ura-red-wash:#f5dde0;
+  --ura-grey:#58595b;       /* primary architectural grey */
+  --ura-grey-2:#8c8c8e;
+  --ura-grey-3:#dcdcd6;
+  --muted:#58595b;          /* warmer, cooler grey replaces beige-grey */
+  --rule:#c8c4b4;
+  --hi:#f5dde0;             /* faint red wash for emphasis */
+}
+/* Identity marker — small URA-red square in the top nav */
+.topnav{align-items:center}
+.topnav .crumb{display:inline-flex;align-items:center;gap:10px}
+.topnav .crumb::before{content:"";width:11px;height:11px;background:var(--ura-red);display:inline-block;flex-shrink:0}
+
+/* Hierarchy ink — soften body, accent with red at decision points */
+.byline{color:var(--ura-grey)}
+.lede{color:var(--ura-grey)}
+.pull{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;font-weight:400;font-size:22px;line-height:1.4;border-left:3px solid var(--ura-red);background:rgba(200,16,46,0.04);padding:10px 0 10px 18px;color:var(--ink)}
+
+/* Annotations & hover-marks: red underline cue */
+.excerpt .ann,.zoning span.mark{border-bottom:2px solid var(--ura-red)}
+.hl{background:var(--hi);box-shadow:inset 0 -3px 0 var(--ura-red)}
+
+/* Interactive emphasis — selected/active states pick up red */
+.field.on{box-shadow:0 0 0 1.5px var(--ura-red) inset;border-color:var(--ura-red)}
+button:hover{border-color:var(--ura-red);color:var(--ura-red-deep)}
+button.active,button.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+/* Warn / down / risk states — restrained URA red */
+.task.down{background:var(--ura-red-wash);border-color:var(--ura-red);color:var(--ura-red-deep)}
+.task.up{background:#e0e6d4;border-color:var(--accent-2);color:var(--accent)}
+.zoning span.mark.bad{background:var(--ura-red-wash);color:var(--ura-red-deep);border-bottom-color:var(--ura-red-deep)}
+.zoning span.mark.good{background:#c5d4b0;border-bottom-color:var(--accent)}
+.zoning span.mark{background:#f0ecd8}
+
+/* Data center stats — numbers climb into red territory */
+.dc-stats .num{color:var(--accent);transition:color .3s}
+.dc-stats .stat:nth-child(1) .num,
+.dc-stats .stat:nth-child(2) .num,
+.dc-stats .stat:nth-child(3) .num{color:var(--ura-red-deep)}
+
+/* Matrix — selected cell uses ink-black, not green, with red ring */
+.cmatrix .cell.on{background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:0 0 0 2px var(--ura-red)}
+
+/* Quiet grey grid lines for figures */
+.figure{border-color:var(--ura-grey-3)}
+.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.dc-stats .stat,.tasks .col,.field,.panel,.frame{border-color:var(--ura-grey-3)}
+
+/* Tag — switch to grey outline with red dot */
+.tag{color:var(--ura-grey);border-color:var(--ura-grey-3);background:#fff}
+.tag::before{content:"";display:inline-block;width:5px;height:5px;background:var(--ura-red);border-radius:50%;margin-right:6px;vertical-align:1px}
+
+/* Panel left rules — red for emphasis panels */
+.panel{border-left-color:var(--ura-red)}
+.cap{color:var(--ura-grey)}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <span class="crumb">Interactive Summary</span>
+  <a href="guide.html">Open the Reading Guide →</a>
+</div>
+<div class="wrap">
+
+<div class="byline">An interactive reading of &nbsp;·&nbsp; Liang (2025)</div>
+<h1>What should urban planners learn<br>in the age of AI?</h1>
+<p class="lede">A pilot course at Michigan tried to answer this. The findings reshape what counts as expertise in planning — and the answer is not "more coding."</p>
+
+<p>Xiaofan Liang taught twenty students an Urban&nbsp;AI course in 2025 and coded 655 quotes from 235 reflection journals to figure out what worked. The paper is dense; the ideas underneath are simple and they have teeth. This page lets you turn them over in your hands.</p>
+
+<p class="pull">"High criticality emerges not from the most technically intensive uses, but from context-sensitive applications and reflections that connect AI to planning judgement and responsibility."</p>
+
+<!-- ====================== SECTION 1 ====================== -->
+<h2>1 · Urban AI is not Urban Informatics, GIS, or GeoAI</h2>
+
+<p>Planning has absorbed a generation of computational tools — but Urban&nbsp;AI is a different kind of object. It is not just another analytical layer on top of GIS. It is a <i>socio-technical force</i> that changes who gets to make decisions, what counts as expertise, and what infrastructure cities are obliged to host.</p>
+
+<p>Click each field to see how it positions itself across four dimensions.</p>
+
+<div class="figure">
+  <div class="field-radar" id="fields"></div>
+  <div id="field-detail" style="margin-top:14px"></div>
+  <div class="cap">Each field rates from low to high on what it foregrounds. Urban Informatics is heavy on data wrangling; GeoAI fuses ML with maps; Urban AI uniquely foregrounds governance, ethics, and professional identity.</div>
+</div>
+
+<!-- ====================== SECTION 2 ====================== -->
+<h2>2 · The Criticality Matrix</h2>
+
+<p>The headline contribution of the paper is a 2-axis rubric for student work. One axis is <b>agency</b> — what you <i>do</i> with AI. The other is <b>reflection</b> — how deeply you think about that doing. A student can be a strong coder (high agency) and still operate at Level&nbsp;1 reflection. A non-technical student can reach Level&nbsp;4 reflection by asking the right ethical question.</p>
+
+<p>Click any cell. The matrix is a map of possible student states — and a diagnostic for which kind of growth a course is actually producing.</p>
+
+<div class="figure">
+  <div class="cmatrix" id="matrix"></div>
+  <div class="panel" id="cellinfo"><b>Click a cell.</b>Each cell pairs a level of application with a level of reflection. The diagonal is "balanced growth"; the off-diagonal cells are where pedagogy gets interesting.</div>
+  <div class="cap">Adapted from Table 2 of the paper. Examples are paraphrased from student reflection journals.</div>
+</div>
+
+<p>Liang's empirical finding, when she coded all 655 quotes: students cluster at <b>low reflection levels even when they're technically capable</b>. Governance and ethics topics appeared in only ~10% of reflections. The matrix is a tool for noticing this gap and pulling students up the y-axis on purpose.</p>
+
+<!-- ====================== SECTION 3 ====================== -->
+<h2>3 · Five tensions you cannot escape</h2>
+
+<p>Every course design is a position taken on five tradeoffs. Slide each one to see what the course <i>becomes</i> at that setting. There is no "correct" position — but there is no neutral position either.</p>
+
+<div id="tensions"></div>
+
+<p class="small">Liang's pilot leaned right on most of these: depth, capacity-building, context-centered, with deliberate exposure to open-source alternatives. The hardest tension in her data was Big Tech vs alternatives — students used ChatGPT for 62% of all AI interactions despite a Hugging Face curriculum.</p>
+
+<!-- ====================== SECTION 4 ====================== -->
+<h2>4 · Why AI fails at zoning</h2>
+
+<p>One of the course's recurring case studies is zoning-code extraction. It looks like an easy NLP problem — read the document, find the rules — and it is not. Hover over the highlighted spans below to see what trips standard models.</p>
+
+<div class="figure">
+  <div class="zoning" id="zoning"></div>
+  <div class="panel" id="zoninfo"><b>Hover the highlights.</b> Each one is a different reason a vanilla LLM gets zoning wrong.</div>
+  <div class="cap">Excerpts are stylised composites in the spirit of municipal ordinances. The point is the failure modes, which are real.</div>
+</div>
+
+<p>The student who built a zoning extractor in the course said: <i>"NLP tools were helpful, but only if you already know what you're looking for."</i> That sentence is the entire argument for domain knowledge as a first-class AI skill.</p>
+
+<!-- ====================== SECTION 5 ====================== -->
+<h2>5 · Data centers are a planning problem</h2>
+
+<p>This is the part the engineering curriculum doesn't teach. AI is not vapour — it is buildings, on land, drawing water and grid. Move the slider. The numbers below are real per-facility figures from the literature Liang cites.</p>
+
+<div class="figure">
+  <div class="row">
+    <div style="flex:1;min-width:220px">
+      <label class="small" for="dc">Mid-sized data centers in your jurisdiction: <b id="dc-count">3</b></label>
+      <input id="dc" type="range" min="0" max="50" value="3" />
+    </div>
+  </div>
+  <div class="dc-stats">
+    <div class="stat"><div class="num" id="dc-water">15</div><div class="unit">million gallons<br>of water / day</div></div>
+    <div class="stat"><div class="num" id="dc-power">180k</div><div class="unit">household-equivalents<br>of electricity</div></div>
+    <div class="stat"><div class="num" id="dc-land">900</div><div class="unit">acres of land<br>occupied</div></div>
+  </div>
+  <div class="cap" id="dc-cap">A small town's worth of water. A small city's worth of power. A small farm-belt's worth of land. Planners — not engineers — decide whether this happens.</div>
+</div>
+
+<p>U.S. data-center electricity consumption is projected to double or triple by 2028. The choice of <i>where</i> they get built, what they're allowed to draw from, and who bears the externality is — by jurisdiction — a planner's job. The paper argues this is now part of Urban AI literacy.</p>
+
+<!-- ====================== SECTION 6 ====================== -->
+<h2>6 · What gets more valuable, what gets less</h2>
+
+<p>The reshuffling of expertise is the quietest claim in the paper but maybe the most important. Click each task to flip whether AI <i>raises</i> or <i>reduces</i> its market value for a planner over the next decade.</p>
+
+<div class="figure">
+  <div class="tasks">
+    <div class="col">
+      <h4>↑ More valuable</h4>
+      <div id="task-up"></div>
+    </div>
+    <div class="col">
+      <h4>↓ Less valuable</h4>
+      <div id="task-down"></div>
+    </div>
+  </div>
+  <div class="cap">Click any task to move it. The default arrangement is the paper's reading. Your disagreements are where the interesting questions live.</div>
+</div>
+
+<p class="pull">"As AI absorbs the chores of information sifting, the workers who get scarcer are the ones with judgement, relationship-building, critical thinking, and empathy."</p>
+
+<!-- ====================== SECTION 7 ====================== -->
+<h2>7 · The Level-5 planner</h2>
+
+<p>The top of the matrix isn't a coder. It's someone who can move fluidly between technical work and policy stance — who builds AI <i>and</i> knows when to refuse to. From the paper:</p>
+
+<details open><summary>Three signature moves of a Level-5 planner</summary>
+<div class="panel"><b>1. Builds with intent</b>
+Designs or meaningfully customises AI pipelines for a planning-specific problem (e.g. a civic pothole-reporter that routes by neighbourhood equity, not just spatial proximity).</div>
+<div class="panel"><b>2. Strategises across scale</b>
+Aligns the deployment with public values, environmental footprint, and institutional capacity. Knows when the AI is the answer and when the AI is the wrong question.</div>
+<div class="panel"><b>3. Synthesises new roles</b>
+Articulates a position on what AI should mean for planning as a profession — and acts on it. Mentors, writes policy, refuses procurements.</div>
+</details>
+
+<p>One of Liang's groups designed a chatbot audit that would have flooded a city service with thousands of automated queries. They figured out it would work technically — and then chose not to do it. That is the curriculum's deepest success: the student who picks up the tool and puts it down again, on purpose.</p>
+
+<!-- ====================== SECTION 8 ====================== -->
+<h2>8 · So what?</h2>
+
+<p>If you teach planning: this paper gives you a 16-week scaffold, a rubric, and 235 journals' worth of evidence about how students actually engage. The criticality matrix is the most portable artefact — it works in any AI-adjacent course.</p>
+
+<p>If you practice planning: the paper is telling you the next decade's hiring will reward people who can <i>govern</i> AI, not people who can run it. The data center file on your desk is already this conversation.</p>
+
+<p>If you build AI: the failure modes Liang describes (zoning heterogeneity, contingent open models, political reality of deployment) are not user-error. They are signals that the system needs domain partners, not better fine-tuning.</p>
+
+<p class="pull">Urban AI is the last piece of the technical sequence, not the first. You teach it after evidence-based planning and data governance — because the point is judgement, and judgement needs something to judge against.</p>
+
+<footer>
+  Source: Liang, X. (2025). <i>What and How Should Urban Planners Learn in the AI Era? Exploring Urban AI Pedagogy from a Pilot Course in Urban Planning Education.</i> SocArxiv preprint.<br>
+  Syllabus and student projects: <a href="https://www.xiaofanliang.com/teaching/">xiaofanliang.com/teaching</a>.<br>
+  Companion: <a href="guide.html">An interactive reading guide through the paper →</a>
+</footer>
+
+</div>
+
+<script>
+/* ---------- FIELDS ---------- */
+const FIELDS = [
+  {key:'ui', name:'Urban Informatics', color:'#1f6f8b', scores:{data:0.9, spatial:0.5, gov:0.3, identity:0.2},
+   note:"Multidisciplinary fusion of CS, planning, and sociology. Strong on data collection, wrangling, and analytics. Light on governance of AI itself."},
+  {key:'gis', name:'GIS / Geospatial', color:'#2d6a4f', scores:{data:0.7, spatial:1.0, gov:0.2, identity:0.1},
+   note:"A system for storing, analysing, and visualising spatial data. Tool-centric. Doesn't natively address AI's socio-technical impacts."},
+  {key:'geo', name:'GeoAI', color:'#7d4f9c', scores:{data:0.8, spatial:0.95, gov:0.4, identity:0.2},
+   note:"AI + spatial analytics for prediction and classification. Foregrounds spatial decision-making. Ethics is present but secondary."},
+  {key:'uai', name:'Urban AI', color:'#c0392b', scores:{data:0.6, spatial:0.6, gov:0.95, identity:0.95},
+   note:"AI as a socio-technical force. Foregrounds governance, professional identity, and the question of when AI should be used at all — not just how."}
+];
+const DIMS = [['data','Data depth'],['spatial','Spatial focus'],['gov','Governance lens'],['identity','Identity / ethics']];
+const fieldsEl = document.getElementById('fields');
+const fdEl = document.getElementById('field-detail');
+FIELDS.forEach(f=>{
+  const div = document.createElement('div');
+  div.className = 'field'; div.dataset.k = f.key;
+  div.innerHTML = `<h5><span class="dot" style="background:${f.color}"></span>${f.name}</h5>` +
+    DIMS.map(([k,l])=>`<div class="legend">${l}</div><div class="bar"><i style="width:${f.scores[k]*100}%;background:${f.color}"></i></div>`).join('');
+  div.onclick = ()=>{
+    document.querySelectorAll('.field').forEach(x=>x.classList.remove('on'));
+    div.classList.add('on');
+    fdEl.innerHTML = `<div class="panel" style="border-left-color:${f.color}"><b>${f.name}</b>${f.note}</div>`;
+  };
+  fieldsEl.appendChild(div);
+});
+document.querySelector('.field[data-k="uai"]').click();
+
+/* ---------- CRITICALITY MATRIX ---------- */
+const APP = [
+  ['Consume', 'Use AI as designed. Minimal agency.'],
+  ['Iterate', 'Refine prompts and outputs. Some control.'],
+  ['Analyze', 'Test, validate, and cross-check against benchmarks.'],
+  ['Strategize','Integrate AI into a domain workflow with goals.'],
+  ['Build', 'Design or customise an AI system for a planning problem.']
+];
+const REF = [
+  ['Describe', 'Report what happened, no analysis.'],
+  ['Reflect', 'Note personal takeaway and quick pros/cons.'],
+  ['Analyze', 'Name causes for why AI performance varies.'],
+  ['Evaluate', 'Make judgement calls. Weigh tradeoffs and ethics.'],
+  ['Synthesize','Propose new roles for AI in profession and society.']
+];
+const STORIES = {
+  // [app idx, ref idx] -> example
+  "0,0":"\"I asked ChatGPT to summarise the readings. The outline looked great.\" — Level 1 / Level 1. Default state for most first-time users.",
+  "4,0":"A student builds a working zoning extractor but writes \"it worked\" as the entire reflection. Strong agency, weak introspection. Common in engineering cohorts.",
+  "0,4":"A non-coder reads about a city's predictive-policing rollout and writes a sharp ethics critique. Low application, high reflection — this is real Urban AI literacy.",
+  "2,3":"\"The summary missed the table because the model processes text line-by-line. So bureaucracies adopting AI verbatim will lose tabular planning data.\" — typical Level-3/4 student work.",
+  "4,4":"The pothole-reporter project — built and audited for who gets routed first. The diagonal top.",
+  "3,2":"Student systematically tests prompt strategies, but stops at \"why it varies\" without asking whether to deploy. Common gap the rubric is built to catch.",
+  "1,1":"\"I like how AI study guides help me see the big picture.\" Honest, useful, low criticality.",
+  "4,3":"The team that built a chatbot audit, then chose not to run it on a live city service. The refusal IS the Level-4 move."
+};
+const mEl = document.getElementById('matrix');
+const ciEl = document.getElementById('cellinfo');
+function buildMatrix(){
+  mEl.innerHTML = '';
+  mEl.appendChild(div('cell colhead','')); // corner
+  APP.forEach((a,i)=>mEl.appendChild(div('cell colhead', `App L${i+1}<br>${a[0]}`)));
+  for(let r=REF.length-1; r>=0; r--){
+    mEl.appendChild(div('cell lbl', `Reflect L${r+1}<br>${REF[r][0]}`));
+    for(let a=0; a<APP.length; a++){
+      const c = div('cell', '');
+      c.dataset.a = a; c.dataset.r = r;
+      c.onclick = ()=>selectCell(a,r,c);
+      const key = a+','+r;
+      if(STORIES[key]) c.innerHTML = '<span style="opacity:.5">●</span>';
+      mEl.appendChild(c);
+    }
+  }
+}
+function div(cls,html){const d=document.createElement('div');d.className=cls;d.innerHTML=html;return d;}
+function selectCell(a,r,el){
+  document.querySelectorAll('#matrix .cell').forEach(x=>x.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const key = a+','+r;
+  const story = STORIES[key] || `<i>No canonical example for this combination. What kind of student would land here? What would you teach them next?</i>`;
+  ciEl.innerHTML = `<b>Application L${a+1}: ${APP[a][0]} &nbsp;·&nbsp; Reflection L${r+1}: ${REF[r][0]}</b>
+    <div style="margin:6px 0;color:var(--muted);font-size:13px">${APP[a][1]} &nbsp;·&nbsp; ${REF[r][1]}</div>
+    ${story}`;
+}
+buildMatrix();
+selectCell(4,4, document.querySelector('#matrix .cell[data-a="4"][data-r="4"]'));
+
+/* ---------- TENSIONS ---------- */
+const TENSIONS = [
+  {q:"Breadth vs Depth", left:"Survey everything",
+   right:"Drill one thing deeply",
+   states:[
+     "A six-week tour of every AI subfield. Students leave aware of risks but unsure how to imagine solutions.",
+     "Most weeks broad, two weeks deep. The default compromise.",
+     "Liang's pilot: balanced. Lecture + lab format each week.",
+     "Almost entire semester on, say, zoning-code NLP. Deep mastery, narrow exposure.",
+     "16 weeks of one case study. Students become experts at one thing and tourists at everything else."
+   ]},
+  {q:"Literacy vs Capacity", left:"AI literacy for everyone",
+   right:"Capacity for the few",
+   states:[
+     "An undergrad survey. No prereqs. Everyone leaves with vocabulary.",
+     "Light coding optional. Most students stay conceptual.",
+     "Mixed cohort. Prereqs exist but the bar is honest.",
+     "Liang's pilot: required statistics + programming. Self-selected technical crowd.",
+     "Graduate-only ML seminar. Six students who could ship a model."
+   ]},
+  {q:"Technique-centered vs Context-centered", left:"Methods first",
+   right:"Planning problems first",
+   states:[
+     "Week 1: gradient descent. Week 2: backprop. Planning shows up as an example.",
+     "Methods syllabus with planning applications bolted on.",
+     "Half/half. Methods week, then a planning week.",
+     "Liang's pilot: start with a planning problem; learn whichever method that problem needs.",
+     "Pure case studies. Students may finish without a generalisable technical toolkit."
+   ]},
+  {q:"Big Tech vs Alternatives", left:"Use what industry uses",
+   right:"Teach the critique",
+   states:[
+     "ChatGPT every week. Polished outcomes. No questioning of who owns the model.",
+     "Mostly OpenAI; one guest lecture on bias.",
+     "Liang's pilot: ChatGPT for accessibility + deliberate Hugging Face exposure. Empirically: 62% of student tool-use was still ChatGPT.",
+     "Open-source first. Closed models only when explicitly compared.",
+     "No proprietary models. Students learn the politics of the AI supply chain explicitly."
+   ]},
+  {q:"Learning ABOUT AI vs Learning WITH AI", left:"AI as topic",
+   right:"AI as collaborator",
+   states:[
+     "Lectures only. Students never touch a model.",
+     "Some labs, mostly conceptual exam.",
+     "Lecture + lab + tool experimentation. The pilot's actual shape.",
+     "Most class time is hands-on use. Reading is supplementary.",
+     "No formal curriculum — students just use AI tools and reflect. Hard to assess."
+   ]}
+];
+const tEl = document.getElementById('tensions');
+TENSIONS.forEach((t,i)=>{
+  const idx = (t.q.includes("Liang's pilot") || true) ? 2 : 2;
+  const div = document.createElement('div');
+  div.className = 'tension';
+  div.innerHTML = `<div><b>${t.q}</b></div>
+    <input type="range" min="0" max="4" value="${idx}" data-i="${i}" />
+    <div class="ends"><span>← ${t.left}</span><span>${t.right} →</span></div>
+    <div class="out" id="t-out-${i}">${t.states[idx]}</div>`;
+  tEl.appendChild(div);
+  div.querySelector('input').oninput = e=>{
+    document.getElementById('t-out-'+i).textContent = t.states[+e.target.value];
+  };
+});
+
+/* ---------- ZONING ---------- */
+const Z = [
+  {t:"Buildings shall be ", c:''},
+  {t:"primarily oriented to the street", c:'good', why:"<b>This is a form-based code idea</b> — but it never uses the phrase 'form-based'. Standard NLP that searches for the term misses the concept entirely. (~63% of FBC adoption is implicit.)"},
+  {t:" with active ground-floor frontage. Minimum lot size shall be ", c:''},
+  {t:"7,500 sf", c:'bad', why:"<b>Unit ambiguity.</b> Is that 7,500 square feet, or 7.5 ksf, or '7500 sf' as one token? Zoning across municipalities mixes units — sf, sq ft, ft², acres — without standardisation. Tokenizers split this badly."},
+  {t:" or ", c:''},
+  {t:"as otherwise determined by the Planning Commission", c:'bad', why:"<b>Discretionary override.</b> The rule is conditional on a human body's judgement. No model can extract a deterministic answer here — the answer is 'it depends'."},
+  {t:". The character of new construction shall be ", c:''},
+  {t:"compatible with the surrounding neighborhood", c:'bad', why:"<b>Interpretation vagueness.</b> 'Compatible' is undefined. Compatible by whom? By what metric? Legal in planning; uninterpretable to an LLM."},
+  {t:". See ", c:''},
+  {t:"§4.3(b)(ii)", c:'bad', why:"<b>Cross-reference.</b> Half the rule is somewhere else in the document — or in another document entirely. RAG systems struggle here without explicit graph construction."},
+  {t:".", c:''}
+];
+const zEl = document.getElementById('zoning');
+const ziEl = document.getElementById('zoninfo');
+Z.forEach((tok,i)=>{
+  if(tok.c){
+    const s = document.createElement('span');
+    s.className = 'mark ' + tok.c;
+    s.textContent = tok.t;
+    s.onmouseenter = ()=>{ziEl.innerHTML = tok.why};
+    zEl.appendChild(s);
+  } else {
+    zEl.appendChild(document.createTextNode(tok.t));
+  }
+});
+
+/* ---------- DATA CENTERS ---------- */
+const dc = document.getElementById('dc');
+const dcCount = document.getElementById('dc-count');
+function fmt(n){return n>=1e6 ? (n/1e6).toFixed(1)+'M' : n>=1000 ? (n/1000).toFixed(n>=10000?0:1)+'k' : Math.round(n)}
+function renderDC(){
+  const n = +dc.value;
+  dcCount.textContent = n;
+  // mid-sized: ~5M gal/day water on the high end, ~30k household-equiv power, ~300 acres land — using rough mid-range
+  document.getElementById('dc-water').textContent = fmt(n * 5);      // millions of gallons
+  document.getElementById('dc-power').textContent = fmt(n * 60000);  // households equivalent
+  document.getElementById('dc-land').textContent  = fmt(n * 300);    // acres
+  const cap = document.getElementById('dc-cap');
+  if(n===0) cap.textContent = "Zero data centers. Zero water, zero load. Also zero compute hosted in your jurisdiction.";
+  else if(n<=3) cap.textContent = "A small town's worth of water. A small city's worth of power. A small farm-belt's worth of land. Planners — not engineers — decide whether this happens.";
+  else if(n<=10) cap.textContent = "You are now drawing water comparable to a regional aquifer's annual recharge in some basins. Environmental impact statements become non-optional.";
+  else if(n<=25) cap.textContent = "You are hosting infrastructure with metro-scale grid impact. Utility planning, water rights, and zoning become a multi-agency problem.";
+  else cap.textContent = "At this density, the jurisdiction is materially shaped by AI infrastructure. This is the Loudoun County, VA scenario — and it is a planning question, not an IT one.";
+}
+dc.oninput = renderDC; renderDC();
+
+/* ---------- TASKS ---------- */
+const TASKS = [
+  {t:"Judgement about when NOT to use AI", up:true},
+  {t:"Stakeholder negotiation & facilitation", up:true},
+  {t:"Ethics review and impact assessment", up:true},
+  {t:"Integrating local & tacit knowledge", up:true},
+  {t:"Designing human–AI workflows", up:true},
+  {t:"Storytelling with spatial data", up:true},
+  {t:"Manual GIS data entry", up:false},
+  {t:"Hand-coded land-use classification", up:false},
+  {t:"Static master-plan modelling", up:false},
+  {t:"Routine document summarisation", up:false},
+  {t:"Basic map production", up:false},
+  {t:"Repetitive zoning lookups", up:false}
+];
+const upEl = document.getElementById('task-up');
+const downEl = document.getElementById('task-down');
+function renderTasks(){
+  upEl.innerHTML=''; downEl.innerHTML='';
+  TASKS.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='task '+(t.up?'up':'down');
+    d.textContent = t.t;
+    d.onclick = ()=>{TASKS[i].up=!TASKS[i].up; renderTasks();};
+    (t.up?upEl:downEl).appendChild(d);
+  });
+}
+renderTasks();
+
+</script>
+</body>
+</html>

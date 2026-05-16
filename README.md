@@ -1,2 +1,42 @@
-# urban-ai-edu-liang-2025
-Interactive guide to Xiaofan Liang's work on Urban AI
+# Urban AI Education — an interactive reading of Liang (2025)
+
+A two-page interactive companion to Xiaofan Liang's working paper **"Educating Urban AI: A Pedagogical Framework for Teaching Artificial Intelligence in Urban Planning"** (SocArxiv, 2025).
+
+**Live site:** https://wonkishtofu.github.io/urban-ai-edu-liang-2025/
+
+---
+
+## What this is
+
+Two self-contained HTML pages, no build step, no dependencies:
+
+- **[`index.html`](./index.html)** — an interactive summary in the spirit of Bret Victor's explorable explanations. Seven hands-on widgets: the criticality matrix, a tension map for pedagogical trade-offs, a data-center siting calculator, zoning failure-mode reader, task-reshuffling exercise, and more.
+- **[`guide.html`](./guide.html)** — a guided reading of the paper itself. Ten stops with a sticky table of contents, scroll-spy, hover annotations, and inline interactives at the spots where the argument turns.
+
+The two pages link to each other; start from either.
+
+## Why
+
+Liang's paper makes a structural case for Urban AI as a distinct subfield — one that foregrounds governance, professional identity, and the socio-technical consequences of AI in cities, rather than treating AI as a neutral tool. The pages are designed to make that argument *legible by manipulation*: you can drag the criticality matrix, reshuffle planning tasks under AI, and feel the trade-offs the paper names.
+
+## Visual design
+
+The theme is **Tropical Modernist with URA accents** — restrained sans-serif typography in a jungle-green primary, with the Urban Redevelopment Authority of Singapore's reds and greys used sparingly as semantic accents (decisions, warnings, identity marks, annotations).
+
+## Running locally
+
+```bash
+git clone https://github.com/wonkishtofu/urban-ai-edu-liang-2025.git
+cd urban-ai-edu-liang-2025
+open index.html
+```
+
+No server, no toolchain. Plain HTML, vanilla JS, SVG.
+
+## Source
+
+Liang, Xiaofan. (2025). *Educating Urban AI: A Pedagogical Framework for Teaching Artificial Intelligence in Urban Planning.* SocArxiv preprint.
+
+## License
+
+MIT — see [LICENSE](./LICENSE). The interactive site is an independent reading of the paper; the paper itself remains the author's work.

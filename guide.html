@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>A Reading Guide — Liang (2025) on Urban AI Pedagogy</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#f7f3ec;
+    --paper-2:#efe9dd;
+    --paper-3:#e6dec9;
+    --rule:#d8cfbb;
+    --accent:#c0392b;
+    --accent-2:#1f6f8b;
+    --accent-3:#2d6a4f;
+    --muted:#6b6357;
+    --hi:#ffe98a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:17px;line-height:1.55;}
+  section.sec{scroll-margin-top:24px}
+  .shell{display:grid;grid-template-columns:280px 1fr;max-width:1180px;margin:0 auto;gap:36px;padding:48px 24px 120px;}
+  @media (max-width:900px){.shell{grid-template-columns:1fr;}.toc{position:static !important;max-height:none !important;}}
+
+  /* Sidebar */
+  .toc{position:sticky;top:24px;max-height:calc(100vh - 48px);overflow-y:auto;font-size:14px;border-right:1px solid var(--rule);padding-right:18px;}
+  .toc h3{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;font-weight:600}
+  .toc a{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--ink);text-decoration:none;border-left:2px solid transparent;padding-left:8px;margin-left:-10px;line-height:1.3}
+  .toc a .n{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--paper-2);border:1px solid var(--rule);border-radius:50%;font-size:11px;color:var(--muted);flex-shrink:0}
+  .toc a.done .n{background:var(--accent-3);color:#fff;border-color:var(--accent-3)}
+  .toc a.active{border-left-color:var(--accent);color:var(--accent);font-weight:600}
+  .toc a:hover{background:var(--paper-2)}
+  .progress-wrap{margin:10px 0 14px;font-size:12px;color:var(--muted)}
+  .progress{height:6px;background:var(--paper-2);border-radius:3px;overflow:hidden;margin-top:4px}
+  .progress > i{display:block;height:100%;background:var(--accent-3);transition:width .3s}
+
+  /* Main */
+  .main{min-width:0}
+  h1{font-size:42px;line-height:1.05;letter-spacing:-0.01em;margin:0 0 6px;font-weight:600}
+  .lede{font-size:20px;color:var(--muted);font-style:italic;margin:0 0 6px}
+  .byline{color:var(--muted);font-size:13px;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:42px}
+  h2{font-size:26px;letter-spacing:-0.005em;margin:60px 0 4px;font-weight:600;}
+  h2 .num{display:inline-block;font-size:14px;color:var(--accent);border:1px solid var(--accent);border-radius:50%;width:30px;height:30px;line-height:28px;text-align:center;margin-right:10px;vertical-align:5px;font-weight:600}
+  .secsub{color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
+  h3{font-size:18px;margin:24px 0 6px;color:var(--accent-2)}
+  p{margin:12px 0}
+  .pull{font-family:"Iowan Old Style",Georgia,serif;font-size:20px;line-height:1.4;border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:22px 0;font-style:italic;color:var(--ink)}
+  .small{font-size:13px;color:var(--muted)}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
+  a{color:var(--accent-2)}
+
+  /* Section card */
+  .sec{border-top:1px solid var(--rule);padding-top:32px}
+  .frame{display:grid;grid-template-columns:auto 1fr;gap:8px;background:var(--paper-2);border-radius:6px;padding:10px 14px;font-size:13px;color:var(--muted);margin:14px 0}
+  .frame b{color:var(--ink)}
+
+  /* Excerpt with annotations */
+  .excerpt{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:16px 18px;font-size:15px;line-height:1.65;margin:14px 0;position:relative}
+  .excerpt .ann{background:var(--hi);border-bottom:1.5px dotted var(--accent);cursor:help;padding:0 1px;border-radius:2px}
+  .excerpt .ann:hover{background:#ffe066}
+  .annbox{margin-top:12px;padding:10px 12px;background:var(--paper-2);border-left:3px solid var(--accent-2);border-radius:0 4px 4px 0;font-size:14px;min-height:36px}
+  .annbox b{display:block;color:var(--accent-2);margin-bottom:2px}
+
+  /* Stop & think */
+  .think{background:#fff4d6;border:1px solid #e6c97a;border-radius:6px;padding:12px 16px;margin:18px 0;font-size:15px}
+  .think b{display:block;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8a6d1a;margin-bottom:4px}
+  .think textarea{width:100%;border:none;background:transparent;font:inherit;font-size:14px;color:var(--ink);resize:vertical;min-height:48px;outline:none;border-top:1px dashed #e6c97a;padding-top:6px;margin-top:6px}
+
+  /* Interactive figure */
+  .figure{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:18px;margin:18px 0}
+  .figure .ftitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+  button{font:inherit;font-size:13px;background:var(--paper-2);border:1px solid var(--rule);padding:5px 10px;border-radius:4px;cursor:pointer;color:var(--ink)}
+  button:hover{background:#fff}
+  button.active,button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  /* Mark as read */
+  .markread{margin-top:18px;display:flex;align-items:center;gap:10px}
+  .markread button{background:#fff}
+  .markread.done button{background:var(--accent-3);color:#fff;border-color:var(--accent-3)}
+
+  /* Section 1: Goal sorter */
+  .goals{display:flex;flex-direction:column;gap:8px}
+  .goal{padding:10px 12px;background:var(--paper-2);border:1px solid var(--rule);border-radius:5px;display:flex;align-items:center;gap:10px;cursor:grab;user-select:none}
+  .goal .rank{font-size:20px;font-weight:600;color:var(--accent);width:28px;text-align:center}
+  .goal .updown{display:flex;flex-direction:column;gap:2px;margin-left:auto}
+  .goal .updown button{padding:0 6px;font-size:11px}
+
+  /* Section 2: Field diff */
+  .fielddiff{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fielddiff > div{background:var(--paper-2);border-radius:6px;padding:12px;font-size:14px}
+  .fielddiff h4{margin:0 0 6px;font-size:13px;color:var(--accent-2)}
+  .fielddiff ul{padding-left:18px;margin:6px 0}
+
+  /* Section 3: Tension map */
+  .tmwrap{margin-top:8px;font-family:ui-sans-serif,"Helvetica Neue",Helvetica,Arial,sans-serif}
+  .tmwrap svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  .tmwrap text{font-family:inherit;fill:var(--muted)}
+  .tm-axis-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;fill:var(--ink)}
+  .tm-pole{font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;fill:var(--muted)}
+  .tm-tick{font-size:9.5px;fill:var(--muted)}
+  .tm-quad-label{font-size:10px;fill:#a59a82;letter-spacing:0.06em;text-transform:uppercase}
+  .tm-grid{stroke:#cabfa6;stroke-width:0.5;stroke-dasharray:2 3}
+  .tm-axis{stroke:#8a8170;stroke-width:1}
+  .tm-frame{fill:#fbf8f0;stroke:var(--rule);stroke-width:1}
+  .tm-q{opacity:.35}
+  .tm-userdot{cursor:grab;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+  .tm-userdot:active{cursor:grabbing}
+  .tm-pilotdot{pointer-events:none}
+  .tm-coord{font-family:ui-monospace,Menlo,monospace;font-size:11px;fill:var(--accent)}
+  .tm-readout{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12px;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+  .tm-readout b{color:var(--ink)}
+
+  /* Section 4: Timeline */
+  .timeline{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin:10px 0}
+  .timeline .wk{height:34px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;font-size:11px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;position:relative}
+  .timeline .wk:hover{background:#fff}
+  .timeline .wk.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .timeline .wk.mod1{border-top:3px solid #c0392b}
+  .timeline .wk.mod2{border-top:3px solid #d4a017}
+  .timeline .wk.mod3{border-top:3px solid #2d6a4f}
+  .timeline .wk.mod4{border-top:3px solid #1f6f8b}
+  .tllegend{display:flex;gap:14px;margin-top:6px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+  .tllegend span{display:inline-flex;align-items:center;gap:5px}
+  .tllegend i{display:inline-block;width:10px;height:3px}
+
+  /* Section 5: Methods flow */
+  .flowstats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+  .flowstats div{background:var(--paper-2);text-align:center;padding:10px 6px;border-radius:5px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em}
+  .flowstats div b{display:block;color:var(--accent);font-size:24px;font-family:inherit}
+  .roundbox{display:grid;grid-template-columns:auto 1fr;gap:12px;margin:6px 0;padding:10px;background:var(--paper-2);border-radius:5px;font-size:14px}
+  .roundbox .badge{background:var(--ink);color:var(--paper);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+
+  /* Section 6: Modules */
+  .mods{display:flex;gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+  .mods button{flex:1;border:none;border-right:1px solid var(--rule);border-radius:0;padding:10px;background:var(--paper-2);font-size:12px}
+  .mods button:last-child{border-right:none}
+  .mods button.on{background:var(--ink);color:var(--paper)}
+  .modpanel{background:#fff;border:1px solid var(--rule);border-top:none;padding:14px 16px;font-size:14px;border-radius:0 0 6px 6px;margin-top:-1px}
+  .modpanel h4{margin:0 0 6px;color:var(--accent)}
+  .modpanel ul{padding-left:18px;margin:4px 0}
+
+  /* Section 7: Knowledge graph */
+  .kgraph{position:relative;background:var(--paper-2);border-radius:6px;height:280px;margin-top:8px;overflow:hidden}
+  .kgraph svg{position:absolute;inset:0;width:100%;height:100%}
+  .kgraph .node{position:absolute;background:#fff;border:1.5px solid var(--rule);border-radius:5px;padding:5px 9px;font-size:11px;line-height:1.2;cursor:pointer;transform:translate(-50%,-50%);transition:all .15s;text-align:center}
+  .kgraph .node:hover{border-color:var(--ink);z-index:3}
+  .kgraph .node.cs{border-color:#c0392b;color:#c0392b}
+  .kgraph .node.up{border-color:#1f6f8b;color:#1f6f8b}
+  .kgraph .node.goal{background:var(--ink);color:var(--paper);border-color:var(--ink);font-weight:600;z-index:2}
+  .kgraph .node.reflect{background:#fff4d6;border-color:#e6c97a;color:#8a6d1a}
+
+  /* Section 8: Quote place */
+  .placequote{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:12px 14px;font-size:14px;font-style:italic;line-height:1.5;color:var(--ink)}
+  .placerow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .placerow .ax label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+  .placerow .ax select{width:100%;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--rule);border-radius:4px;background:#fff}
+  .placeresult{margin-top:10px;font-size:14px;padding:10px;border-radius:4px}
+  .placeresult.right{background:#eaf6ee;border:1px solid var(--accent-3);color:var(--accent-3)}
+  .placeresult.wrong{background:#fbece9;border:1px solid var(--accent);color:var(--accent)}
+
+  /* Section 9: heatmap */
+  .heat{display:grid;grid-template-columns:140px repeat(6,1fr);gap:2px;font-size:11px}
+  .heat .cell{padding:8px 4px;border-radius:3px;text-align:center;color:#fff;font-weight:600}
+  .heat .ax{color:var(--muted);text-align:right;padding-right:8px;align-self:center;font-size:11px}
+  .heat .colhead{color:var(--muted);text-align:center;padding:4px;font-size:10px;text-transform:uppercase;letter-spacing:0.04em}
+
+  /* Section 10: lessons cards */
+  .lessons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px}
+  @media (max-width:680px){.lessons{grid-template-columns:1fr}}
+  .lesson{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:14px;font-size:13px;cursor:pointer;transition:all .15s}
+  .lesson:hover{border-color:var(--ink)}
+  .lesson .tag{font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-weight:600}
+  .lesson h4{margin:0 0 6px;font-size:15px}
+  .lesson .flip{display:none}
+  .lesson.flipped .face{display:none}
+  .lesson.flipped .flip{display:block}
+
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--rule);color:var(--muted);font-size:13px}
+  .topnav{max-width:1180px;margin:0 auto;padding:18px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .topnav .crumb{letter-spacing:0.06em;text-transform:uppercase}
+  .topnav a{color:var(--accent-2);text-decoration:none;border:1px solid var(--rule);background:#fff;padding:6px 12px;border-radius:4px}
+  .topnav a:hover{border-color:var(--accent-2)}
+</style>
+<style data-theme="tropical-modernist">
+:root{
+  --ink:#1a1a1a;
+  --paper:#fafaf7;
+  --paper-2:#f0ede4;
+  --paper-3:#e2dec8;
+  --rule:#d6d2c0;
+  --accent:#1f3d2b;
+  --accent-2:#3e6a3a;
+  --accent-3:#94a87a;
+  --muted:#6b6a5e;
+  --hi:#e8dec0;
+}
+body{
+  font-family:"Söhne","Neue Haas Grotesk Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight:400;
+  letter-spacing:-0.005em;
+}
+h1,h2,h3{
+  font-family:"Söhne","Neue Haas Grotesk Display","Inter","Helvetica Neue",sans-serif;
+  font-weight:500;
+  letter-spacing:-0.02em;
+}
+h1{letter-spacing:-0.035em;font-weight:600}
+h2 .num{font-weight:500;border-radius:0}
+h3{color:var(--accent);font-weight:600;letter-spacing:0}
+.lede{font-style:normal;color:var(--accent-2);font-weight:400}
+.byline{font-weight:500;letter-spacing:0.1em}
+.secsub{font-weight:500;letter-spacing:0.08em}
+.pull{font-family:"Söhne","Inter",sans-serif;font-style:normal;font-weight:500;border-left-color:var(--accent);color:var(--ink)}
+.topnav a{border-radius:0;background:#fff;font-weight:500}
+button{border-radius:0;font-weight:500}
+input[type=range]{accent-color:var(--accent)}
+.figure{border-radius:0;background:#fff;border-color:var(--rule);box-shadow:none}
+.figure .ftitle{font-weight:500;letter-spacing:0.08em}
+/* Sidebar */
+.toc a.done .n{background:var(--accent);border-color:var(--accent)}
+.toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.progress > i{background:var(--accent)}
+.toc a .n{border-radius:0}
+/* Frames */
+.frame{border-radius:0;background:var(--paper-2)}
+.excerpt{border-radius:0;background:#fff}
+.excerpt .ann{background:var(--hi);border-bottom-color:var(--accent)}
+.annbox{background:var(--paper-2);border-left-color:var(--accent);border-radius:0}
+.annbox b{color:var(--accent)}
+.think{background:#f5ecc8;border-color:#c8b878;border-radius:0;color:var(--ink)}
+.think b{color:#5a4810;font-weight:600}
+.markread.done button{background:var(--accent);border-color:var(--accent)}
+/* Goals */
+.goal{background:#fff;border-radius:0}
+.goal .rank{color:var(--accent);font-weight:500;font-family:inherit}
+/* Field diff */
+.fielddiff > div{background:var(--paper-2);border-radius:0}
+.fielddiff h4{color:var(--accent);font-weight:600}
+/* Tension map */
+.tm-frame{fill:#fff;stroke:var(--rule)}
+.tm-q[fill="#f3eadc"]{fill:#f5f2e8}
+.tm-q[fill="#e8e0cc"]{fill:#ebe6d2}
+.tm-q[fill="#ede5d0"]{fill:#f0ecd8}
+.tm-q[fill="#e2dabf"]{fill:#dfdcc4}
+.tm-grid{stroke:#c4bda6}
+.tm-axis{stroke:var(--accent)}
+.tm-userdot circle{fill:var(--accent)}
+.tm-pilotdot circle{fill:var(--accent-3)}
+/* Timeline */
+.timeline .wk{background:#fff;border-radius:0;border-color:var(--rule)}
+.timeline .wk.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.timeline .wk.mod1{border-top-color:var(--accent)}
+.timeline .wk.mod2{border-top-color:#a89540}
+.timeline .wk.mod3{border-top-color:var(--accent-2)}
+.timeline .wk.mod4{border-top-color:var(--accent-3)}
+/* Methods */
+.flowstats div{background:var(--paper-2);border-radius:0}
+.flowstats div b{color:var(--accent);font-weight:500;font-family:inherit;letter-spacing:-0.02em}
+.roundbox{background:var(--paper-2);border-radius:0}
+.roundbox .badge{background:var(--accent);font-weight:500;font-family:inherit}
+/* Modules */
+.mods{border-radius:0}
+.mods button{background:var(--paper-2);font-weight:500;letter-spacing:0.04em}
+.mods button.on{background:var(--accent);color:var(--paper)}
+.modpanel{background:#fff;border-radius:0}
+.modpanel h4{color:var(--accent);font-weight:600}
+/* Knowledge graph */
+.kgraph{background:var(--paper-2);border-radius:0}
+.kgraph .node{background:#fff;border-radius:0;font-weight:500}
+.kgraph .node.cs{border-color:var(--accent);color:var(--accent)}
+.kgraph .node.up{border-color:var(--accent-2);color:var(--accent-2)}
+.kgraph .node.goal{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.kgraph .node.reflect{background:var(--hi);border-color:#c8b878;color:#5a4810}
+/* Quotes */
+.placequote{background:#fff;border-radius:0}
+.placerow .ax select{background:#fff;border-radius:0;border-color:var(--rule)}
+.placeresult{border-radius:0}
+.placeresult.right{background:#dee5cc;border-color:var(--accent-2);color:var(--accent-2)}
+.placeresult.wrong{background:#e8d4c8;border-color:#8a4a2a;color:#6a2a1a}
+/* Lessons */
+.lesson{background:#fff;border-radius:0}
+.lesson:hover{border-color:var(--accent)}
+.lesson .tag{color:var(--accent);font-weight:600}
+</style>
+<style data-theme="tropical-modernist-ura">
+:root{
+  --ura-red:#c8102e;
+  --ura-red-deep:#8a0c20;
+  --ura-red-wash:#f5dde0;
+  --ura-grey:#58595b;
+  --ura-grey-2:#8c8c8e;
+  --ura-grey-3:#dcdcd6;
+  --muted:#58595b;
+  --rule:#c8c4b4;
+  --hi:#f5dde0;
+}
+.topnav .crumb::before{content:"";width:11px;height:11px;background:var(--ura-red);display:inline-block;flex-shrink:0}
+.byline,.lede,.cap{color:var(--ura-grey)}
+.toc a.on,.toc a.active{color:var(--ura-red-deep);border-left-color:var(--ura-red)}
+h2 .num{border-color:var(--ura-red);color:var(--ura-red-deep)}
+.excerpt .ann{border-bottom:2px solid var(--ura-red)}
+.hl{background:var(--hi);box-shadow:inset 0 -3px 0 var(--ura-red)}
+.pull{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:1.45;border-left:3px solid var(--ura-red);background:rgba(200,16,46,0.04);padding:10px 0 10px 18px;color:var(--ink)}
+.panel{border-left:3px solid var(--ura-red)}
+.frame{border-left:3px solid var(--ura-red)}
+.tm-userdot circle{fill:var(--ura-red)}
+.placeresult.wrong{border-color:var(--ura-red);background:var(--ura-red-wash);color:var(--ura-red-deep)}
+.kgraph .node.cs{border-color:var(--ura-red);color:var(--ura-red-deep)}
+.task.down{background:var(--ura-red-wash);border-color:var(--ura-red);color:var(--ura-red-deep)}
+button:hover{border-color:var(--ura-red);color:var(--ura-red-deep)}
+button.active,button.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.tag{color:var(--ura-grey);border-color:var(--ura-grey-3);background:#fff}
+.tag::before{content:"";display:inline-block;width:5px;height:5px;background:var(--ura-red);border-radius:50%;margin-right:6px;vertical-align:1px}
+.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.figure,.panel,.frame,.field{border-color:var(--ura-grey-3)}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a href="index.html">← Back to Interactive Summary</a>
+  <span class="crumb">Reading Guide</span>
+</div>
+
+<div class="shell">
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="toc" id="toc">
+  <div style="font-size:11px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Reading guide</div>
+  <div style="font-size:16px;font-weight:600;margin:2px 0 12px">Liang (2025) · Urban AI</div>
+  <div class="progress-wrap">
+    <div>Progress · <span id="prog-txt">0 / 10</span></div>
+    <div class="progress"><i id="prog-bar" style="width:0%"></i></div>
+  </div>
+  <h3>The Setup</h3>
+  <a href="#s1" data-s="1"><span class="n">1</span> Three learning goals</a>
+  <a href="#s2" data-s="2"><span class="n">2</span> Why Urban AI is different</a>
+  <a href="#s3" data-s="3"><span class="n">3</span> Five pedagogical tensions</a>
+  <h3>The Course</h3>
+  <a href="#s4" data-s="4"><span class="n">4</span> Pilot course shape</a>
+  <a href="#s5" data-s="5"><span class="n">5</span> How 235 journals got coded</a>
+  <a href="#s6" data-s="6"><span class="n">6</span> The five modules</a>
+  <a href="#s7" data-s="7"><span class="n">7</span> The knowledge graph</a>
+  <h3>The Rubric & Results</h3>
+  <a href="#s8" data-s="8"><span class="n">8</span> The criticality framework</a>
+  <a href="#s9" data-s="9"><span class="n">9</span> What students actually did</a>
+  <a href="#s10" data-s="10"><span class="n">10</span> Three teachable moments</a>
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);font-size:12px">
+    <a href="index.html">← Back to interactive summary</a>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+<div class="byline">An interactive reading guide</div>
+<h1>How to read this paper</h1>
+<p class="lede">Ten guided stops through Liang (2025). Each stop has the move the author is making, the passage to read, and one thing to do with your hands.</p>
+
+<p>This is a methods-and-pedagogy paper that hides three sharper claims: (a) Urban AI is its own thing, not a flavour of GIS; (b) judgement matters more than coding skill; (c) data centers are a planning problem and most curricula ignore this. Read with those in mind.</p>
+
+<div class="frame">
+  <span>📖</span>
+  <div><b>How to use this guide</b> — Each section has a short framing, a real excerpt with hover annotations, an interactive widget that makes the idea concrete, and an optional note-to-self. Mark each section read to track progress on the left. Total reading time: ~25 minutes; ~45 with the interactives.</div>
+</div>
+
+<!-- ===================== SECTION 1 ===================== -->
+<section class="sec" id="s1">
+  <h2><span class="num">1</span> Three learning goals</h2>
+  <div class="secsub">Abstract & Introduction · what the paper is trying to do</div>
+
+  <p>The paper opens with a deceptively simple list. Three meta learning goals for an Urban AI course:</p>
+
+  <div class="excerpt">
+    "...three meta learning goals: <span class="ann" data-a="g1">applying AI effectively and appropriately in urban challenges</span>, <span class="ann" data-a="g2">addressing its social, environmental, and governance impacts</span>, and <span class="ann" data-a="g3">developing normative judgements and professional identities around AI</span>."
+    <div class="annbox" id="ann-s1"><b>Hover the highlights.</b>Each phrase is doing real work.</div>
+  </div>
+
+  <p>Most existing tech-in-planning courses cover the first two. The third — <i>professional identity</i> — is the new move and it is where the paper gets its argument from. Watch how this third goal keeps returning later as the justification for reflection journals and the criticality rubric.</p>
+
+  <h3>Do this: rank the goals by what your program needs most</h3>
+  <p class="small">Drag (or use the arrows) to reorder. There's no right answer — but your ranking predicts what your curriculum will reward.</p>
+  <div class="figure">
+    <div class="ftitle">Goal sorter</div>
+    <div class="goals" id="goals"></div>
+    <div class="annbox" id="goalwhy" style="border-left-color:var(--accent-3);margin-top:14px"><b>Why this order?</b>Pick a ranking to see what each top-choice implies for course design.</div>
+  </div>
+
+  <div class="think">
+    <b>Note to self</b>
+    Which goal does your institution under-serve? Why?
+    <textarea placeholder="One sentence is enough..."></textarea>
+  </div>
+
+  <div class="markread" data-s="1"><button onclick="markRead(1,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 2 ===================== -->
+<section class="sec" id="s2">
+  <h2><span class="num">2</span> Why Urban AI is its own thing</h2>
+  <div class="secsub">Literature Review · the disciplinary boundary work</div>
+
+  <p>This is where the author has to defend the existence of the subfield. The argument is structural, not just rhetorical: Urban AI engages <i>multimodal</i> data, <i>socio-technical</i> complexity, and infrastructure (data centers) that adjacent fields explicitly don't.</p>
+
+  <div class="excerpt">
+    "Different from Geography and Data Science, urban planning engages a broader range of <span class="ann" data-a="m1">multimodal data (texts, graphics, transactions)</span> and domain-specific challenges (e.g., zoning code analysis, generative design, digital twins). Standard AI models are often <span class="ann" data-a="m2">ill-equipped to handle urban planning challenges</span> because cities are complex, dynamic socio-technical systems... Urban Planning also extends further into the <span class="ann" data-a="m3">governance, socio-politics, and the built environment consequences of AI in urban life</span>. A prominent example is permitting the land, energy, and water uses of <span class="ann" data-a="m4">data centers</span>..."
+    <div class="annbox" id="ann-s2"><b>Hover the highlights.</b>Each is a deliberate distinction from a neighbouring field.</div>
+  </div>
+
+  <h3>Do this: diff Urban AI against the field you know best</h3>
+  <div class="figure">
+    <div class="ftitle">Compare Urban AI with...</div>
+    <div class="row" style="margin-bottom:10px">
+      <button class="dif-btn on" data-f="ui">Urban Informatics</button>
+      <button class="dif-btn" data-f="gis">GIS</button>
+      <button class="dif-btn" data-f="geo">GeoAI</button>
+      <button class="dif-btn" data-f="ds">Data Science</button>
+    </div>
+    <div class="fielddiff" id="fielddiff"></div>
+  </div>
+
+  <p class="pull">The clearest tell: data centers. If your discipline doesn't already treat the siting and permitting of AI infrastructure as a first-class problem, it isn't doing Urban AI.</p>
+
+  <div class="markread" data-s="2"><button onclick="markRead(2,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 3 ===================== -->
+<section class="sec" id="s3">
+  <h2><span class="num">3</span> The five pedagogical tensions</h2>
+  <div class="secsub">Pedagogical Tension in Urban AI · the unavoidable tradeoffs</div>
+
+  <p>This section is the cleanest part of the paper. Five tensions are introduced, each as a binary that can't be avoided. The author isn't trying to resolve them; she's mapping them so other instructors can take positions deliberately.</p>
+
+  <p class="small">The five tensions are: Breadth vs Depth · Literacy vs Capacity · Technique-centered vs Context-centered · Big Tech vs Alternatives · Learning <i>about</i> AI vs Learning <i>with</i> AI.</p>
+
+  <h3>Do this: place a hypothetical course on the tension map</h3>
+  <p class="small">Two of the five tensions form the most consequential pair: <b>x-axis</b> = Literacy (left) ↔ Capacity (right). <b>y-axis</b> = Technique-centered (top) ↔ Context-centered (bottom). Drag the red dot. The green dot is where Liang's pilot sits.</p>
+
+  <div class="figure">
+    <div class="ftitle">Tension map · pedagogical position (n=2 axes from 5 tensions)</div>
+    <div class="tmwrap">
+      <svg id="tmap-svg" viewBox="0 0 620 400" aria-label="Tension map chart">
+        <!-- Plot frame: x in [60, 580], y in [40, 340]. Domain [0,100] both axes. -->
+        <rect class="tm-frame" x="60" y="40" width="520" height="300"/>
+
+        <!-- Quadrant tints -->
+        <rect class="tm-q" x="60"  y="40"  width="260" height="150" fill="#f3eadc"/>  <!-- top-left  Literacy × Technique -->
+        <rect class="tm-q" x="320" y="40"  width="260" height="150" fill="#e8e0cc"/>  <!-- top-right Capacity × Technique -->
+        <rect class="tm-q" x="60"  y="190" width="260" height="150" fill="#ede5d0"/>  <!-- bot-left  Literacy × Context  -->
+        <rect class="tm-q" x="320" y="190" width="260" height="150" fill="#e2dabf"/>  <!-- bot-right Capacity × Context  -->
+
+        <!-- Gridlines at 25/75 -->
+        <line class="tm-grid" x1="190" y1="40"  x2="190" y2="340"/>
+        <line class="tm-grid" x1="450" y1="40"  x2="450" y2="340"/>
+        <line class="tm-grid" x1="60"  y1="115" x2="580" y2="115"/>
+        <line class="tm-grid" x1="60"  y1="265" x2="580" y2="265"/>
+
+        <!-- Center cross axes -->
+        <line class="tm-axis" x1="320" y1="40"  x2="320" y2="340"/>
+        <line class="tm-axis" x1="60"  y1="190" x2="580" y2="190"/>
+
+        <!-- X axis ticks (bottom of plot) -->
+        <g>
+          <line class="tm-axis" x1="60"  y1="340" x2="60"  y2="346"/>
+          <line class="tm-axis" x1="190" y1="340" x2="190" y2="344"/>
+          <line class="tm-axis" x1="320" y1="340" x2="320" y2="346"/>
+          <line class="tm-axis" x1="450" y1="340" x2="450" y2="344"/>
+          <line class="tm-axis" x1="580" y1="340" x2="580" y2="346"/>
+          <text class="tm-tick" x="60"  y="358" text-anchor="middle">0</text>
+          <text class="tm-tick" x="190" y="358" text-anchor="middle">25</text>
+          <text class="tm-tick" x="320" y="358" text-anchor="middle">50</text>
+          <text class="tm-tick" x="450" y="358" text-anchor="middle">75</text>
+          <text class="tm-tick" x="580" y="358" text-anchor="middle">100</text>
+        </g>
+
+        <!-- Y axis ticks (left of plot) -->
+        <g>
+          <line class="tm-axis" x1="54" y1="40"  x2="60" y2="40"/>
+          <line class="tm-axis" x1="56" y1="115" x2="60" y2="115"/>
+          <line class="tm-axis" x1="54" y1="190" x2="60" y2="190"/>
+          <line class="tm-axis" x1="56" y1="265" x2="60" y2="265"/>
+          <line class="tm-axis" x1="54" y1="340" x2="60" y2="340"/>
+          <text class="tm-tick" x="50" y="44"  text-anchor="end">100</text>
+          <text class="tm-tick" x="50" y="119" text-anchor="end">75</text>
+          <text class="tm-tick" x="50" y="194" text-anchor="end">50</text>
+          <text class="tm-tick" x="50" y="269" text-anchor="end">25</text>
+          <text class="tm-tick" x="50" y="344" text-anchor="end">0</text>
+        </g>
+
+        <!-- Pole labels (at the four ends) -->
+        <text class="tm-pole" x="60"  y="32" text-anchor="start">← Literacy</text>
+        <text class="tm-pole" x="580" y="32" text-anchor="end">Capacity →</text>
+        <text class="tm-pole" x="320" y="32" text-anchor="middle">↑ Technique-first</text>
+        <text class="tm-pole" x="320" y="356" text-anchor="middle" dy="14">↓ Context-first</text>
+
+        <!-- Axis name labels -->
+        <text class="tm-axis-label" x="320" y="392" text-anchor="middle">Tension 2 · Literacy ↔ Capacity</text>
+        <text class="tm-axis-label" x="18" y="190" text-anchor="middle" transform="rotate(-90 18 190)">Tension 3 · Technique ↔ Context</text>
+
+        <!-- Quadrant labels -->
+        <text class="tm-quad-label" x="72"  y="58"  text-anchor="start">Q1 · Vocab without skill</text>
+        <text class="tm-quad-label" x="568" y="58"  text-anchor="end">Q2 · ML-for-planners trap</text>
+        <text class="tm-quad-label" x="72"  y="332" text-anchor="start">Q3 · Critic without craft</text>
+        <text class="tm-quad-label" x="568" y="332" text-anchor="end">Q4 · Liang's pilot quadrant</text>
+
+        <!-- Pilot marker: Liang's pilot at (68, 68) on 0–100 scale ⇒ Capacity-Context -->
+        <g class="tm-pilotdot" transform="translate(413.6, 258)">
+          <circle r="5.5" fill="#2d6a4f" stroke="#fff" stroke-width="2"/>
+          <text x="10" y="4" font-size="11" fill="#2d6a4f" font-weight="600" font-family="ui-sans-serif,Helvetica,Arial,sans-serif">Liang's pilot (68, 68)</text>
+        </g>
+
+        <!-- Crosshair guides (rendered behind user dot) -->
+        <line id="tm-vguide" class="tm-grid" x1="320" y1="40" x2="320" y2="340" stroke="#c0392b" stroke-opacity="0" stroke-dasharray="3 3"/>
+        <line id="tm-hguide" class="tm-grid" x1="60" y1="190" x2="580" y2="190" stroke="#c0392b" stroke-opacity="0" stroke-dasharray="3 3"/>
+
+        <!-- User-draggable point -->
+        <g id="tm-userdot" class="tm-userdot" transform="translate(320, 190)">
+          <circle r="8" fill="#c0392b" stroke="#fff" stroke-width="2.5"/>
+          <text id="tm-coord" class="tm-coord" x="12" y="-10">(50, 50)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="tm-readout">
+      <span>Your position · <b id="tm-x">50</b> Literacy↔Capacity · <b id="tm-y">50</b> Technique↔Context</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:#c0392b;border-radius:50%;margin-right:4px"></span>You &nbsp; <span style="display:inline-block;width:9px;height:9px;background:#2d6a4f;border-radius:50%;margin:0 4px 0 8px"></span>Liang's pilot</span>
+    </div>
+    <div class="annbox" id="tmap-out" style="margin-top:12px"><b>Drag the red dot.</b>The quadrant you land in is the kind of course you've described.</div>
+  </div>
+
+  <div class="markread" data-s="3"><button onclick="markRead(3,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 4 ===================== -->
+<section class="sec" id="s4">
+  <h2><span class="num">4</span> What the pilot course actually looked like</h2>
+  <div class="secsub">Pilot Course Context · the empirical setting</div>
+
+  <p>Twenty students, mostly Master's in Planning and BS in Urban Tech, all with stats and one programming course completed. A 16-week semester. Most weeks: a lecture paired with a Python lab. Weekly reflection journals were the assessment backbone.</p>
+
+  <div class="excerpt">
+    "Most weeks consisted of a lecture paired with a <span class="ann" data-a="p1">hands-on Python lab</span>. ... Beyond OpenAI's models, the course introduced students to the <span class="ann" data-a="p2">Hugging Face open-source model ecosystem</span>... Students were encouraged to use AI tools freely throughout the course but were <span class="ann" data-a="p3">required to submit weekly reflection journals (12 out of 16 weeks)</span>..."
+    <div class="annbox" id="ann-s4"><b>Hover the highlights.</b>Each is a deliberate design choice that shows up in the findings.</div>
+  </div>
+
+  <h3>Do this: walk the 16-week timeline</h3>
+  <div class="figure">
+    <div class="ftitle">Course schedule · click any week</div>
+    <div class="timeline" id="timeline"></div>
+    <div class="tllegend">
+      <span><i style="background:#c0392b"></i> Mod 1: AI Mechanics</span>
+      <span><i style="background:#d4a017"></i> Mod 2: Urban Application</span>
+      <span><i style="background:#2d6a4f"></i> Mod 3: Governance & Society</span>
+      <span><i style="background:#1f6f8b"></i> Mod 4: Systemic Impacts</span>
+    </div>
+    <div class="annbox" id="wk-out" style="margin-top:12px"><b>Click a week.</b>Each week is a lecture + lab.</div>
+  </div>
+
+  <div class="markread" data-s="4"><button onclick="markRead(4,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 5 ===================== -->
+<section class="sec" id="s5">
+  <h2><span class="num">5</span> How 235 journals became evidence</h2>
+  <div class="secsub">Research Methods · the qualitative coding pipeline</div>
+
+  <p>The paper's evidentiary backbone is 655 quotes coded from 235 reflection journals. The coding ran in three rounds with ChatGPT-4o as a human-in-the-loop assistant — a methodologically interesting choice for a paper that's also critiquing AI in workflows.</p>
+
+  <div class="figure">
+    <div class="ftitle">By the numbers</div>
+    <div class="flowstats">
+      <div><b>20</b>students enrolled</div>
+      <div><b>235</b>journals analysed</div>
+      <div><b>655</b>quotes coded</div>
+      <div><b>40</b>distinct categories</div>
+    </div>
+    <div class="roundbox"><div class="badge">1</div><div><b>Manual round:</b> identify text chunks, capture emerging themes. AI deliberately excluded to avoid label bias.</div></div>
+    <div class="roundbox"><div class="badge">2</div><div><b>Refine round:</b> AI suggests category names from quote clusters. Author confirms every assignment.</div></div>
+    <div class="roundbox"><div class="badge">3</div><div><b>Define round:</b> AI generates per-level definitions. Author runs full sanity check; every quote traceable in ATLAS.ti.</div></div>
+  </div>
+
+  <div class="pull">The defence the author offers is striking: she uses AI on a study that critiques AI, treats it strictly as "thought partner, not decision maker," and keeps a full audit trail. This is itself a Level-4 demonstration of the rubric the paper proposes.</p>
+
+  <div class="markread" data-s="5"><button onclick="markRead(5,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 6 ===================== -->
+<section class="sec" id="s6">
+  <h2><span class="num">6</span> The five knowledge modules</h2>
+  <div class="secsub">Learning Goals, Essential Knowledge, and Skills · Table 1</div>
+
+  <p>Modules 1–4 form a deliberate progression: <i>how AI works</i> → <i>how it applies to planning</i> → <i>how it should be governed</i> → <i>how it reshapes urban systems</i>. Module 5 runs across all of them as a reflection layer — the place where the third learning goal (identity) gets practised.</p>
+
+  <h3>Do this: open each module to see its knowledge / skills / sample topics</h3>
+  <div class="figure">
+    <div class="ftitle">Five modules</div>
+    <div class="mods" id="modtabs"></div>
+    <div class="modpanel" id="modbody"></div>
+  </div>
+
+  <p class="small">Note the asymmetry: Modules 1 and 2 are heavily skill-based, Modules 3 and 4 are heavily conceptual, Module 5 is purely metacognitive. A course that drops Module 5 collapses back into a standard data-science course.</p>
+
+  <div class="markread" data-s="6"><button onclick="markRead(6,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 7 ===================== -->
+<section class="sec" id="s7">
+  <h2><span class="num">7</span> The knowledge graph</h2>
+  <div class="secsub">How to Deliver Essential Knowledge and Skills · Figure 1</div>
+
+  <p>This is the paper's central diagram. Two streams of knowledge flow toward two of the three meta-goals. The third goal — identity — sits between them as a reflective space. Hover any node.</p>
+
+  <div class="figure">
+    <div class="ftitle">Knowledge flows (simplified from Fig 1)</div>
+    <div class="kgraph" id="kgraph">
+      <svg id="kg-svg"></svg>
+      <div class="node cs" style="left:14%;top:18%" data-i="cs1">AI Mechanics</div>
+      <div class="node cs" style="left:14%;top:48%" data-i="cs2">Model strengths<br>& limits</div>
+      <div class="node cs" style="left:14%;top:78%" data-i="cs3">Systemic AI<br>impacts</div>
+      <div class="node up" style="right:14%;top:18%" data-i="up1">Planning domain<br>knowledge</div>
+      <div class="node up" style="right:14%;top:48%" data-i="up2">Context<br>sensitivity</div>
+      <div class="node up" style="right:14%;top:78%" data-i="up3">Governance &<br>ethics</div>
+      <div class="node reflect" style="left:50%;top:50%" data-i="ref">Identity ·<br>Reflection</div>
+      <div class="node goal" style="left:50%;top:14%" data-i="g1">Apply AI effectively<br>& appropriately</div>
+      <div class="node goal" style="left:50%;top:86%" data-i="g2">Address AI's<br>social impacts</div>
+    </div>
+    <div class="annbox" id="kg-out" style="margin-top:12px"><b>Hover any node.</b>The graph reads left-to-right (CS knowledge), right-to-left (planning knowledge), converging on the meta-goals (centre column). The yellow middle node is where the third goal happens.</div>
+  </div>
+
+  <div class="markread" data-s="7"><button onclick="markRead(7,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 8 ===================== -->
+<section class="sec" id="s8">
+  <h2><span class="num">8</span> The criticality framework</h2>
+  <div class="secsub">How to Assess Critical AI Application and Reflection · Table 2</div>
+
+  <p>Two axes, five levels each. <b>Application</b> (Consume → Iterate → Analyze → Strategize → Build) measures what you <i>do</i>. <b>Reflection</b> (Describe → Reflect → Analyze → Evaluate → Synthesize) measures how deeply you think about it. A student can be high on one and low on the other.</p>
+
+  <p>(The interactive matrix lives on the <a href="index.html#s2">summary page</a>. Below is a smaller exercise.)</p>
+
+  <h3>Do this: place a real student quote on the matrix</h3>
+  <div class="figure">
+    <div class="ftitle">Coding exercise · what level is each quote?</div>
+    <div id="quote-place"></div>
+    <div class="row" style="margin-top:10px"><button id="quote-next">Next quote →</button><span class="small" id="quote-score" style="margin-left:8px"></span></div>
+  </div>
+
+  <div class="markread" data-s="8"><button onclick="markRead(8,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 9 ===================== -->
+<section class="sec" id="s9">
+  <h2><span class="num">9</span> What students actually did</h2>
+  <div class="secsub">Findings · Figure 2 reconstructed</div>
+
+  <p>The heatmap in Figure 2 is the empirical heart of the paper. Reading across: the most common use was <i>Understanding, Reasoning, and Expression</i> — the cognitive work of learning. Reading up: the categories that reached higher criticality were <i>Domain Application</i> and reflections on <i>Effective and Appropriate Use in Context</i>.</p>
+
+  <h3>Reconstructed heat — application categories × criticality</h3>
+  <div class="figure">
+    <div class="ftitle">Frequencies from journal coding</div>
+    <div class="heat" id="heat"></div>
+    <div class="annbox" style="margin-top:12px"><b>The key pattern</b> — domain application appears <i>less often</i> but the few instances that exist cluster at <i>higher criticality</i>. That's the paper's evidence for "context-sensitive use produces deeper thinking."</div>
+  </div>
+
+  <p class="pull">"High criticality emerges not from the most technically intensive uses, but from context-sensitive applications and reflections that connect AI to planning judgement and responsibility."</p>
+
+  <p>The other empirical surprise: 62% of all AI tool instances reported were ChatGPT, despite an explicit Hugging Face curriculum. The Big Tech tension (the third one in section 3) is not theoretical.</p>
+
+  <div class="markread" data-s="9"><button onclick="markRead(9,this)">Mark section read</button></div>
+</section>
+
+<!-- ===================== SECTION 10 ===================== -->
+<section class="sec" id="s10">
+  <h2><span class="num">10</span> Three teachable moments</h2>
+  <div class="secsub">Discussion · what the paper says happened in the room</div>
+
+  <p>The Discussion section is where Liang turns three classroom incidents into pedagogical arguments. Each of these is more illustrative of the framework than any abstract reasoning. Click each card to flip it.</p>
+
+  <div class="figure">
+    <div class="ftitle">Three moments · click to flip</div>
+    <div class="lessons" id="lessons"></div>
+  </div>
+
+  <div class="pull">Urban AI education extends beyond skill-building toward cultivating responsibility, risk awareness, and accountability in practice.</div>
+
+  <h3>The takeaway</h3>
+  <p>The paper closes with a constraint that's easy to miss: <i>Urban AI is best taught as the last piece of the technical sequence.</i> Not the first. You teach evidence-based planning and data governance first — because the whole point of Urban AI is judgement, and judgement needs something to judge against.</p>
+
+  <div class="markread" data-s="10"><button onclick="markRead(10,this)">Mark section read</button></div>
+</section>
+
+<footer>
+  Source: Liang, X. (2025). <i>What and How Should Urban Planners Learn in the AI Era? Exploring Urban AI Pedagogy from a Pilot Course in Urban Planning Education.</i> SocArxiv preprint.<br>
+  Companion: <a href="index.html">Interactive summary</a>.
+</footer>
+
+</main>
+</div>
+
+<script>
+/* ===== Annotation tooltips ===== */
+const ANNS = {
+  // Section 1
+  g1:["Effective & appropriate use","Two words that look like one: effective (does it work?) AND appropriate (should it be used at all?). The second is where most curricula stop short."],
+  g2:["Social, environmental, governance","The 'environmental' word is the one to notice. It is what brings data centers into scope."],
+  g3:["Normative judgement & professional identity","The novel third goal. Identity in particular — the idea that being a planner in 2025 means having a stance on AI, not just skills with it."],
+  // Section 2
+  m1:["Multimodal data","Texts, graphics, transactions. Planning isn't just spatial — it's contracts, comments, plans, drawings, all at once. Models trained on one modality fail planning."],
+  m2:["Ill-equipped","Strong claim. The example she keeps returning to: zoning code extraction failed because of language heterogeneity, interdependent logic, and interpretation vagueness."],
+  m3:["Governance & built environment consequences","This is the line that separates Urban AI from GeoAI. GeoAI asks 'can the model classify land use?' Urban AI asks 'should we be classifying it that way?'"],
+  m4:["Data centers","The clearest single example that distinguishes Urban AI from all adjacent fields. Land use, water, energy, environmental permitting — entirely planning's job, entirely absent from AI curricula."],
+  // Section 4
+  p1:["Hands-on Python lab","Capacity-building over literacy. This is a deliberate position on tension #2 — the prereqs filter the cohort."],
+  p2:["Hugging Face","Deliberate position on tension #4 (Big Tech vs alternatives). Note: students still used ChatGPT 62% of the time anyway."],
+  p3:["Weekly reflection journals","The mechanism. Without this, the third learning goal (identity) has no surface to be observed on. The journals are also the dataset."]
+};
+function bindAnns(){
+  document.querySelectorAll('.ann').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      const a = ANNS[el.dataset.a]; if(!a) return;
+      const box = el.closest('section').querySelector('.annbox');
+      box.innerHTML = `<b>${a[0]}</b>${a[1]}`;
+    });
+  });
+}
+bindAnns();
+
+/* ===== Mark read & progress ===== */
+const totalSecs = 10;
+const readSet = new Set();
+function markRead(n,btn){
+  if(readSet.has(n)){readSet.delete(n);btn.parentElement.classList.remove('done');btn.textContent='Mark section read';}
+  else{readSet.add(n);btn.parentElement.classList.add('done');btn.textContent='✓ Read';}
+  document.querySelector(`.toc a[data-s="${n}"]`).classList.toggle('done',readSet.has(n));
+  const pct = Math.round(readSet.size/totalSecs*100);
+  document.getElementById('prog-bar').style.width = pct+'%';
+  document.getElementById('prog-txt').textContent = `${readSet.size} / ${totalSecs}`;
+}
+
+/* ===== TOC scroll-spy ===== */
+const tocLinks = document.querySelectorAll('.toc a[data-s]');
+const sections = document.querySelectorAll('section.sec');
+function spy(){
+  let cur = null;
+  sections.forEach(s=>{const r=s.getBoundingClientRect();if(r.top < 200) cur = s.id;});
+  tocLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+}
+window.addEventListener('scroll',spy,{passive:true});spy();
+
+/* ===== S1: Goal sorter ===== */
+const GOALS = [
+  {id:'g1',t:"Apply AI effectively and appropriately in urban contexts",imp:"You become a competent practitioner — but if this is your only goal, you graduate technical operators, not planners."},
+  {id:'g2',t:"Address AI's social, environmental, and governance implications",imp:"You produce critical analysts — strong on critique, sometimes weak on what to do instead."},
+  {id:'g3',t:"Develop normative judgement and professional identity around AI",imp:"You produce planners with a stance — Liang's argument is that this is what changes with AI and why traditional curricula fall short."}
+];
+const goalsEl = document.getElementById('goals');
+function renderGoals(){
+  goalsEl.innerHTML='';
+  GOALS.forEach((g,i)=>{
+    const d = document.createElement('div'); d.className='goal';
+    d.innerHTML = `<span class="rank">${i+1}</span><span>${g.t}</span>
+      <span class="updown">
+        <button ${i===0?'disabled':''} onclick="moveGoal(${i},-1)">▲</button>
+        <button ${i===GOALS.length-1?'disabled':''} onclick="moveGoal(${i},1)">▼</button>
+      </span>`;
+    goalsEl.appendChild(d);
+  });
+  document.getElementById('goalwhy').innerHTML = `<b>If "${GOALS[0].t}" is your top priority...</b>${GOALS[0].imp}`;
+}
+function moveGoal(i,d){
+  const j=i+d; if(j<0||j>=GOALS.length) return;
+  [GOALS[i],GOALS[j]] = [GOALS[j],GOALS[i]];
+  renderGoals();
+}
+window.moveGoal = moveGoal;
+renderGoals();
+
+/* ===== S2: Field diff ===== */
+const FIELDDIFF = {
+  ui:{name:"Urban Informatics", same:["Multidisciplinary","Uses urban data","Empirical orientation"], diff:["Foregrounds data wrangling, not AI governance","Light on professional identity questions","Treats ML as a tool, not a force"]},
+  gis:{name:"GIS", same:["Spatial reasoning","Map-based outputs","Established in planning curricula"], diff:["Tool-centric not socio-technical","No native engagement with model bias or governance","Esri ecosystem; no parallel to Urban AI's openness question"]},
+  geo:{name:"GeoAI", same:["Integrates ML methods","Decision-support orientation","Engages spatial data at scale"], diff:["Foregrounds spatial accuracy, not deployment ethics","Treats infrastructure (data centers) as out of scope","Cares less about identity formation in the discipline"]},
+  ds:{name:"Data Science", same:["Statistical foundations","Programmatic workflows","Concern with model evaluation"], diff:["Domain-agnostic by design","Ethics often relegated to discussion sections","Doesn't position the data center as its own problem"]}
+};
+function renderDiff(k){
+  const f = FIELDDIFF[k];
+  document.getElementById('fielddiff').innerHTML = `
+    <div><h4>${f.name} — shares with Urban AI</h4><ul>${f.same.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div><h4>Urban AI — what it adds</h4><ul>${f.diff.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  document.querySelectorAll('.dif-btn').forEach(b=>b.classList.toggle('on',b.dataset.f===k));
+}
+document.querySelectorAll('.dif-btn').forEach(b=>b.onclick=()=>renderDiff(b.dataset.f));
+renderDiff('ui');
+
+/* ===== S3: Tension map ===== */
+(function(){
+  const svg = document.getElementById('tmap-svg');
+  const dot = document.getElementById('tm-userdot');
+  const coord = document.getElementById('tm-coord');
+  const vguide = document.getElementById('tm-vguide');
+  const hguide = document.getElementById('tm-hguide');
+  // Plot domain: x ∈ [60, 580] (520 wide), y ∈ [40, 340] (300 tall, inverted)
+  const PAD = {l:60, r:580, t:40, b:340};
+  function dataToPx(xd, yd){
+    // xd, yd in [0,100]; y inverted so higher yd = up = lower px
+    return {
+      x: PAD.l + (xd/100)*(PAD.r - PAD.l),
+      y: PAD.b - (yd/100)*(PAD.b - PAD.t)
+    };
+  }
+  function pxToData(xp, yp){
+    return {
+      x: Math.max(0, Math.min(100, (xp - PAD.l)/(PAD.r - PAD.l)*100)),
+      y: Math.max(0, Math.min(100, (PAD.b - yp)/(PAD.b - PAD.t)*100))
+    };
+  }
+  // svg client coords → svg viewBox coords
+  function clientToSvg(e){
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    const ctm = svg.getScreenCTM().inverse();
+    return pt.matrixTransform(ctm);
+  }
+
+  const QUADS = {
+    "lo-hi":{label:"Q1 · Literacy × Technique-first",txt:"Conceptual methods course. Broad coverage of AI mechanics for non-coders. Risk: students learn vocabulary without skill or context."},
+    "hi-hi":{label:"Q2 · Capacity × Technique-first",txt:"Standard ML-for-planners course. Strong technical foundation. Risk: students treat planning as a data-source, not a value system. The trap quadrant."},
+    "lo-lo":{label:"Q3 · Literacy × Context-first",txt:"Case-study course for general planners. Strong on critique and ethics. Risk: students leave able to talk about AI but not build with it."},
+    "hi-lo":{label:"Q4 · Capacity × Context-first",txt:"Liang's pilot quadrant. Technical prereqs + planning problems first. Hardest to staff, most likely to produce Level-4/5 students."}
+  };
+
+  function update(xd, yd){
+    const p = dataToPx(xd, yd);
+    dot.setAttribute('transform', `translate(${p.x}, ${p.y})`);
+    coord.textContent = `(${Math.round(xd)}, ${Math.round(yd)})`;
+    // flip label side near right edge
+    if(xd > 78){ coord.setAttribute('x', -12); coord.setAttribute('text-anchor','end'); }
+    else { coord.setAttribute('x', 12); coord.setAttribute('text-anchor','start'); }
+    if(yd < 12){ coord.setAttribute('y', 18); } else { coord.setAttribute('y', -10); }
+
+    vguide.setAttribute('x1', p.x); vguide.setAttribute('x2', p.x);
+    vguide.setAttribute('stroke-opacity', 0.5);
+    hguide.setAttribute('y1', p.y); hguide.setAttribute('y2', p.y);
+    hguide.setAttribute('stroke-opacity', 0.5);
+
+    document.getElementById('tm-x').textContent = Math.round(xd);
+    document.getElementById('tm-y').textContent = Math.round(yd);
+    const kx = xd >= 50 ? "hi" : "lo";
+    const ky = yd >= 50 ? "hi" : "lo";
+    const q = QUADS[kx+"-"+ky];
+    document.getElementById('tmap-out').innerHTML = `<b>${q.label}</b>${q.txt}`;
+  }
+
+  let dragging = false;
+  function onDown(e){ dragging = true; e.preventDefault(); }
+  function onMove(e){
+    if(!dragging) return;
+    const ev = e.touches ? e.touches[0] : e;
+    const p = clientToSvg(ev);
+    const xp = Math.max(PAD.l, Math.min(PAD.r, p.x));
+    const yp = Math.max(PAD.t, Math.min(PAD.b, p.y));
+    const d = pxToData(xp, yp);
+    update(d.x, d.y);
+  }
+  function onUp(){ dragging = false; }
+
+  dot.addEventListener('mousedown', onDown);
+  dot.addEventListener('touchstart', onDown, {passive:false});
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('touchmove', onMove, {passive:false});
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('touchend', onUp);
+
+  // Click anywhere in plot to teleport the dot
+  svg.addEventListener('click', e=>{
+    if(e.target.closest('#tm-userdot')) return;
+    const p = clientToSvg(e);
+    if(p.x < PAD.l || p.x > PAD.r || p.y < PAD.t || p.y > PAD.b) return;
+    const d = pxToData(p.x, p.y);
+    update(d.x, d.y);
+  });
+
+  update(50, 50);
+})();
+
+/* ===== S4: Timeline ===== */
+const WEEKS = [
+  {m:1,t:"Course intro & AI landscape",d:"Setting expectations. Pre-course survey. First AI tool tour."},
+  {m:1,t:"GenAI sandbox",d:"ChatGPT introduced. Adobe Firefly. First reflection journal."},
+  {m:1,t:"ML fundamentals",d:"Supervised vs unsupervised. Bias-variance tradeoff."},
+  {m:1,t:"Training & evaluation",d:"Build a simple classifier. Evaluation metrics."},
+  {m:2,t:"NLP for planning",d:"Lab: NLP on public comments. Named entity recognition."},
+  {m:2,t:"Computer vision",d:"Lab: pre-trained CV models from Hugging Face."},
+  {m:2,t:"GeoAI",d:"Guest lecture. Spatial ML applications."},
+  {m:2,t:"LLM customisation",d:"Prompt-tuning. API interaction."},
+  {m:3,t:"AI ethics frameworks",d:"EU AI Act. Operationalising 'human values'."},
+  {m:3,t:"Bias & discrimination",d:"Algorithmic justice. Predictive policing critique."},
+  {m:3,t:"Interpretable ML",d:"Human-in-the-loop concepts. Participatory AI."},
+  {m:3,t:"Chatbot auditing",d:"Group project. The audit-restraint moment lives here."},
+  {m:4,t:"Environmental impact",d:"Data centers as planning problem. Water, energy, land."},
+  {m:4,t:"Labor & economy",d:"Geography of GenAI labour. Job displacement."},
+  {m:4,t:"Final project workshop",d:"Students share drafts. Peer tutorials."},
+  {m:4,t:"Final presentations",d:"Project portfolio. Identity reflection."}
+];
+const tl = document.getElementById('timeline');
+WEEKS.forEach((w,i)=>{
+  const d = document.createElement('div');
+  d.className='wk mod'+w.m;
+  d.textContent = 'W'+(i+1);
+  d.onclick=()=>{
+    document.querySelectorAll('.timeline .wk').forEach(x=>x.classList.remove('on'));
+    d.classList.add('on');
+    document.getElementById('wk-out').innerHTML = `<b>Week ${i+1} · ${w.t}</b>${w.d}`;
+  };
+  tl.appendChild(d);
+});
+
+/* ===== S6: Modules ===== */
+const MODS = [
+  {n:"1 · AI Mechanics",k:["Explain what ML/AI is","Distinguish model types","Understand how models learn from data","Describe how LLMs generate content"],s:["Train and evaluate a basic ML model","Apply NLP and CV pre-trained models from Hugging Face","Interact with LLMs via API"],x:["Machine learning sandbox","ML process & evaluation metrics","Model tradeoffs (bias vs variance)"]},
+  {n:"2 · Urban Application",k:["Understand how AI supports planning tasks","Anticipate how planning changes in response"],s:["Customise and prompt-tune LLMs","Apply AI to domain-specific problems","Develop transferable workflows"],x:["Case studies & guest lectures","GeoAI, video detection, NLP for public comments","Chatbot auditing","Final project"]},
+  {n:"3 · Governance & Society",k:["Identify social risks and mitigation strategies","Articulate roles of human oversight and value alignment"],s:["Gain exposure to AI ethics frameworks","Build vocabulary for value alignment"],x:["EU AI Act","Ethical concerns (inequality, discrimination, privacy)","Interpretable ML, Human-in-the-loop, Participatory AI"]},
+  {n:"4 · Systemic Impacts",k:["Anticipate AI's systemic effects on environment, labor, economy, human dynamics"],s:["Recognise domains where AI affects urban systems","Familiarity with current debates"],x:["Environmental impact of AI","Data center geography","Geography of GenAI labour"]},
+  {n:"5 · Proficiency & Reflection",k:["Understand AI concepts (tokens, context windows)","Five levels of critical AI use and thinking"],s:["Evaluate AI outputs for quality, bias","Customise via interface or code","Decide when to accept, refine, or discard outputs","Reflect on how professional identity shapes AI use"],x:["Weekly reflection journals","Peer tutorials","Final project portfolios"]}
+];
+const mt = document.getElementById('modtabs');
+const mb = document.getElementById('modbody');
+MODS.forEach((m,i)=>{
+  const b=document.createElement('button'); b.textContent=m.n.split('·')[0]; if(i===0) b.classList.add('on');
+  b.onclick=()=>{document.querySelectorAll('#modtabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');showMod(i);};
+  mt.appendChild(b);
+});
+function showMod(i){
+  const m = MODS[i];
+  mb.innerHTML = `<h4>${m.n}</h4>
+    <div class="small" style="margin:6px 0">Knowledge outcomes</div>
+    <ul>${m.k.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <div class="small" style="margin:6px 0">Skill outcomes</div>
+    <ul>${m.s.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <div class="small" style="margin:6px 0">Sample topics / activities</div>
+    <ul>${m.x.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+}
+showMod(0);
+
+/* ===== S7: Knowledge graph ===== */
+const KG = {
+  cs1:["AI Mechanics","Understanding how models work. Without this, students can't tell hype from capability."],
+  cs2:["Model strengths & limits","Following from mechanics: knowing what AI can and can't do — the technical capacity to evaluate."],
+  cs3:["Systemic AI impacts","The third CS-side flow: environmental footprint, labour displacement, supply-chain politics."],
+  up1:["Planning domain knowledge","Zoning, mobility, housing, public process — the substrate without which AI can't be aimed well."],
+  up2:["Context sensitivity","Why generic AI fails locally: heterogeneous documents, discretionary rules, community-specific values."],
+  up3:["Governance & ethics","Public-sector accountability, equity, procurement, oversight — planning's native vocabulary."],
+  ref:["Identity & Reflection","The reflective space at the centre. The third learning goal lives here. The reflection journals are how this space is observed."],
+  g1:["Goal: Apply AI effectively and appropriately","Where CS mechanics + planning context converge — building usable AI that respects domain."],
+  g2:["Goal: Address AI's social impacts","Where systemic understanding + governance literacy converge — being able to assess deployment consequences."]
+};
+function drawKG(){
+  const svg = document.getElementById('kg-svg');
+  const rect = svg.getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${rect.width} ${rect.height}`);
+  const pairs = [['cs1','g1'],['cs2','g1'],['up1','g1'],['up2','g1'],['cs2','ref'],['up2','ref'],['cs3','g2'],['up3','g2'],['ref','g1'],['ref','g2']];
+  const colors = {cs1:'#c0392b',cs2:'#c0392b',cs3:'#c0392b',up1:'#1f6f8b',up2:'#1f6f8b',up3:'#1f6f8b',ref:'#d4a017'};
+  let html='';
+  pairs.forEach(([a,b])=>{
+    const ea = document.querySelector(`.node[data-i="${a}"]`);
+    const eb = document.querySelector(`.node[data-i="${b}"]`);
+    if(!ea||!eb) return;
+    const ar = ea.getBoundingClientRect(), br = eb.getBoundingClientRect(), pr = svg.getBoundingClientRect();
+    const ax = ar.left+ar.width/2-pr.left, ay = ar.top+ar.height/2-pr.top;
+    const bx = br.left+br.width/2-pr.left, by = br.top+br.height/2-pr.top;
+    html += `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${colors[a]||'#999'}" stroke-width="1" stroke-opacity="0.4"/>`;
+  });
+  svg.innerHTML = html;
+}
+setTimeout(drawKG,100);
+window.addEventListener('resize',drawKG);
+document.querySelectorAll('#kgraph .node').forEach(n=>{
+  n.addEventListener('mouseenter',()=>{
+    const k = KG[n.dataset.i]; if(!k) return;
+    document.getElementById('kg-out').innerHTML = `<b>${k[0]}</b>${k[1]}`;
+  });
+});
+
+/* ===== S8: Quote placement ===== */
+const QUOTES = [
+  {q:"I asked ChatGPT to summarise the reading. The output looked great.",app:1,ref:1,why:"Pure consumption (App L1) plus pure description (Ref L1). The baseline pattern."},
+  {q:"The model missed details that were in a table. I think it processes line-by-line and can't see tabular layout.",app:3,ref:3,why:"Analyse and Control (testing with hypothesis) + Analyse reflection (naming the causal mechanism). Mid-rubric mastery."},
+  {q:"There's a risk if I just used the summary AI gave me. State-published materials must be approved. This made me think about how bureaucracies might use AI without adapting their verification.",app:3,ref:4,why:"Application stays at Analyse — but reflection jumps to Evaluate & Ethicize by naming institutional implications."},
+  {q:"When building the pothole reporter, I used AI to structure user submissions into categorised variables for routing.",app:5,ref:1,why:"Strong build (App L5) but the reflection only describes what happened. A common gap — strong engineers, shallow critics."},
+  {q:"Building this made me see AI not just as efficiency, but as a new channel between residents and the systems shaping their lives.",app:5,ref:5,why:"The diagonal top: building paired with synthesising a new role for AI in civic life."}
+];
+let qi=0, qscore=0, qattempts=0;
+function renderQuote(){
+  const Q = QUOTES[qi];
+  document.getElementById('quote-place').innerHTML = `
+    <div class="placequote">"${Q.q}"</div>
+    <div class="placerow">
+      <div class="ax"><label>Application level</label><select id="qa">${[1,2,3,4,5].map(x=>`<option value="${x}">Level ${x}: ${['Consume','Iterate','Analyze','Strategize','Build'][x-1]}</option>`).join('')}</select></div>
+      <div class="ax"><label>Reflection level</label><select id="qr">${[1,2,3,4,5].map(x=>`<option value="${x}">Level ${x}: ${['Describe','Reflect','Analyze','Evaluate','Synthesize'][x-1]}</option>`).join('')}</select></div>
+    </div>
+    <div style="margin-top:10px"><button id="qcheck">Check my placement</button></div>
+    <div id="qresult"></div>`;
+  document.getElementById('qcheck').onclick=()=>{
+    const a = +document.getElementById('qa').value;
+    const r = +document.getElementById('qr').value;
+    qattempts++;
+    const ok = a===Q.app && r===Q.ref;
+    if(ok) qscore++;
+    const off = (a===Q.app?'✓':`coder said L${Q.app}`)+' · '+(r===Q.ref?'✓':`coder said L${Q.ref}`);
+    document.getElementById('qresult').innerHTML = `<div class="placeresult ${ok?'right':'wrong'}"><b>${ok?'Match.':'Close but different.'}</b> ${off}<br><span class="small">${Q.why}</span></div>`;
+    document.getElementById('quote-score').textContent = `${qscore} / ${qattempts} matched`;
+  };
+}
+document.getElementById('quote-next').onclick=()=>{qi=(qi+1)%QUOTES.length;renderQuote();};
+renderQuote();
+
+/* ===== S9: Heatmap ===== */
+const HEAT_CATS = [
+  ['Understanding & Expression',59,[8,18,18,11,4]],
+  ['Code & Technical Help',55,[5,15,20,10,5]],
+  ['Data & Text Analysis',54,[6,12,18,12,6]],
+  ['Meta-AI Reflection',44,[10,15,10,7,2]],
+  ['Life & Productivity',38,[12,14,7,4,1]],
+  ['Domain Application',28,[1,3,7,10,7]]   // <-- the key pattern: fewer total, but mass at higher levels
+];
+function heatColor(v,max){
+  const t = v/max;
+  // dark accent for high
+  const r = Math.round(255 - t*(255-192)); // 255 → 192
+  const g = Math.round(243 - t*(243-57));
+  const b = Math.round(236 - t*(236-43));
+  return `rgb(${r},${g},${b})`;
+}
+function renderHeat(){
+  const el = document.getElementById('heat');
+  let html = '<div class="colhead"></div>';
+  for(let l=5;l>=1;l--) html += `<div class="colhead">Crit L${l}</div>`;
+  const maxAll = Math.max(...HEAT_CATS.flatMap(c=>c[2]));
+  HEAT_CATS.forEach(c=>{
+    html += `<div class="ax">${c[0]}<br><span class="small">${c[1]} uses</span></div>`;
+    for(let l=4;l>=0;l--){
+      const v = c[2][l];
+      html += `<div class="cell" style="background:${heatColor(v,maxAll)};color:${v/maxAll>0.4?'#fff':'#444'}">${v||''}</div>`;
+    }
+  });
+  el.innerHTML = html;
+}
+renderHeat();
+
+/* ===== S10: Lessons cards ===== */
+const LESSONS = [
+  {tag:"Moment 1",t:"The Hugging Face model that disappeared",face:"Days before the planned lab, a widely used open-source model was removed from Hugging Face. The lecture had to improvise.",flip:"<b>What it taught:</b> AI systems are contingent, unstable, and shaped by platform governance beyond instructors' control. The lesson reframed: future planners must evaluate reliability and anticipate breakdown — not just code."},
+  {tag:"Moment 2",t:"The chatbot audit that wasn't run",face:"A group designed an audit that would have flooded a city-service chatbot with hundreds of automated queries. Technically feasible.",flip:"<b>What it taught:</b> The students chose not to deploy it. This is the highest-rubric move in the paper: choosing restraint based on civic ethics, not technical limitation. Level-4 reflection turned into Level-4 action."},
+  {tag:"Moment 3",t:"The zoning extractor that needed planners",face:"Students attempting to automate zoning-code extraction with NLP discovered the tools 'were helpful, but only if you already know what you're looking for.'",flip:"<b>What it taught:</b> Domain knowledge isn't a nice-to-have — it's the prerequisite that makes AI useful at all. This is the empirical evidence behind 'context-sensitive use produces deeper learning.'"}
+];
+const lessonsEl = document.getElementById('lessons');
+LESSONS.forEach((L,i)=>{
+  const d=document.createElement('div'); d.className='lesson';
+  d.innerHTML = `<div class="face"><div class="tag">${L.tag}</div><h4>${L.t}</h4>${L.face}<div class="small" style="margin-top:10px">↻ click to flip</div></div>
+    <div class="flip"><div class="tag">${L.tag} · the lesson</div>${L.flip}<div class="small" style="margin-top:10px">↻ click to flip back</div></div>`;
+  d.onclick=()=>d.classList.toggle('flipped');
+  lessonsEl.appendChild(d);
+});
+
+</script>
+</body>
+</html>
