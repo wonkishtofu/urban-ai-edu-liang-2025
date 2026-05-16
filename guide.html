@@ -184,137 +184,46 @@
   .topnav a{color:var(--accent-2);text-decoration:none;border:1px solid var(--rule);background:#fff;padding:6px 12px;border-radius:4px}
   .topnav a:hover{border-color:var(--accent-2)}
 </style>
-<style data-theme="tropical-modernist">
+<style data-theme="cloud-forest">
 :root{
-  --ink:#1a1a1a;
-  --paper:#fafaf7;
-  --paper-2:#f0ede4;
-  --paper-3:#e2dec8;
-  --rule:#d6d2c0;
-  --accent:#1f3d2b;
-  --accent-2:#3e6a3a;
-  --accent-3:#94a87a;
-  --muted:#6b6a5e;
-  --hi:#e8dec0;
+  --ink:#0f2e23;
+  --paper:#f1efe8;
+  --paper-2:#e7ebe2;
+  --paper-3:#d8e0d2;
+  --rule:#b8c6b0;
+  --accent:#2d6a4f;
+  --accent-2:#0f5d5e;
+  --accent-3:#5a7a4e;
+  --muted:#6b7565;
+  --hi:#e8d9a8;
 }
 body{
-  font-family:"Söhne","Neue Haas Grotesk Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-weight:400;
-  letter-spacing:-0.005em;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 39px, rgba(45,106,79,0.045) 39px, rgba(45,106,79,0.045) 40px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(45,106,79,0.045) 39px, rgba(45,106,79,0.045) 40px),
+    var(--paper);
 }
-h1,h2,h3{
-  font-family:"Söhne","Neue Haas Grotesk Display","Inter","Helvetica Neue",sans-serif;
-  font-weight:500;
-  letter-spacing:-0.02em;
-}
-h1{letter-spacing:-0.035em;font-weight:600}
-h2 .num{font-weight:500;border-radius:0}
-h3{color:var(--accent);font-weight:600;letter-spacing:0}
-.lede{font-style:normal;color:var(--accent-2);font-weight:400}
-.byline{font-weight:500;letter-spacing:0.1em}
-.secsub{font-weight:500;letter-spacing:0.08em}
-.pull{font-family:"Söhne","Inter",sans-serif;font-style:normal;font-weight:500;border-left-color:var(--accent);color:var(--ink)}
-.topnav a{border-radius:0;background:#fff;font-weight:500}
-button{border-radius:0;font-weight:500}
-input[type=range]{accent-color:var(--accent)}
-.figure{border-radius:0;background:#fff;border-color:var(--rule);box-shadow:none}
-.figure .ftitle{font-weight:500;letter-spacing:0.08em}
-/* Sidebar */
-.toc a.done .n{background:var(--accent);border-color:var(--accent)}
-.toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.pull{border-left-color:var(--accent-2);background:rgba(45,106,79,0.04);padding:10px 0 10px 18px}
+.figure{background:#fbfaf6;box-shadow:0 1px 0 rgba(15,46,35,0.06)}
+.byline,.lede{color:var(--accent-3)}
+.topnav a{background:#fff}
+.toc a.done .n{background:var(--accent-3);border-color:var(--accent-3)}
+.toc a.active{color:var(--accent-2);border-left-color:var(--accent-2)}
 .progress > i{background:var(--accent)}
-.toc a .n{border-radius:0}
-/* Frames */
-.frame{border-radius:0;background:var(--paper-2)}
-.excerpt{border-radius:0;background:#fff}
-.excerpt .ann{background:var(--hi);border-bottom-color:var(--accent)}
-.annbox{background:var(--paper-2);border-left-color:var(--accent);border-radius:0}
-.annbox b{color:var(--accent)}
-.think{background:#f5ecc8;border-color:#c8b878;border-radius:0;color:var(--ink)}
-.think b{color:#5a4810;font-weight:600}
+.kgraph .node.goal{background:var(--accent);border-color:var(--accent)}
+.kgraph .node.reflect{background:#f0e4b8;border-color:#c4ad58;color:#5a4a18}
+.kgraph .node.cs{border-color:var(--accent-2);color:var(--accent-2)}
+.kgraph .node.up{border-color:var(--accent);color:var(--accent)}
+.placeresult.right{background:#dbe8d4;border-color:var(--accent);color:var(--ink)}
+.placeresult.wrong{background:#e8d4c8;border-color:#b04a2a;color:#6a2a1a}
 .markread.done button{background:var(--accent);border-color:var(--accent)}
-/* Goals */
-.goal{background:#fff;border-radius:0}
-.goal .rank{color:var(--accent);font-weight:500;font-family:inherit}
-/* Field diff */
-.fielddiff > div{background:var(--paper-2);border-radius:0}
-.fielddiff h4{color:var(--accent);font-weight:600}
-/* Tension map */
-.tm-frame{fill:#fff;stroke:var(--rule)}
-.tm-q[fill="#f3eadc"]{fill:#f5f2e8}
-.tm-q[fill="#e8e0cc"]{fill:#ebe6d2}
-.tm-q[fill="#ede5d0"]{fill:#f0ecd8}
-.tm-q[fill="#e2dabf"]{fill:#dfdcc4}
-.tm-grid{stroke:#c4bda6}
-.tm-axis{stroke:var(--accent)}
-.tm-userdot circle{fill:var(--accent)}
-.tm-pilotdot circle{fill:var(--accent-3)}
-/* Timeline */
-.timeline .wk{background:#fff;border-radius:0;border-color:var(--rule)}
-.timeline .wk.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
-.timeline .wk.mod1{border-top-color:var(--accent)}
-.timeline .wk.mod2{border-top-color:#a89540}
-.timeline .wk.mod3{border-top-color:var(--accent-2)}
-.timeline .wk.mod4{border-top-color:var(--accent-3)}
-/* Methods */
-.flowstats div{background:var(--paper-2);border-radius:0}
-.flowstats div b{color:var(--accent);font-weight:500;font-family:inherit;letter-spacing:-0.02em}
-.roundbox{background:var(--paper-2);border-radius:0}
-.roundbox .badge{background:var(--accent);font-weight:500;font-family:inherit}
-/* Modules */
-.mods{border-radius:0}
-.mods button{background:var(--paper-2);font-weight:500;letter-spacing:0.04em}
-.mods button.on{background:var(--accent);color:var(--paper)}
-.modpanel{background:#fff;border-radius:0}
-.modpanel h4{color:var(--accent);font-weight:600}
-/* Knowledge graph */
-.kgraph{background:var(--paper-2);border-radius:0}
-.kgraph .node{background:#fff;border-radius:0;font-weight:500}
-.kgraph .node.cs{border-color:var(--accent);color:var(--accent)}
-.kgraph .node.up{border-color:var(--accent-2);color:var(--accent-2)}
-.kgraph .node.goal{background:var(--accent);color:var(--paper);border-color:var(--accent)}
-.kgraph .node.reflect{background:var(--hi);border-color:#c8b878;color:#5a4810}
-/* Quotes */
-.placequote{background:#fff;border-radius:0}
-.placerow .ax select{background:#fff;border-radius:0;border-color:var(--rule)}
-.placeresult{border-radius:0}
-.placeresult.right{background:#dee5cc;border-color:var(--accent-2);color:var(--accent-2)}
-.placeresult.wrong{background:#e8d4c8;border-color:#8a4a2a;color:#6a2a1a}
-/* Lessons */
-.lesson{background:#fff;border-radius:0}
-.lesson:hover{border-color:var(--accent)}
-.lesson .tag{color:var(--accent);font-weight:600}
-</style>
-<style data-theme="tropical-modernist-ura">
-:root{
-  --ura-red:#c8102e;
-  --ura-red-deep:#8a0c20;
-  --ura-red-wash:#f5dde0;
-  --ura-grey:#58595b;
-  --ura-grey-2:#8c8c8e;
-  --ura-grey-3:#dcdcd6;
-  --muted:#58595b;
-  --rule:#c8c4b4;
-  --hi:#f5dde0;
-}
-.topnav .crumb::before{content:"";width:11px;height:11px;background:var(--ura-red);display:inline-block;flex-shrink:0}
-.byline,.lede,.cap{color:var(--ura-grey)}
-.toc a.on,.toc a.active{color:var(--ura-red-deep);border-left-color:var(--ura-red)}
-h2 .num{border-color:var(--ura-red);color:var(--ura-red-deep)}
-.excerpt .ann{border-bottom:2px solid var(--ura-red)}
-.hl{background:var(--hi);box-shadow:inset 0 -3px 0 var(--ura-red)}
-.pull{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:1.45;border-left:3px solid var(--ura-red);background:rgba(200,16,46,0.04);padding:10px 0 10px 18px;color:var(--ink)}
-.panel{border-left:3px solid var(--ura-red)}
-.frame{border-left:3px solid var(--ura-red)}
-.tm-userdot circle{fill:var(--ura-red)}
-.placeresult.wrong{border-color:var(--ura-red);background:var(--ura-red-wash);color:var(--ura-red-deep)}
-.kgraph .node.cs{border-color:var(--ura-red);color:var(--ura-red-deep)}
-.task.down{background:var(--ura-red-wash);border-color:var(--ura-red);color:var(--ura-red-deep)}
-button:hover{border-color:var(--ura-red);color:var(--ura-red-deep)}
-button.active,button.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
-.tag{color:var(--ura-grey);border-color:var(--ura-grey-3);background:#fff}
-.tag::before{content:"";display:inline-block;width:5px;height:5px;background:var(--ura-red);border-radius:50%;margin-right:6px;vertical-align:1px}
-.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.figure,.panel,.frame,.field{border-color:var(--ura-grey-3)}
+.timeline .wk.mod1{border-top-color:#2d6a4f}
+.timeline .wk.mod2{border-top-color:#7a9a4e}
+.timeline .wk.mod3{border-top-color:#0f5d5e}
+.timeline .wk.mod4{border-top-color:#5a7a4e}
+.think{background:#f0e6c4;border-color:#c4ad58}
+.think b{color:#5a4a18}
+input[type=range]{accent-color:var(--accent)}
 </style>
 </head>
 <body>

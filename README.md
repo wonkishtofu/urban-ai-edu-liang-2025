@@ -21,7 +21,7 @@ Liang's paper makes a structural case for Urban AI as a distinct subfield — on
 
 ## Visual design
 
-The theme is **Tropical Modernist with URA accents** — restrained sans-serif typography in a jungle-green primary, with the Urban Redevelopment Authority of Singapore's reds and greys used sparingly as semantic accents (decisions, warnings, identity marks, annotations).
+The theme is **Cloud Forest Conservatory** — pale-mint paper, deep forest ink, and warm bronze accents, with subtle greenhouse-grid backgrounds. A biophilic palette inspired by Singapore's Gardens by the Bay.
 
 ## Running locally
 

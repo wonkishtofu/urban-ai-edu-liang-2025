@@ -85,116 +85,41 @@
   .topnav a{color:var(--accent-2);text-decoration:none;border:1px solid var(--rule);background:#fff;padding:6px 12px;border-radius:4px}
   .topnav a:hover{border-color:var(--accent-2)}
 </style>
-<style data-theme="tropical-modernist">
+<style data-theme="cloud-forest">
 :root{
-  --ink:#1a1a1a;
-  --paper:#fafaf7;
-  --paper-2:#f0ede4;
-  --paper-3:#e2dec8;
-  --rule:#d6d2c0;
-  --accent:#1f3d2b;
-  --accent-2:#3e6a3a;
-  --accent-3:#94a87a;
-  --muted:#6b6a5e;
-  --hi:#e8dec0;
+  --ink:#0f2e23;
+  --paper:#f1efe8;
+  --paper-2:#e7ebe2;
+  --paper-3:#d8e0d2;
+  --rule:#b8c6b0;
+  --accent:#2d6a4f;
+  --accent-2:#0f5d5e;
+  --accent-3:#5a7a4e;
+  --muted:#6b7565;
+  --hi:#e8d9a8;
 }
 body{
-  font-family:"Söhne","Neue Haas Grotesk Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-weight:400;
-  letter-spacing:-0.005em;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 39px, rgba(45,106,79,0.045) 39px, rgba(45,106,79,0.045) 40px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(45,106,79,0.045) 39px, rgba(45,106,79,0.045) 40px),
+    var(--paper);
 }
-h1,h2,h3{
-  font-family:"Söhne","Neue Haas Grotesk Display","Inter","Helvetica Neue",sans-serif;
-  font-weight:500;
-  letter-spacing:-0.02em;
-}
-h1{letter-spacing:-0.035em;font-weight:600}
-h2{font-weight:500;border-top-width:1px}
-h3{color:var(--accent);font-weight:600;letter-spacing:0}
-.lede{font-style:normal;color:var(--accent-2);font-weight:400}
-.byline{font-weight:500;letter-spacing:0.1em}
-.pull{font-family:"Söhne","Inter",sans-serif;font-style:normal;font-weight:500;border-left-color:var(--accent);color:var(--ink);font-size:22px;line-height:1.4}
-.figure{border-radius:0;background:#fff;border-color:var(--rule);box-shadow:none}
-.cap{font-style:normal;font-size:13px}
-button{border-radius:0;font-weight:500}
-.tag{border-radius:0;font-weight:500}
-.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.task,.dc-stats .stat,.tasks .col,.field,.panel,.frame{border-radius:0}
-.topnav a{border-radius:0;background:#fff;font-weight:500}
-.cmatrix .cell{border-radius:0}
-.cmatrix .cell.on{background:var(--accent);border-color:var(--accent)}
-.dc-stats .num{color:var(--accent);font-weight:500;letter-spacing:-0.02em;font-family:inherit}
-.zoning{font-family:"JetBrains Mono","SF Mono",ui-monospace,Menlo,monospace;background:#fff}
-.zoning span.mark{background:var(--hi)}
-.zoning span.mark.good{background:#c5d4b0}
-.zoning span.mark.bad{background:#e6c4b8}
-.task.up{background:#e0e6d4;border-color:var(--accent-2)}
-.task.down{background:#e8d4c8;border-color:#8a4a2a}
-.field.on{box-shadow:0 0 0 1.5px var(--accent) inset;border-color:var(--accent)}
+h1,h2{color:var(--ink)}
+.pull{border-left-color:var(--accent-2);background:rgba(45,106,79,0.04);padding:10px 0 10px 18px}
+.figure{background:#fbfaf6;box-shadow:0 1px 0 rgba(15,46,35,0.06)}
+.byline,.lede{color:var(--accent-3)}
+.tag{color:var(--accent-2);border-color:var(--accent-2)}
+button:hover{border-color:var(--accent-2)}
+.topnav a{background:#fff}
+.zoning span.mark{background:#e8d9a8}
+.zoning span.mark.good{background:#b6cfa0}
+.zoning span.mark.bad{background:#e6b9a4}
 input[type=range]{accent-color:var(--accent)}
-.hl{background:var(--hi)}
-.panel{background:var(--paper-2);border-left-color:var(--accent)}
-</style>
-<style data-theme="tropical-modernist-ura">
-/* URA accents layered onto Tropical Modernist.
-   Jungle-green stays primary. URA red appears only at decision/emphasis points.
-   Architectural grey takes over hierarchy work from beige. */
-:root{
-  --ura-red:#c8102e;        /* URA mark red */
-  --ura-red-deep:#8a0c20;
-  --ura-red-wash:#f5dde0;
-  --ura-grey:#58595b;       /* primary architectural grey */
-  --ura-grey-2:#8c8c8e;
-  --ura-grey-3:#dcdcd6;
-  --muted:#58595b;          /* warmer, cooler grey replaces beige-grey */
-  --rule:#c8c4b4;
-  --hi:#f5dde0;             /* faint red wash for emphasis */
-}
-/* Identity marker — small URA-red square in the top nav */
-.topnav{align-items:center}
-.topnav .crumb{display:inline-flex;align-items:center;gap:10px}
-.topnav .crumb::before{content:"";width:11px;height:11px;background:var(--ura-red);display:inline-block;flex-shrink:0}
-
-/* Hierarchy ink — soften body, accent with red at decision points */
-.byline{color:var(--ura-grey)}
-.lede{color:var(--ura-grey)}
-.pull{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;font-weight:400;font-size:22px;line-height:1.4;border-left:3px solid var(--ura-red);background:rgba(200,16,46,0.04);padding:10px 0 10px 18px;color:var(--ink)}
-
-/* Annotations & hover-marks: red underline cue */
-.excerpt .ann,.zoning span.mark{border-bottom:2px solid var(--ura-red)}
-.hl{background:var(--hi);box-shadow:inset 0 -3px 0 var(--ura-red)}
-
-/* Interactive emphasis — selected/active states pick up red */
-.field.on{box-shadow:0 0 0 1.5px var(--ura-red) inset;border-color:var(--ura-red)}
-button:hover{border-color:var(--ura-red);color:var(--ura-red-deep)}
-button.active,button.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
-
-/* Warn / down / risk states — restrained URA red */
-.task.down{background:var(--ura-red-wash);border-color:var(--ura-red);color:var(--ura-red-deep)}
-.task.up{background:#e0e6d4;border-color:var(--accent-2);color:var(--accent)}
-.zoning span.mark.bad{background:var(--ura-red-wash);color:var(--ura-red-deep);border-bottom-color:var(--ura-red-deep)}
-.zoning span.mark.good{background:#c5d4b0;border-bottom-color:var(--accent)}
-.zoning span.mark{background:#f0ecd8}
-
-/* Data center stats — numbers climb into red territory */
-.dc-stats .num{color:var(--accent);transition:color .3s}
-.dc-stats .stat:nth-child(1) .num,
-.dc-stats .stat:nth-child(2) .num,
-.dc-stats .stat:nth-child(3) .num{color:var(--ura-red-deep)}
-
-/* Matrix — selected cell uses ink-black, not green, with red ring */
-.cmatrix .cell.on{background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:0 0 0 2px var(--ura-red)}
-
-/* Quiet grey grid lines for figures */
-.figure{border-color:var(--ura-grey-3)}
-.tension,.excerpt,.modpanel,.lesson,.placequote,.zoning,.dc-stats .stat,.tasks .col,.field,.panel,.frame{border-color:var(--ura-grey-3)}
-
-/* Tag — switch to grey outline with red dot */
-.tag{color:var(--ura-grey);border-color:var(--ura-grey-3);background:#fff}
-.tag::before{content:"";display:inline-block;width:5px;height:5px;background:var(--ura-red);border-radius:50%;margin-right:6px;vertical-align:1px}
-
-/* Panel left rules — red for emphasis panels */
-.panel{border-left-color:var(--ura-red)}
-.cap{color:var(--ura-grey)}
+.field.on{box-shadow:0 0 0 2px var(--accent-2) inset;border-color:var(--accent-2)}
+.cmatrix .cell.on{background:var(--accent);border-color:var(--accent)}
+.dc-stats .num{color:var(--accent)}
+.task.up{background:#dbe8d4;border-color:var(--accent)}
+.task.down{background:#e8d4c8;border-color:var(--accent)}
 </style>
 </head>
 <body>
