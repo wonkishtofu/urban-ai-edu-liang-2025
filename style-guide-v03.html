@@ -24,6 +24,8 @@
   --paper-0:#ffffff; --paper-1:#fbfaf4; --paper-2:#f4f3ec; --paper-3:#ebeae2;
   --paper-warm:#f7f2e6;     /* sheltered linkway — bronze-tinted */
   --paper-cool:#f0f3f4;     /* shaded under canopy */
+  --fog-mid:rgba(244,243,236,.85);     /* monsoon emergence halo */
+  --scen-map-a:#e8e7df; --scen-map-b:#cdcdc1;
 
   /* ---------- Cyan ---------- */
   --cyan-700:#2d5566; --cyan-500:#5d8a9b; --cyan-400:#7fa6b6;
@@ -111,6 +113,9 @@
   /* damp the bright cyan washes used in temporal/stratum gradients */
   --cyan-100:#15282e;
   --bronze-50:#1a140d;
+  /* tame the bright literals used in monsoon emergence + theatre map */
+  --fog-mid:rgba(40,46,44,.55);
+  --scen-map-a:#141816; --scen-map-b:#0c0f0e;
 }
 
 /* ---------- Mode: Review Room ---------- */
@@ -485,7 +490,7 @@ section.s.deep .s-meta b{color:var(--graphite-200)}
 
 /* Emergence — content resolving from fog */
 .monsoon-cell.emergence .mstage{background:var(--paper-2)}
-.monsoon-cell.emergence .fog-overlay{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 35%,rgba(244,243,236,.85) 70%,var(--paper-2) 100%);pointer-events:none;animation:emerge 6s ease-in-out infinite}
+.monsoon-cell.emergence .fog-overlay{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 35%,var(--fog-mid) 70%,var(--paper-2) 100%);pointer-events:none;animation:emerge 6s ease-in-out infinite}
 @keyframes emerge{0%,100%{opacity:1}50%{opacity:.55}}
 .monsoon-cell.emergence .mcontent{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);letter-spacing:.04em;line-height:1.5;text-align:center;position:relative;z-index:1}
 .monsoon-cell.emergence .mcontent b{display:block;font-family:var(--font-display);font-size:14.5px;color:var(--ink);font-weight:600;margin-bottom:4px;letter-spacing:-.005em}
@@ -548,7 +553,7 @@ section.s.deep .s-meta b{color:var(--graphite-200)}
 .theatre .scen-head{padding:12px 18px;background:var(--graphite-900);color:#dbddd5;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
 .theatre .scen-head b{color:#fff;font-weight:500;font-family:var(--font-display);font-size:14px;letter-spacing:-.005em;text-transform:none}
 .theatre .scen-head .scen-tag{padding:3px 8px;border:1px solid var(--graphite-400);font-size:9.5px}
-.theatre .scen-map{height:280px;position:relative;background:linear-gradient(180deg,#e8e7df,#cdcdc1)}
+.theatre .scen-map{height:280px;position:relative;background:linear-gradient(180deg,var(--scen-map-a),var(--scen-map-b))}
 .theatre .scen-map svg{position:absolute;inset:0;width:100%;height:100%}
 .theatre .scen-metrics{padding:12px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule-strong);background:var(--bg-elevated)}
 .theatre .scen-metric{padding:8px 6px;border-right:1px solid var(--rule);text-align:left}
