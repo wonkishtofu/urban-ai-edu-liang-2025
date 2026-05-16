@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="en" data-density="operational" data-mode="light" data-room="standard">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Conservatory v0.3 — A Spatial Operating System</title>
+<style>
+/* =========================================================
+   CONSERVATORY v0.3
+   A spatial operating system for urban intelligence
+   Adds: spatial primitives, cognitive zones, temporal layers,
+   trust layer, monsoon logic, Review Room mode, Scenario
+   Theatre, Urban Memory. Reduces remaining glow another 18%.
+   ========================================================= */
+
+:root{
+  /* ---------- Graphite ---------- */
+  --graphite-900:#0b0e0d; --graphite-800:#161a18; --graphite-700:#222826;
+  --graphite-600:#363c39; --graphite-500:#4a504c; --graphite-400:#6d736e;
+  --graphite-300:#9a9d96; --graphite-200:#c2c4bc; --graphite-100:#dbddd5;
+  --graphite-50:#eaeae3;
+
+  /* ---------- Paper ---------- */
+  --paper-0:#ffffff; --paper-1:#fbfaf4; --paper-2:#f4f3ec; --paper-3:#ebeae2;
+  --paper-warm:#f7f2e6;     /* sheltered linkway — bronze-tinted */
+  --paper-cool:#f0f3f4;     /* shaded under canopy */
+
+  /* ---------- Cyan ---------- */
+  --cyan-700:#2d5566; --cyan-500:#5d8a9b; --cyan-400:#7fa6b6;
+  --cyan-200:#c9dde4; --cyan-100:#e2ecf0;
+
+  /* ---------- Bronze ---------- */
+  --bronze-700:#6e4d28; --bronze-500:#8a6336; --bronze-400:#a87f49;
+  --bronze-300:#c9a36a; --bronze-200:#e0c79a; --bronze-100:#f0e3cc;
+  --bronze-50:#faf4ec;
+
+  /* ---------- Canopy (semantic) ---------- */
+  --canopy-700:#2f4a24; --canopy-500:#4a7140;
+  --canopy-300:#a8bb9a; --canopy-100:#d4dec9;
+
+  /* ---------- Sepia (memory / historical) ---------- */
+  --sepia-700:#6a4d2a; --sepia-500:#8e6d44; --sepia-300:#c4a982;
+  --sepia-200:#dcc8a5; --sepia-100:#ece0c8;
+
+  /* ---------- Orchid (rare) ---------- */
+  --orchid-500:#8a4570; --orchid-200:#d8b6c8;
+
+  /* ---------- Signal ---------- */
+  --signal-positive:#3f7a4a; --signal-warning:#c08434;
+  --signal-critical:#8c2e20; --signal-info:var(--cyan-500);
+
+  /* ---------- Semantic ---------- */
+  --bg:var(--paper-1);
+  --bg-elevated:var(--paper-0);
+  --bg-sunken:var(--paper-2);
+  --bg-deep:var(--graphite-900);
+  --bg-deep-text:#dbddd5;
+  --ink:var(--graphite-900);
+  --ink-2:var(--graphite-600);
+  --ink-3:var(--graphite-400);
+  --rule:var(--paper-3);
+  --rule-strong:var(--graphite-200);
+  --rule-bold:var(--graphite-900);
+  --accent:var(--cyan-500);
+  --accent-warm:var(--bronze-400);
+  --accent-eco:var(--canopy-500);
+
+  /* ---------- Type ---------- */
+  --font-display:"Söhne","Inter","SF Pro Display",-apple-system,system-ui,sans-serif;
+  --font-body:"Söhne","Inter","SF Pro Text",-apple-system,system-ui,sans-serif;
+  --font-serif:"Iowan Old Style","Source Serif Pro",Georgia,serif;
+  --font-mono:"JetBrains Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  --t-monument:60px; --t-display:40px; --t-h1:26px; --t-h2:19px;
+  --t-h3:15px; --t-body:14.5px; --t-small:13px; --t-micro:11px;
+
+  /* ---------- Spacing ---------- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px;
+  --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+
+  --row-y:10px; --row-x:14px; --pad-card:18px; --pad-section:56px;
+
+  /* ---------- Frame ---------- */
+  --r-0:0; --r-1:2px; --r-2:4px; --r-3:8px; --r-pill:999px;
+
+  --hairline:1px solid var(--rule);
+  --hairline-strong:1px solid var(--rule-strong);
+  --hairline-bold:1.5px solid var(--ink);
+  --shadow-card:0 0 0 1px var(--rule);
+
+  /* ---------- Motion ---------- */
+  --ease-atmosphere:cubic-bezier(.4,0,.2,1);
+  --ease-monsoon:cubic-bezier(.45,.05,.55,.95);
+  --dur-fast:120ms; --dur:200ms; --dur-slow:420ms; --dur-fog:6000ms;
+}
+
+/* ---------- Density modes ---------- */
+[data-density="ambient"]    { --row-y:14px; --row-x:18px; --pad-card:24px; --pad-section:80px; --t-body:15.5px; --t-h1:30px; }
+[data-density="operational"]{ --row-y:10px; --row-x:14px; --pad-card:18px; --pad-section:56px; --t-body:14.5px; --t-h1:26px; }
+[data-density="dense"]      { --row-y:6px;  --row-x:10px; --pad-card:12px; --pad-section:40px; --t-body:12.5px; --t-h1:22px; }
+
+/* ---------- Mode: night ---------- */
+[data-mode="dark"]{
+  --bg:#0e1110; --bg-elevated:#161a18; --bg-sunken:#0a0d0c; --bg-deep:#000;
+  --ink:#ebeae2; --ink-2:#9a9d96; --ink-3:#6d736e;
+  --rule:#222826; --rule-strong:#363c39; --rule-bold:#ebeae2;
+  --accent:var(--cyan-400);
+  --paper-warm:#1c1813; --paper-cool:#0e1414;
+}
+
+/* ---------- Mode: Review Room ---------- */
+[data-room="review"]{
+  --t-body:16px; --t-h1:32px; --t-h2:22px; --t-monument:72px;
+  --rule:var(--graphite-300);
+  --rule-strong:var(--ink);
+  --hairline:1.25px solid var(--rule);
+  --hairline-strong:1.5px solid var(--ink);
+}
+[data-room="review"] body{font-weight:450}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+
+/* ============================================================
+   PAGE SHELL
+   ============================================================ */
+.shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+
+.rail{background:var(--bg-deep);color:var(--bg-deep-text);padding:28px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--graphite-700);display:flex;flex-direction:column}
+.rail .mark{display:flex;align-items:center;gap:10px;margin-bottom:30px}
+.rail .glyph{width:30px;height:30px;background:var(--bg-deep-text);position:relative;flex-shrink:0}
+.rail .glyph::before{content:"";position:absolute;inset:5px;background:var(--bg-deep)}
+.rail .glyph::after{content:"";position:absolute;left:0;top:50%;right:0;height:1.5px;background:var(--bg-deep);transform:translateY(-50%)}
+.rail .name{font-family:var(--font-display);font-weight:600;font-size:15px;letter-spacing:.01em;line-height:1.15}
+.rail .name span{display:block;font-family:var(--font-mono);font-weight:400;font-size:10px;color:var(--graphite-300);letter-spacing:.16em;margin-top:3px;text-transform:uppercase}
+
+.rail-section{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;color:var(--graphite-400);text-transform:uppercase;margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--graphite-700)}
+.rail nav{display:flex;flex-direction:column;gap:0}
+.rail nav a{color:var(--graphite-300);text-decoration:none;padding:6px 10px;font-size:12px;border-left:2px solid transparent;display:flex;align-items:center;gap:10px;transition:color var(--dur) var(--ease-atmosphere),border-color var(--dur) var(--ease-atmosphere),background var(--dur) var(--ease-atmosphere)}
+.rail nav a .num{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--graphite-400);width:22px}
+.rail nav a:hover{color:var(--bg-deep-text);background:rgba(255,255,255,.025)}
+.rail nav a.on{color:var(--bg-deep-text);border-left-color:var(--cyan-400);background:rgba(127,166,182,.06)}
+.rail nav a.on .num{color:var(--cyan-400)}
+
+.rail .rail-foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--graphite-700);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--graphite-400);text-transform:uppercase;line-height:1.7}
+.rail .rail-foot b{display:block;color:var(--graphite-200);font-weight:500}
+
+.canvas{padding:0;min-width:0}
+
+/* ---------- Station board ---------- */
+.station{display:flex;justify-content:space-between;align-items:stretch;border-bottom:1.5px solid var(--ink);background:var(--bg);position:sticky;top:0;z-index:20}
+.station .crumb{display:flex;align-items:center;padding:13px 30px;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-2);text-transform:uppercase}
+.station .crumb b{color:var(--ink);font-weight:500}
+.station .crumb .bar{width:18px;height:1.5px;background:var(--ink)}
+.station .controls{display:flex;align-items:stretch;border-left:1px solid var(--rule-strong)}
+.station .ctrl-group{display:flex;align-items:center;padding:0 16px;gap:8px;border-right:1px solid var(--rule)}
+.station .ctrl-group:last-child{border-right:none}
+.station .ctrl-label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.station .seg{display:flex;background:var(--bg-sunken);border:1px solid var(--rule-strong)}
+.station .seg button{appearance:none;border:none;background:transparent;font:inherit;font-size:10.5px;color:var(--ink-2);padding:5px 10px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid var(--rule-strong)}
+.station .seg button:last-child{border-right:none}
+.station .seg button.on{background:var(--ink);color:var(--bg)}
+
+/* ---------- Section scaffolding ---------- */
+section.s{padding:var(--pad-section) 56px;border-bottom:1px solid var(--rule-strong)}
+section.s.deep{background:var(--bg-deep);color:var(--bg-deep-text);border-bottom-color:var(--graphite-700)}
+section.s.deep .s-head h2,section.s.deep .s-num{color:var(--bg-deep-text)}
+section.s.deep .blurb{color:var(--graphite-200)}
+
+.s-head{display:grid;grid-template-columns:120px 1fr 200px;gap:32px;align-items:start;margin-bottom:44px;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+section.s.deep .s-head{border-bottom-color:var(--graphite-700)}
+.s-num{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;padding-top:6px}
+.s-num b{display:block;color:var(--ink);font-family:var(--font-display);font-size:44px;letter-spacing:-.02em;line-height:1;font-weight:300;margin-top:6px}
+section.s.deep .s-num b{color:var(--bg-deep-text)}
+.s-head h2{font-family:var(--font-display);font-size:var(--t-h1);font-weight:500;letter-spacing:-.015em;margin:0 0 10px}
+.s-head .blurb{color:var(--ink-2);font-size:14.5px;max-width:64ch;margin:0;line-height:1.6}
+.s-meta{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;line-height:1.7;border-left:1px solid var(--rule-strong);padding-left:18px}
+section.s.deep .s-meta{border-left-color:var(--graphite-700)}
+.s-meta b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:var(--font-display);font-size:13px}
+section.s.deep .s-meta b{color:var(--graphite-200)}
+
+/* ============================================================
+   THESIS
+   ============================================================ */
+.thesis{display:grid;grid-template-columns:1fr 380px;gap:60px;align-items:end;padding:80px 56px 60px;border-bottom:1px solid var(--rule-strong);background:linear-gradient(180deg,var(--paper-2) 0%,var(--bg) 70%)}
+.thesis h1{font-family:var(--font-display);font-size:var(--t-monument);line-height:.96;letter-spacing:-.025em;margin:0 0 22px;font-weight:300}
+.thesis h1 b{font-weight:600}
+.thesis h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--cyan-700)}
+.thesis .tag-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.thesis .lede{font-family:var(--font-serif);font-size:19px;line-height:1.5;color:var(--ink-2);margin:0;max-width:60ch}
+
+.card-thesis{background:var(--bg-elevated);border:1px solid var(--rule-strong);padding:20px 22px;position:relative}
+.card-thesis::before{content:"";position:absolute;left:-1px;top:-1px;width:24px;height:1.5px;background:var(--ink)}
+.card-thesis::after{content:"";position:absolute;left:-1px;top:-1px;width:1.5px;height:24px;background:var(--ink)}
+.card-thesis .corner{position:absolute;right:-1px;top:-1px;width:24px;height:1.5px;background:var(--ink)}
+.card-thesis .corner::after{content:"";position:absolute;right:0;top:0;width:1.5px;height:24px;background:var(--ink)}
+.card-thesis h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;margin:0 0 12px;font-weight:500}
+.card-thesis dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:8px 14px;font-size:13px;line-height:1.5}
+.card-thesis dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;padding-top:2px}
+.card-thesis dd{margin:0;color:var(--ink)}
+
+.shift-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:30px;align-items:center;margin-top:46px;padding:22px 30px;background:var(--paper-0);border:1px solid var(--rule-strong)}
+.shift-row .from,.shift-row .to{font-size:13px;line-height:1.5}
+.shift-row .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:6px;display:block}
+.shift-row .from b,.shift-row .to b{display:block;font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;letter-spacing:-.005em;margin-bottom:4px}
+.shift-row .from{opacity:.65}
+.shift-row .arrow{font-family:var(--font-mono);font-size:18px;text-align:center;color:var(--cyan-500)}
+.shift-row .to{color:var(--ink-2)}
+.shift-row .to b{color:var(--cyan-700)}
+
+/* ============================================================
+   PRINCIPLES (now five)
+   ============================================================ */
+.princ{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.princ .p{padding:22px;border-right:1px solid var(--rule-strong);position:relative}
+.princ .p:last-child{border-right:none}
+.princ .p .pnum{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:18px}
+.princ .p h3{font-family:var(--font-display);font-size:15.5px;font-weight:600;margin:0 0 8px;letter-spacing:-.005em;line-height:1.25}
+.princ .p p{margin:0 0 14px;color:var(--ink-2);font-size:13px;line-height:1.55}
+.princ .p .test{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.04em;line-height:1.5;padding-top:10px;border-top:1px dashed var(--rule-strong)}
+.princ .p .test b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+
+/* ============================================================
+   COGNITIVE ZONES — new
+   ============================================================ */
+.zones-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.zone{padding:0;border-right:1px solid var(--rule-strong);position:relative;display:flex;flex-direction:column}
+.zone:nth-child(3n){border-right:none}
+.zone:nth-child(n+4){border-top:1px solid var(--rule-strong)}
+.zone .zh{padding:18px 22px 6px;border-bottom:1px dashed var(--rule-strong)}
+.zone .zh .zlabel{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--cyan-700);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.zone .zh h4{font-family:var(--font-display);font-size:16px;margin:0 0 6px;font-weight:600;letter-spacing:-.005em}
+.zone .zh p{margin:0 0 10px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.zone .stage{padding:20px 22px;flex:1;min-height:160px;display:flex;flex-direction:column;justify-content:center}
+
+/* Zone-specific tonality demonstrated through the stage */
+.zone.background .stage{background:var(--paper-2);color:var(--ink-3)}
+.zone.background .stage *{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em}
+.zone.analytical .stage{background:var(--bg-elevated);background-image:repeating-linear-gradient(0deg,transparent 0,transparent 23px,var(--paper-3) 23px,var(--paper-3) 24px)}
+.zone.critical .stage{background:var(--bg-elevated);border-top:3px solid var(--signal-critical);border-radius:0}
+.zone.generative .stage{background:linear-gradient(180deg,var(--paper-1),var(--paper-warm));font-family:var(--font-serif);font-style:italic}
+.zone.collaborative .stage{background:var(--bronze-50);color:var(--ink)}
+.zone.spatial .stage{background:linear-gradient(180deg,var(--paper-cool) 0%,var(--paper-2) 100%);position:relative}
+.zone.spatial .stage::before{content:"";position:absolute;left:0;right:0;top:30%;height:1px;background:var(--rule-strong);opacity:.7}
+.zone.spatial .stage::after{content:"";position:absolute;left:0;right:0;top:65%;height:1px;background:var(--rule-strong);opacity:.5}
+
+.zsample{font-size:13px;line-height:1.55;color:var(--ink)}
+.zsample .zmono{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:block}
+.zsample .zhead{font-family:var(--font-display);font-size:15px;font-weight:600;margin-bottom:6px;display:block}
+.zsample .zline{font-size:12px;color:var(--ink-2)}
+
+/* ============================================================
+   SPATIAL PRIMITIVES — new
+   ============================================================ */
+.spatial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.spatial-cell{padding:20px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.spatial-cell .stitle{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--cyan-700);text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.spatial-cell h4{font-family:var(--font-display);font-size:15px;margin:0 0 6px;font-weight:600}
+.spatial-cell p{margin:0 0 16px;font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.spatial-cell .demo{margin-top:10px}
+
+/* District container */
+.district{border:1px solid var(--ink);background:var(--bg-elevated);position:relative}
+.district .district-bar{background:var(--ink);color:var(--bg-elevated);padding:5px 10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+.district .district-body{padding:14px}
+.district h5{font-family:var(--font-display);font-size:14.5px;margin:0 0 6px;font-weight:600}
+.district .meta-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-2);font-family:var(--font-mono);letter-spacing:.04em;margin:3px 0}
+.district .meta-row .k{color:var(--ink-3);text-transform:uppercase;font-size:10px;letter-spacing:.1em}
+
+/* Corridor panel */
+.corridor{border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);padding:12px 16px;position:relative;background:var(--bg-elevated)}
+.corridor::before{content:"";position:absolute;top:-1px;bottom:-1px;left:-6px;width:6px;background:var(--ink);clip-path:polygon(100% 0,0 50%,100% 100%)}
+.corridor::after{content:"";position:absolute;top:-1px;bottom:-1px;right:-6px;width:6px;background:var(--ink);clip-path:polygon(0 0,100% 50%,0 100%)}
+.corridor h5{font-family:var(--font-display);font-size:13.5px;margin:0 0 4px;font-weight:600}
+.corridor .corr-meta{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-3)}
+
+/* Node */
+.node{display:inline-block;background:var(--bg-elevated);border:1px solid var(--ink);padding:8px 14px;position:relative;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em}
+.node::before{content:"";position:absolute;top:-3px;left:-3px;width:6px;height:6px;background:var(--ink)}
+.node b{display:block;font-family:var(--font-display);font-size:13px;color:var(--ink);font-weight:600;margin-bottom:2px;letter-spacing:-.005em}
+
+/* Layer stack */
+.layer-stack{position:relative;padding:0}
+.layer-stack .lr{position:relative;border:1px solid var(--rule-strong);background:var(--bg-elevated);padding:8px 12px;font-size:11.5px;color:var(--ink-2);margin-top:-4px;margin-left:4px}
+.layer-stack .lr:first-child{margin-top:0;margin-left:0;border-color:var(--ink);background:var(--bg-elevated)}
+.layer-stack .lr .li-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em}
+.layer-stack .lr .li-row b{color:var(--ink);font-weight:500}
+.layer-stack .lr.dimmed{opacity:.55}
+
+/* Elevated overlay */
+.elev-base{padding:14px;border:1px solid var(--rule-strong);background:var(--paper-2);position:relative}
+.elev-base h5{font-family:var(--font-display);font-size:13px;margin:0 0 6px;font-weight:600}
+.elev-base p{margin:0;font-size:11.5px;color:var(--ink-2)}
+.elev-over{position:absolute;right:-12px;top:-12px;padding:8px 12px;background:var(--bg-elevated);border:1.5px solid var(--ink);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em}
+.elev-over b{display:block;font-family:var(--font-display);font-size:12.5px;color:var(--ink);font-weight:600;letter-spacing:-.005em}
+.elev-over::before{content:"";position:absolute;left:-22px;top:50%;width:22px;height:1px;background:var(--ink)}
+
+/* Frontage strip */
+.frontage{display:flex;border:1px solid var(--rule-strong);background:var(--bg-elevated);overflow:hidden}
+.frontage .fseg{flex:1;padding:8px 4px;border-right:1px solid var(--rule);text-align:center;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.04em;color:var(--ink-3)}
+.frontage .fseg:last-child{border-right:none}
+.frontage .fseg b{display:block;color:var(--ink);font-size:11px;font-weight:600;margin-bottom:1px;font-family:var(--font-display)}
+.frontage .fseg.active{background:var(--cyan-100);color:var(--cyan-700)}
+.frontage .fseg.eco{background:var(--canopy-100);color:var(--canopy-700)}
+.frontage .fseg.warm{background:var(--bronze-100);color:var(--bronze-700)}
+
+/* ============================================================
+   COLOR
+   ============================================================ */
+.scale-block{margin-bottom:28px}
+.scale-name{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;border-bottom:1px solid var(--rule);padding-bottom:8px}
+.scale-name b{font-family:var(--font-display);font-size:15px;color:var(--ink);font-weight:600;letter-spacing:-.005em}
+.scale-name .role{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.scale-name .role em{font-style:normal;color:var(--cyan-700);font-weight:500}
+.scale{display:grid;border:1px solid var(--rule-strong)}
+.scale.s10{grid-template-columns:repeat(10,1fr)}
+.scale.s7{grid-template-columns:repeat(7,1fr)}
+.scale.s5{grid-template-columns:repeat(5,1fr)}
+.scale.s4{grid-template-columns:repeat(4,1fr)}
+.swatch{aspect-ratio:1.4;display:flex;flex-direction:column;justify-content:flex-end;padding:9px;font-family:var(--font-mono);font-size:9.5px;line-height:1.3;color:rgba(255,255,255,.88);border-right:1px solid rgba(255,255,255,.04)}
+.swatch:last-child{border-right:none}
+.swatch.lt{color:var(--graphite-700)}
+.swatch .step{opacity:.7}
+.swatch .hex{display:block;letter-spacing:.04em;font-weight:500}
+
+.semantic{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:20px;border:1px solid var(--rule-strong)}
+.sem{padding:16px;border-right:1px solid var(--rule-strong)}
+.sem:last-child{border-right:none}
+.sem .chip{height:30px;margin-bottom:10px}
+.sem .role{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.14em}
+.sem .label{display:block;margin-top:2px;font-weight:500;font-size:13px;font-family:var(--font-mono)}
+.sem .use{display:block;margin-top:6px;color:var(--ink-2);font-size:12px;line-height:1.45}
+
+.palette-note{margin-top:22px;padding:16px 20px;background:var(--bg-sunken);border-left:3px solid var(--cyan-500);font-size:13px;line-height:1.6;color:var(--ink-2)}
+.palette-note b{color:var(--ink)}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+.type-row{display:grid;grid-template-columns:160px 1fr;align-items:baseline;padding:18px 0;border-bottom:1px dashed var(--rule-strong)}
+.type-row:last-child{border-bottom:none}
+.type-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+.type-meta b{display:block;color:var(--ink);font-weight:500;letter-spacing:-.005em;text-transform:none;font-family:var(--font-display);font-size:13.5px;margin-bottom:3px}
+.t-monument{font-family:var(--font-display);font-size:60px;line-height:.98;font-weight:300;letter-spacing:-.025em}
+.t-display{font-family:var(--font-display);font-size:40px;line-height:1.04;font-weight:500;letter-spacing:-.02em}
+.t-display em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--cyan-700)}
+.t-h1{font-family:var(--font-display);font-size:26px;line-height:1.18;font-weight:500;letter-spacing:-.012em}
+.t-h2{font-family:var(--font-display);font-size:19px;line-height:1.25;font-weight:600}
+.t-body-serif{font-family:var(--font-serif);font-size:18px;line-height:1.55;color:var(--ink-2);max-width:60ch}
+.t-body{font-size:14.5px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+.t-mono{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;color:var(--ink-2)}
+.t-tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;font-weight:500}
+
+/* ============================================================
+   FRAME
+   ============================================================ */
+.frame-row{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.fr{padding:20px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.fr h4{font-family:var(--font-display);font-size:13px;letter-spacing:.04em;font-weight:600;margin:0 0 16px;color:var(--ink)}
+.space-row{display:flex;align-items:center;gap:14px;margin:6px 0;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
+.space-row .lbl{width:42px}
+.space-row .bar{height:6px;background:var(--ink);display:block}
+.radius-row{display:flex;gap:12px;flex-wrap:wrap}
+.radius-row .swatch-r{width:48px;height:48px;background:var(--paper-2);border:1px solid var(--rule-strong);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:var(--font-mono);font-size:10px;color:var(--ink-2)}
+
+/* ============================================================
+   TEMPORAL LAYERS — new
+   ============================================================ */
+.temporal{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.tlayer{padding:0;border-right:1px solid var(--rule-strong);display:flex;flex-direction:column}
+.tlayer:last-child{border-right:none}
+.tlayer .th{padding:16px 20px;border-bottom:1px dashed var(--rule-strong)}
+.tlayer .th .tlabel{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.tlayer .th h4{font-family:var(--font-display);font-size:15.5px;margin:0 0 4px;font-weight:600}
+.tlayer .th p{margin:0;color:var(--ink-2);font-size:12px;line-height:1.5}
+.tlayer .tstage{flex:1;padding:18px 20px;min-height:160px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+
+/* Historical: sedimentary, sepia, textured */
+.tlayer.historical .tstage{
+  background:var(--sepia-100);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0, transparent 9px, rgba(110,77,40,.08) 9px, rgba(110,77,40,.08) 10px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 21px, rgba(110,77,40,.04) 21px, rgba(110,77,40,.04) 22px);
+}
+.tlayer.historical .tcontent{color:var(--sepia-700);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em}
+.tlayer.historical .tcontent b{display:block;font-family:var(--font-display);font-size:14px;color:var(--sepia-700);margin-bottom:6px;font-weight:600;letter-spacing:-.005em}
+.tlayer.historical .strata{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}
+.tlayer.historical .strata i{display:block;height:4px;background:var(--sepia-300);font-style:normal}
+.tlayer.historical .strata i:nth-child(2){background:var(--sepia-500);opacity:.75}
+.tlayer.historical .strata i:nth-child(3){background:var(--sepia-300);opacity:.6}
+.tlayer.historical .strata i:nth-child(4){background:var(--sepia-500);opacity:.4}
+
+/* Live: humid, kinetic, cyan-tinted */
+.tlayer.live .tstage{background:linear-gradient(180deg,var(--cyan-100) 0%,var(--paper-1) 100%);position:relative}
+.tlayer.live .tstage::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(127,166,182,.18) 50%,transparent 70%);animation:humid 8s linear infinite;pointer-events:none}
+@keyframes humid{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.tlayer.live .tcontent{color:var(--ink);font-size:13px;position:relative;z-index:2}
+.tlayer.live .tcontent b{display:block;font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:6px}
+.tlayer.live .pulse{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--cyan-700);text-transform:uppercase;font-weight:500}
+.tlayer.live .pulse i{width:6px;height:6px;background:var(--cyan-500);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+
+/* Future: luminous, probabilistic, dashed */
+.tlayer.future .tstage{background:linear-gradient(135deg,var(--paper-1) 0%,var(--cyan-100) 100%);position:relative}
+.tlayer.future .tstage::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,transparent 0,transparent 14px,rgba(127,166,182,.08) 14px,rgba(127,166,182,.08) 15px);pointer-events:none}
+.tlayer.future .tcontent{color:var(--cyan-700);font-size:13px;position:relative;z-index:2}
+.tlayer.future .tcontent b{display:block;font-family:var(--font-display);font-size:14px;color:var(--cyan-700);margin-bottom:6px;font-weight:600}
+.tlayer.future .scenario{display:inline-block;padding:3px 8px;border:1.5px dashed var(--cyan-500);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--cyan-700);text-transform:uppercase;font-weight:500;margin-right:6px;margin-bottom:6px}
+
+/* ============================================================
+   TRUST LAYER — new
+   ============================================================ */
+.trust-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px}
+.trust-demo{padding:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.trust-demo .tdh{padding:10px 16px;background:var(--paper-2);border-bottom:1px solid var(--rule-strong);font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;display:flex;justify-content:space-between}
+.trust-demo .tdh b{color:var(--ink-2);font-weight:500}
+.trust-demo .tdbody{padding:18px}
+.trust-demo .answer{font-size:13.5px;line-height:1.55;color:var(--ink);margin-bottom:14px;border-left:3px solid var(--cyan-500);padding:0 0 0 14px}
+.trust-footer{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--rule-strong)}
+.trust-footer .tf{padding:10px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.trust-footer .tf:nth-child(2n){border-right:none}
+.trust-footer .tf:nth-child(n+5){border-bottom:none}
+.trust-footer .tf .tlbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.trust-footer .tf .tval{font-size:12px;color:var(--ink);font-weight:500}
+.trust-footer .tf .tmeta{font-family:var(--font-mono);font-size:10px;color:var(--ink-2);letter-spacing:.04em;margin-top:2px}
+
+.conf-band{display:flex;align-items:center;gap:8px;margin-top:6px}
+.conf-band .cb{flex:1;height:5px;background:linear-gradient(90deg,var(--signal-critical) 0%,var(--signal-warning) 50%,var(--signal-positive) 100%);position:relative}
+.conf-band .cb i{position:absolute;top:-3px;width:2px;height:11px;background:var(--ink);transform:translateX(-50%)}
+.conf-band .cn{font-family:var(--font-mono);font-size:10px;color:var(--ink);letter-spacing:.04em;font-weight:500;min-width:30px;text-align:right}
+
+.lineage{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.lineage .src{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-2);letter-spacing:.06em;padding:2px 6px;background:var(--paper-2);border:1px solid var(--rule-strong)}
+.lineage .src b{color:var(--ink);font-weight:500}
+.lineage .arrow{font-family:var(--font-mono);font-size:10px;color:var(--ink-3)}
+
+.policy-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--ink);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink);text-transform:uppercase;font-weight:500;background:var(--paper-0)}
+.policy-badge i{width:6px;height:6px;background:var(--canopy-500);font-style:normal}
+
+.review-status{display:inline-flex;gap:0;border:1px solid var(--rule-strong);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
+.review-status span{padding:3px 7px;border-right:1px solid var(--rule-strong);color:var(--ink-3)}
+.review-status span:last-child{border-right:none}
+.review-status span.done{background:var(--canopy-100);color:var(--canopy-700);font-weight:500}
+.review-status span.active{background:var(--ink);color:var(--bg-elevated);font-weight:500}
+
+.trust-rules{display:flex;flex-direction:column;gap:0;border:1px solid var(--rule-strong)}
+.trust-rules .tr{padding:14px 18px;border-bottom:1px solid var(--rule)}
+.trust-rules .tr:last-child{border-bottom:none}
+.trust-rules .tr .tn{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--cyan-700);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.trust-rules .tr h5{font-family:var(--font-display);font-size:13.5px;margin:0 0 4px;font-weight:600}
+.trust-rules .tr p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.5}
+
+/* ============================================================
+   MONSOON / THRESHOLDS — new
+   ============================================================ */
+.monsoon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule-strong);overflow:hidden}
+.monsoon-cell{padding:0;border-right:1px solid var(--rule-strong);position:relative;min-height:240px;display:flex;flex-direction:column}
+.monsoon-cell:last-child{border-right:none}
+.monsoon-cell .mch{padding:16px 20px 10px;border-bottom:1px dashed var(--rule-strong)}
+.monsoon-cell .mch .mlbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.monsoon-cell .mch h4{font-family:var(--font-display);font-size:15px;margin:0 0 4px;font-weight:600}
+.monsoon-cell .mch p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.5}
+.monsoon-cell .mstage{flex:1;position:relative;padding:18px 20px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+/* Sheltered linkway */
+.monsoon-cell.sheltered .mstage{background:var(--paper-warm)}
+.monsoon-cell.sheltered .mstage::before{content:"";position:absolute;top:0;left:0;right:0;height:18px;background:var(--bronze-300);background-image:repeating-linear-gradient(90deg,transparent 0,transparent 18px,rgba(110,77,40,.3) 18px,rgba(110,77,40,.3) 19px);box-shadow:0 1px 0 var(--bronze-500)}
+.monsoon-cell.sheltered .mcontent{padding:14px 18px;background:var(--paper-1);border:1px solid var(--rule-strong);font-size:12px;color:var(--ink);position:relative;z-index:2;margin-top:18px;max-width:80%}
+.monsoon-cell.sheltered .mcontent b{display:block;font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:4px}
+
+/* Threshold */
+.monsoon-cell.threshold .mstage{background:linear-gradient(90deg,var(--paper-warm) 0%,var(--paper-1) 35%,var(--paper-cool) 100%)}
+.monsoon-cell.threshold .thresh-line{position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:var(--ink);transform:translateX(-50%)}
+.monsoon-cell.threshold .thresh-line::before{content:"";position:absolute;top:50%;left:-7px;width:16px;height:16px;background:var(--ink);clip-path:polygon(0 0,100% 50%,0 100%);transform:translateY(-50%)}
+.monsoon-cell.threshold .thresh-side{position:absolute;top:50%;transform:translateY(-50%);font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-2);text-transform:uppercase;text-align:center}
+.monsoon-cell.threshold .thresh-side.left{left:18px}
+.monsoon-cell.threshold .thresh-side.right{right:18px}
+.monsoon-cell.threshold .thresh-side b{display:block;font-family:var(--font-display);font-size:14px;color:var(--ink);font-weight:600;letter-spacing:-.005em;margin-bottom:2px}
+
+/* Emergence — content resolving from fog */
+.monsoon-cell.emergence .mstage{background:var(--paper-2)}
+.monsoon-cell.emergence .fog-overlay{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 35%,rgba(244,243,236,.85) 70%,var(--paper-2) 100%);pointer-events:none;animation:emerge 6s ease-in-out infinite}
+@keyframes emerge{0%,100%{opacity:1}50%{opacity:.55}}
+.monsoon-cell.emergence .mcontent{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);letter-spacing:.04em;line-height:1.5;text-align:center;position:relative;z-index:1}
+.monsoon-cell.emergence .mcontent b{display:block;font-family:var(--font-display);font-size:14.5px;color:var(--ink);font-weight:600;margin-bottom:4px;letter-spacing:-.005em}
+
+/* ============================================================
+   CARTOGRAPHY (expanded)
+   ============================================================ */
+.gis-intro{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--graphite-700);margin-bottom:28px}
+.gis-rule{padding:16px 20px;border-right:1px solid var(--graphite-700)}
+.gis-rule:nth-child(3n){border-right:none}
+.gis-rule:nth-child(n+4){border-top:1px solid var(--graphite-700)}
+.gis-rule .gh{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--cyan-400);text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.gis-rule h4{font-family:var(--font-display);font-size:14px;margin:0 0 6px;font-weight:600;color:var(--bg-deep-text)}
+.gis-rule p{margin:0;font-size:12px;color:var(--graphite-200);line-height:1.5}
+
+.gis-map-wrap{position:relative;border:1px solid var(--rule-bold);background:var(--graphite-50);overflow:hidden}
+.gis-map-wrap .gtitle{position:absolute;top:0;left:0;right:0;background:var(--graphite-900);color:#dbddd5;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;z-index:5;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--graphite-700)}
+.gis-map-wrap .gtitle b{color:#fff;font-weight:500}
+.gis-map-wrap .gtitle .coords{color:var(--graphite-300)}
+.gis-map{height:480px;position:relative;margin-top:36px;background:
+  linear-gradient(180deg,#e8e7df 0%,#dcdcd2 50%,#c8c8bd 100%)}
+.gis-map svg{position:absolute;inset:0;width:100%;height:100%}
+
+.gis-legend{position:absolute;left:18px;bottom:18px;background:var(--graphite-900);color:#dbddd5;padding:14px;min-width:200px;border:1px solid var(--graphite-700);font-size:11px;line-height:1.5}
+.gis-legend b{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--graphite-300);text-transform:uppercase;margin-bottom:8px;font-weight:500;padding-bottom:6px;border-bottom:1px solid var(--graphite-700)}
+.gis-legend .li{display:flex;align-items:center;gap:10px;margin:5px 0;color:var(--graphite-200)}
+.gis-legend .li i{flex-shrink:0;display:inline-block}
+.gis-legend .swatch-rd{width:18px;height:1.5px;background:var(--graphite-400)}
+.gis-legend .swatch-rd-major{width:18px;height:2px;background:var(--graphite-300)}
+.gis-legend .swatch-mrt{width:18px;height:2px;background:var(--cyan-400);box-shadow:0 0 4px var(--cyan-400)}
+.gis-legend .swatch-eco{width:14px;height:8px;background:var(--canopy-500);opacity:.55}
+.gis-legend .swatch-heat{width:14px;height:8px;background:var(--bronze-400);opacity:.4}
+
+.gis-cartouche{position:absolute;right:18px;top:54px;background:#fbfaf4;color:var(--ink);padding:14px 16px;border:1px solid var(--ink);min-width:240px;font-size:12px;line-height:1.5}
+.gis-cartouche::before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:4px;background:var(--ink)}
+.gis-cartouche b{display:block;font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--rule-strong)}
+.gis-cartouche .row{display:flex;justify-content:space-between;margin:4px 0;font-size:11.5px}
+.gis-cartouche .row .k{color:var(--ink-3);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.gis-cartouche .row .v{color:var(--ink);font-family:var(--font-mono);letter-spacing:.04em}
+.gis-cartouche .trust-mini{margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule-strong);display:flex;gap:6px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase}
+.gis-cartouche .trust-mini span{padding:1px 6px;border:1px solid var(--rule-strong);color:var(--ink-2)}
+
+.gis-scale{position:absolute;left:18px;top:54px;background:#fbfaf4;padding:6px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase;border:1px solid var(--ink);display:flex;align-items:center;gap:10px}
+.gis-scale i{width:30px;height:2px;background:var(--ink);display:block}
+
+.gis-station{position:absolute;width:8px;height:8px;background:var(--cyan-400);border-radius:50%;box-shadow:0 0 0 1.5px #fff,0 0 0 3px var(--cyan-700),0 0 5px var(--cyan-400);transform:translate(-50%,-50%)}
+.gis-pin{position:absolute;width:10px;height:10px;background:var(--bronze-400);box-shadow:0 0 0 1.5px #fff,0 1px 3px rgba(0,0,0,.3);transform:translate(-50%,-50%);border:1.5px solid var(--graphite-900)}
+.gis-pin.eco{background:var(--canopy-500)}
+.gis-pin.crit{background:var(--signal-critical)}
+
+/* AI overlay — flow particles */
+.flow-overlay{position:absolute;inset:36px 0 0 0;pointer-events:none;opacity:.55}
+
+/* ============================================================
+   SCENARIO THEATRE
+   ============================================================ */
+.theatre{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule-bold);overflow:hidden}
+.theatre .scenario-col{display:flex;flex-direction:column;border-right:1px solid var(--rule-bold);background:var(--bg-elevated)}
+.theatre .scenario-col:last-child{border-right:none}
+.theatre .scen-head{padding:12px 18px;background:var(--graphite-900);color:#dbddd5;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.theatre .scen-head b{color:#fff;font-weight:500;font-family:var(--font-display);font-size:14px;letter-spacing:-.005em;text-transform:none}
+.theatre .scen-head .scen-tag{padding:3px 8px;border:1px solid var(--graphite-400);font-size:9.5px}
+.theatre .scen-map{height:280px;position:relative;background:linear-gradient(180deg,#e8e7df,#cdcdc1)}
+.theatre .scen-map svg{position:absolute;inset:0;width:100%;height:100%}
+.theatre .scen-metrics{padding:12px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.theatre .scen-metric{padding:8px 6px;border-right:1px solid var(--rule);text-align:left}
+.theatre .scen-metric:last-child{border-right:none}
+.theatre .scen-metric .smk{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;margin-bottom:3px}
+.theatre .scen-metric .smv{font-family:var(--font-display);font-size:19px;font-weight:300;letter-spacing:-.015em;line-height:1}
+.theatre .scen-metric .smd{font-size:10.5px;color:var(--ink-2);font-family:var(--font-mono);letter-spacing:.04em;margin-top:3px}
+.theatre .scen-metric .smd.diff{color:var(--signal-positive)}
+.theatre .scen-metric .smd.diff.down{color:var(--signal-critical)}
+
+.theatre-diff{padding:14px 18px;background:var(--paper-2);border-top:1px solid var(--rule-strong);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center}
+.theatre-diff b{color:var(--ink);font-weight:500;letter-spacing:.14em;text-transform:uppercase}
+
+/* ============================================================
+   URBAN MEMORY
+   ============================================================ */
+.memory{display:grid;grid-template-columns:140px 1fr;gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.memory-spine{padding:24px 20px;background:var(--graphite-900);color:#dbddd5;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.memory-spine .spine-label{font-size:10px;color:var(--graphite-400);margin-bottom:8px}
+.memory-spine .spine-district{font-family:var(--font-display);font-size:24px;color:#fff;font-weight:500;letter-spacing:-.015em;text-transform:none;line-height:1.1;margin-bottom:6px}
+.memory-spine .spine-coords{color:var(--graphite-300);font-size:9.5px;line-height:1.6;font-weight:400;text-transform:none;letter-spacing:.04em}
+
+.memory-strata{display:flex;flex-direction:column}
+.stratum{display:grid;grid-template-columns:80px 1fr 220px;gap:24px;padding:18px 24px;border-bottom:1px solid var(--rule-strong);align-items:center;position:relative}
+.stratum:last-child{border-bottom:none}
+.stratum .year{font-family:var(--font-display);font-size:24px;font-weight:300;letter-spacing:-.015em;color:var(--ink)}
+.stratum .desc{font-size:13px;color:var(--ink-2);line-height:1.5}
+.stratum .desc b{color:var(--ink);font-weight:600;font-family:var(--font-display);font-size:14px;display:block;margin-bottom:3px;letter-spacing:-.005em}
+.stratum .epoch-tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--rule-strong);display:inline-block;color:var(--ink-3);margin-bottom:6px;font-weight:500}
+
+/* Stratum visualisation slot */
+.stratum .stratum-vis{height:50px;border:1px solid var(--rule-strong);position:relative;overflow:hidden}
+
+/* Historical strata */
+.stratum.historical{background:var(--sepia-100)}
+.stratum.historical .year{color:var(--sepia-700)}
+.stratum.historical .epoch-tag{color:var(--sepia-700);border-color:var(--sepia-300)}
+.stratum.historical .stratum-vis{background:var(--sepia-100);background-image:repeating-linear-gradient(0deg,transparent 0,transparent 8px,rgba(110,77,40,.12) 8px,rgba(110,77,40,.12) 9px)}
+
+/* Past strata */
+.stratum.past{background:var(--paper-2)}
+.stratum.past .stratum-vis{background-image:repeating-linear-gradient(0deg,transparent 0,transparent 10px,rgba(74,80,76,.08) 10px,rgba(74,80,76,.08) 11px)}
+
+/* Live (current) */
+.stratum.live{background:linear-gradient(90deg,var(--cyan-100) 0%,var(--paper-1) 100%);position:relative}
+.stratum.live::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan-500)}
+.stratum.live .epoch-tag{color:var(--cyan-700);border-color:var(--cyan-400);background:var(--cyan-100)}
+.stratum.live .stratum-vis{background:var(--cyan-100);position:relative;overflow:hidden}
+.stratum.live .stratum-vis::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(127,166,182,.4),transparent);animation:humid 5s linear infinite}
+
+/* Future strata */
+.stratum.future{background:linear-gradient(90deg,var(--paper-1) 0%,var(--cyan-100) 100%)}
+.stratum.future .year{color:var(--cyan-700)}
+.stratum.future .epoch-tag{color:var(--cyan-700);border-color:var(--cyan-400);border-style:dashed}
+.stratum.future .stratum-vis{background-image:repeating-linear-gradient(45deg,transparent 0,transparent 11px,rgba(127,166,182,.18) 11px,rgba(127,166,182,.18) 12px);border-style:dashed;border-color:var(--cyan-400)}
+
+/* ============================================================
+   COMPONENTS (compact)
+   ============================================================ */
+.comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.comp{padding:18px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.comp .clabel{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.comp .clabel span{color:var(--ink-2)}
+.comp .crow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.comp .crow + .crow{margin-top:10px}
+
+.btn{appearance:none;border:1px solid var(--ink);font:inherit;font-weight:500;font-size:12.5px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background var(--dur) var(--ease-atmosphere),color var(--dur) var(--ease-atmosphere);background:var(--ink);color:var(--bg-elevated);border-radius:var(--r-1)}
+.btn:hover{background:var(--graphite-700)}
+.btn.secondary{background:transparent;color:var(--ink)}
+.btn.secondary:hover{background:var(--ink);color:var(--bg-elevated)}
+.btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--rule-strong)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--ink)}
+.btn.cool{background:var(--cyan-500);color:#fff;border-color:var(--cyan-500)}
+.btn.warm{background:var(--bronze-400);color:#fff;border-color:var(--bronze-400)}
+.btn .key{font-family:var(--font-mono);font-size:9.5px;border:1px solid currentColor;padding:0 4px;border-radius:2px;opacity:.65;margin-left:auto}
+
+.field-label{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.input{appearance:none;border:none;border-bottom:1.5px solid var(--rule-strong);background:transparent;color:var(--ink);font:inherit;font-size:13.5px;padding:7px 0;width:100%;border-radius:0;transition:border-color var(--dur) var(--ease-atmosphere)}
+.input:focus{outline:none;border-bottom-color:var(--ink)}
+.input::placeholder{color:var(--ink-3)}
+
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;background:var(--bg-sunken);color:var(--ink-2);font-size:10.5px;font-weight:500;font-family:var(--font-mono);letter-spacing:.06em;border:1px solid var(--rule-strong);border-radius:var(--r-pill)}
+.tag::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink-3)}
+.tag.active{color:var(--canopy-700);border-color:var(--canopy-300);background:var(--canopy-100)}
+.tag.active::before{background:var(--canopy-500)}
+.tag.warm{color:var(--bronze-700);border-color:var(--bronze-200);background:var(--bronze-100)}
+.tag.warm::before{background:var(--bronze-400)}
+.tag.cool{color:var(--cyan-700);border-color:var(--cyan-200);background:var(--cyan-100)}
+.tag.cool::before{background:var(--cyan-500)}
+
+.toggle{display:inline-flex;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.toggle button{appearance:none;border:none;background:transparent;font:inherit;font-size:10.5px;color:var(--ink-2);padding:5px 10px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid var(--rule-strong)}
+.toggle button:last-child{border-right:none}
+.toggle button.on{background:var(--ink);color:var(--bg-elevated)}
+
+/* ============================================================
+   MOTION
+   ============================================================ */
+.motion-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule-strong)}
+.m-cell{padding:20px;border-right:1px solid var(--rule-strong);position:relative;overflow:hidden}
+.m-cell:last-child{border-right:none}
+.m-cell .ml{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
+.m-cell h4{font-family:var(--font-display);font-size:14.5px;margin:0 0 6px;font-weight:600}
+.m-cell p{margin:0 0 14px;font-size:12px;color:var(--ink-2);line-height:1.5}
+.m-cell .stage{height:50px;background:var(--bg-sunken);border:1px solid var(--rule);position:relative;overflow:hidden}
+.m-cell .stage .puck{position:absolute;top:50%;left:14px;transform:translateY(-50%);width:14px;height:14px;background:var(--ink)}
+.m-cell:nth-child(1) .stage .puck{animation:settle 3.4s var(--ease-atmosphere) infinite}
+.m-cell:nth-child(2) .stage .puck{animation:fog 5s linear infinite;background:var(--cyan-500);width:100%;height:100%;left:0;top:0;opacity:.2}
+.m-cell:nth-child(3) .stage .puck{animation:lightshift 4s ease-in-out infinite;background:linear-gradient(90deg,var(--bronze-300),var(--cyan-400));width:100%;height:100%;left:0;top:0;opacity:.55}
+.m-cell:nth-child(4) .stage .puck{animation:reveal 5s var(--ease-monsoon) infinite;background:var(--ink);clip-path:inset(0 100% 0 0)}
+@keyframes settle{0%{left:14px}45%{left:calc(100% - 28px)}55%{left:calc(100% - 28px)}100%{left:14px}}
+@keyframes fog{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes lightshift{0%,100%{filter:hue-rotate(0) brightness(1)}50%{filter:hue-rotate(20deg) brightness(1.15)}}
+@keyframes reveal{0%{clip-path:inset(0 100% 0 0)}45%{clip-path:inset(0 0 0 0)}55%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 100%)}}
+
+/* ============================================================
+   FOOTNOTE
+   ============================================================ */
+.footnote{padding:30px 56px;background:var(--graphite-900);color:var(--graphite-300);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-align:center;text-transform:uppercase;line-height:1.6}
+.footnote b{color:#fff;font-weight:500}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:relative;height:auto;display:none}
+  section.s{padding:48px 24px}
+  .thesis{padding:48px 24px;grid-template-columns:1fr;gap:32px}
+  .thesis h1{font-size:42px}
+  .s-head{grid-template-columns:1fr;gap:16px}
+  .princ{grid-template-columns:1fr}
+  .princ .p{border-right:none;border-bottom:1px solid var(--rule-strong)}
+  .zones-grid,.spatial-grid,.temporal,.monsoon-grid,.motion-grid,.theatre,.semantic,.gis-intro,.comp-grid,.frame-row,.trust-grid{grid-template-columns:1fr}
+  .zone,.tlayer,.monsoon-cell,.m-cell,.theatre .scenario-col,.sem,.gis-rule{border-right:none;border-bottom:1px solid var(--rule-strong)}
+  .memory{grid-template-columns:1fr}
+  .stratum{grid-template-columns:1fr;gap:8px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ RAIL ============ -->
+  <aside class="rail">
+    <div class="mark">
+      <div class="glyph" aria-hidden="true"></div>
+      <div class="name">Conservatory<span>v0.3 — SOS</span></div>
+    </div>
+
+    <div class="rail-section">Doctrine</div>
+    <nav>
+      <a href="#thesis"><span class="num">00</span>Thesis</a>
+      <a href="#principles"><span class="num">01</span>Principles</a>
+    </nav>
+
+    <div class="rail-section">Spatial language</div>
+    <nav>
+      <a href="#zones"><span class="num">02</span>Cognitive zones</a>
+      <a href="#spatial"><span class="num">03</span>Spatial primitives</a>
+      <a href="#monsoon"><span class="num">04</span>Monsoon logic</a>
+    </nav>
+
+    <div class="rail-section">Material</div>
+    <nav>
+      <a href="#color"><span class="num">05</span>Color</a>
+      <a href="#type"><span class="num">06</span>Typography</a>
+      <a href="#frame"><span class="num">07</span>Frame &amp; shape</a>
+      <a href="#motion"><span class="num">08</span>Motion</a>
+    </nav>
+
+    <div class="rail-section">Civic systems</div>
+    <nav>
+      <a href="#temporal"><span class="num">09</span>Temporal layers</a>
+      <a href="#trust"><span class="num">10</span>Trust layer</a>
+      <a href="#gis"><span class="num">11</span>Cartography</a>
+      <a href="#theatre"><span class="num">12</span>Scenario Theatre</a>
+      <a href="#memory"><span class="num">13</span>Urban Memory</a>
+    </nav>
+
+    <div class="rail-section">Kit</div>
+    <nav>
+      <a href="#components"><span class="num">14</span>Components</a>
+    </nav>
+
+    <div class="rail-foot">
+      <b>Spatial Operating System</b>
+      A philosophy of urban intelligence — for planning authorities, civic AI, and long-horizon governance.
+    </div>
+  </aside>
+
+  <!-- ============ CANVAS ============ -->
+  <main class="canvas">
+
+    <header class="station">
+      <div class="crumb">
+        <span>System</span><span class="bar"></span><b>Conservatory</b><span class="bar"></span><span>v0.3 — SOS</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Density</span>
+          <div class="seg" id="seg-density">
+            <button data-d="ambient">Amb</button>
+            <button data-d="operational" class="on">Ops</button>
+            <button data-d="dense">Dense</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Room</span>
+          <div class="seg" id="seg-room">
+            <button data-r="standard" class="on">Standard</button>
+            <button data-r="review">Review Room</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Mode</span>
+          <div class="seg" id="seg-mode">
+            <button data-m="light" class="on">Day</button>
+            <button data-m="dark">Night</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ THESIS ============ -->
+    <section id="thesis" class="thesis">
+      <div>
+        <div class="tag-list">
+          <span class="tag cool">Spatial Operating System</span>
+          <span class="tag">v0.3 — doctrine</span>
+          <span class="tag warm">For planning authorities</span>
+        </div>
+        <h1>Not an interface aesthetic —<br/><em>a philosophy</em> <b>of urban intelligence.</b></h1>
+        <p class="lede">v0.3 reframes the system again. v0.2 made it civic; v0.3 makes it <i>spatial</i>. Containers become districts and corridors. Density becomes cognitive zoning. Time enters the design language. Trust becomes visible. The interface stops referencing nature aesthetically — it starts thinking like a city.</p>
+      </div>
+      <aside class="card-thesis">
+        <span class="corner"></span>
+        <h4>Positioning</h4>
+        <dl>
+          <dt>v0.1</dt><dd>Biophilic UI — atmospheric, lifestyle.</dd>
+          <dt>v0.2</dt><dd>Tropical Civic Futurism — institutional.</dd>
+          <dt>v0.3</dt><dd>Spatial Operating System — urban-native logic.</dd>
+          <dt>Built for</dt><dd>URA · planning authorities · civic AI · long-horizon governance.</dd>
+        </dl>
+      </aside>
+
+      <div class="shift-row" style="grid-column:1 / -1">
+        <div class="from">
+          <span class="lbl">v0.2 → v0.3 · removed</span>
+          <b>−18% remaining softness</b>
+          Another reduction in glow, translucent stacking, and gradient diffusion. The aesthetic of "premium AI product" is asymptotically erased.
+        </div>
+        <div class="arrow">↦</div>
+        <div class="to">
+          <span class="lbl">v0.2 → v0.3 · added</span>
+          <b>+ Urban logic</b>
+          Cognitive zones, spatial primitives, temporal layers, trust system, monsoon transitions, Review Room mode, Scenario Theatre, Urban Memory. Same DNA, civic vocabulary.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRINCIPLES ============ -->
+    <section id="principles" class="s">
+      <div class="s-head">
+        <div class="s-num">Doctrine<b>01</b></div>
+        <div>
+          <h2>Five commitments. Ordered.</h2>
+          <p class="blurb">Adds one principle to v0.2: <b>Spatial-native</b>. When components reference a city, they should think like one — districts, corridors, nodes, layers. Hierarchy that doesn't mirror urban cognition gets reworked.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>Spatial cognition over visual delight</div>
+      </div>
+
+      <div class="princ">
+        <div class="p">
+          <div class="pnum">01 / Authority</div>
+          <h3>Hierarchy is load-bearing</h3>
+          <p>Structure before mood. A screenshot at 20% scale should still reveal the page's spine.</p>
+          <div class="test"><b>Test</b>The squint test</div>
+        </div>
+        <div class="p">
+          <div class="pnum">02 / Permanence</div>
+          <h3>Built, not floated</h3>
+          <p>Surfaces feel engineered. Hairlines beat shadows. Glow is rationed. Translucency is licensed only on the map's transit veins.</p>
+          <div class="test"><b>Test</b>Still right in 2040?</div>
+        </div>
+        <div class="p">
+          <div class="pnum">03 / Climate</div>
+          <h3>Atmospheric, slow</h3>
+          <p>Motion as weather: fog, light, airflow. Curves named for atmosphere. Decoration that doesn't carry information is pulled.</p>
+          <div class="test"><b>Test</b>Idle 60s — still calm?</div>
+        </div>
+        <div class="p">
+          <div class="pnum">04 / Operability</div>
+          <h3>Three densities, one DNA</h3>
+          <p>Ambient, Operational, Dense. The system stays calm at 14 columns; it stays elegant in a public portal.</p>
+          <div class="test"><b>Test</b>Approval queue stays readable</div>
+        </div>
+        <div class="p">
+          <div class="pnum">05 / Spatial-native</div>
+          <h3>Thinks like a city</h3>
+          <p>Containers and hierarchy mirror urban cognition. District, corridor, node, layer, elevation. Cognitive zoning replaces "card" everywhere it can.</p>
+          <div class="test"><b>Test</b>A planner can name the part</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COGNITIVE ZONES ============ -->
+    <section id="zones" class="s">
+      <div class="s-head">
+        <div class="s-num">Zones<b>02</b></div>
+        <div>
+          <h2>Six cognitive zones, one system</h2>
+          <p class="blurb">An interface needs zoning the way a city does. A dense administrative table and an exploratory AI prompt cannot have the same temperature. v0.3 codifies six zone treatments — each one a deliberate combination of contrast, texture, type voice, and pace.</p>
+        </div>
+        <div class="s-meta"><b>Applied via</b>data-zone="…"</div>
+      </div>
+
+      <div class="zones-grid">
+        <div class="zone background">
+          <div class="zh"><div class="zlabel">Zone · 01</div><h4>Background</h4><p>Where the system runs without asking attention. Status bars, ambient tickers, idle states.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zmono">Status · 14:22 SGT · 5G · sync ok</span>
+            <span class="zmono">Render queue · 3 · idle</span>
+          </div></div>
+        </div>
+        <div class="zone analytical">
+          <div class="zh"><div class="zlabel">Zone · 02</div><h4>Analytical</h4><p>Where work happens. Dashboards, tables, GIS attribute panes. Calm density.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zmono">PR-1042 · Marina South · canopy</span>
+            <span class="zhead">Audit · q2-2025</span>
+            <span class="zline">11 reports · 3 precincts · 2 owners</span>
+          </div></div>
+        </div>
+        <div class="zone critical">
+          <div class="zh"><div class="zlabel">Zone · 03</div><h4>Critical</h4><p>Where decisions are taken. Sharp contrast, hard rules, zero ambiguity. Approvals, irreversible moves.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zmono" style="color:var(--signal-critical);font-weight:500">⚐ Approval required · DC siting</span>
+            <span class="zhead">Quota breach</span>
+            <span class="zline">Sector 4 · MWh budget exceeded · sign-off chain interrupted.</span>
+          </div></div>
+        </div>
+        <div class="zone generative">
+          <div class="zh"><div class="zlabel">Zone · 04</div><h4>Generative</h4><p>Where the AI proposes. Prompt surfaces, scenario inputs, exploratory canvases. Warmer, slower.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zhead" style="font-style:italic">A shaded pedestrian street at golden hour,</span>
+            <span class="zline" style="font-style:italic">rain trees, low-rise vernacular, reference Joo Chiat 1985.</span>
+          </div></div>
+        </div>
+        <div class="zone collaborative">
+          <div class="zh"><div class="zlabel">Zone · 05</div><h4>Collaborative</h4><p>Where multiple people mark the same thing. Workshop annotation, public consultation, design review.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zmono">3 reviewers · K.Tan · S.Koh · M.Lim</span>
+            <span class="zhead">Annotation · sector 4-B</span>
+            <span class="zline">"Consider screen on east edge for monsoon shelter." — K.Tan, 13:42</span>
+          </div></div>
+        </div>
+        <div class="zone spatial">
+          <div class="zh"><div class="zlabel">Zone · 06</div><h4>Spatial</h4><p>Where the map lives. Layered, depth-aware, cartographic. Every surface here borrows from elevation drawing.</p></div>
+          <div class="stage"><div class="zsample">
+            <span class="zmono">Layer 03 · canopy · 35% opacity</span>
+            <span class="zhead">+ Heat-island overlay</span>
+            <span class="zline">+ Transit veins · MRT DTL3e</span>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SPATIAL PRIMITIVES ============ -->
+    <section id="spatial" class="s">
+      <div class="s-head">
+        <div class="s-num">Primitives<b>03</b></div>
+        <div>
+          <h2>Containers named for cities</h2>
+          <p class="blurb">Generic "card" and "panel" are demoted. v0.3 introduces six primitives — <b>district</b>, <b>corridor</b>, <b>node</b>, <b>layer-stack</b>, <b>elevated overlay</b>, and <b>frontage</b> — each with a structural identity that a planner can name on sight. They're not metaphors; they're the new vocabulary.</p>
+        </div>
+        <div class="s-meta"><b>Vocabulary</b>Urban-native containers</div>
+      </div>
+
+      <div class="spatial-grid">
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 01</div>
+          <h4>District</h4>
+          <p>A bounded, governed region. Title bar in mono uppercase, structured metadata. Used for sector views, governance domains, planning briefs.</p>
+          <div class="demo">
+            <div class="district">
+              <div class="district-bar"><span>S-04 · Marina South</span><span>Q2 · 2025</span></div>
+              <div class="district-body">
+                <h5>Canopy continuity audit</h5>
+                <div class="meta-row"><span class="k">Canopy</span><span>62.0%</span></div>
+                <div class="meta-row"><span class="k">Surface temp</span><span>+3.4°C</span></div>
+                <div class="meta-row"><span class="k">Reports</span><span>11</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 02</div>
+          <h4>Corridor</h4>
+          <p>A linear region of consequence — transit line, river edge, view corridor, policy corridor. Arrowhead caps signal directionality.</p>
+          <div class="demo">
+            <div style="padding:0 8px">
+              <div class="corridor">
+                <h5>MRT DTL3e · construction window</h5>
+                <div class="corr-meta">Marina South ↔ Gardens by the Bay · 14 mo · canopy impact: −3.1pp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 03</div>
+          <h4>Node</h4>
+          <p>A discrete point of interest — interchange, landmark, decision point, agent endpoint. Small footprint, named.</p>
+          <div class="demo" style="display:flex;flex-direction:column;gap:8px">
+            <div class="node"><b>Bayfront Interchange</b>MRT · DTL · CCL</div>
+            <div class="node"><b>Atrium · planning agent</b>v3.1 · session AT-2071</div>
+          </div>
+        </div>
+
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 04</div>
+          <h4>Layer stack</h4>
+          <p>Ordered, dimmable, opaqueable. The cartographic primitive — but applies equally to attribute panes, simulation runs, and policy stacks.</p>
+          <div class="demo">
+            <div class="layer-stack">
+              <div class="lr"><div class="li-row"><span><b>03</b> · canopy · q2-2025</span><span>35%</span></div></div>
+              <div class="lr"><div class="li-row"><span><b>02</b> · heat island</span><span>40%</span></div></div>
+              <div class="lr dimmed"><div class="li-row"><span><b>01</b> · MRT lines</span><span>80%</span></div></div>
+              <div class="lr dimmed"><div class="li-row"><span><b>00</b> · road network</span><span>60%</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 05</div>
+          <h4>Elevated overlay</h4>
+          <p>A small annotation floated <i>above</i> a base, connected by a leader line. For AI suggestions, callouts, drafting-style metadata.</p>
+          <div class="demo" style="padding-top:22px">
+            <div class="elev-base">
+              <h5>Sector 4-B · footprint</h5>
+              <p>Mid-rise mixed-use, 6 storeys baseline.</p>
+              <div class="elev-over"><b>+ Atrium</b>raise to 8?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spatial-cell">
+          <div class="stitle">Primitive · 06</div>
+          <h4>Frontage</h4>
+          <p>A linear sequence — street section, decision pipeline, approval chain. Each segment named, typed, colored by zone.</p>
+          <div class="demo">
+            <div class="frontage">
+              <div class="fseg active"><b>Brief</b>done</div>
+              <div class="fseg active"><b>Survey</b>done</div>
+              <div class="fseg warm"><b>Review</b>now</div>
+              <div class="fseg"><b>Plan</b>q3</div>
+              <div class="fseg"><b>Build</b>q4+</div>
+              <div class="fseg eco"><b>Monitor</b>cont.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MONSOON LOGIC ============ -->
+    <section id="monsoon" class="s">
+      <div class="s-head">
+        <div class="s-num">Climate<b>04</b></div>
+        <div>
+          <h2>Monsoon logic — Singaporean spatial cognition</h2>
+          <p class="blurb">Generic biophilia could come from anywhere. v0.3 imports specifically Singaporean spatial habits: <b>sheltered linkways</b> (content under a covering rule), <b>thresholds</b> (the considered gap between zones), and <b>emergence</b> (content resolving from fog rather than fading in). These replace fades and panel-slides as default transitions for consequential content.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>Climatic intelligence, not poetry</div>
+      </div>
+
+      <div class="monsoon-grid">
+        <div class="monsoon-cell sheltered">
+          <div class="mch">
+            <div class="mlbl">Logic · 01</div>
+            <h4>Sheltered linkway</h4>
+            <p>Content sits beneath a clearly named cover. The cover is structural, not decorative — it carries a session ID, time, or governance scope.</p>
+          </div>
+          <div class="mstage">
+            <div class="mcontent">
+              <b>S-04 · canopy</b>
+              The content here is protected by an explicit shelter — a bronze covering rule with crosshatching. Used for AI-assisted sections.
+            </div>
+          </div>
+        </div>
+        <div class="monsoon-cell threshold">
+          <div class="mch">
+            <div class="mlbl">Logic · 02</div>
+            <h4>Threshold</h4>
+            <p>The considered gap between zones. Crossing it means a transition in tone, contrast, or governance — never silently.</p>
+          </div>
+          <div class="mstage">
+            <div class="thresh-line"></div>
+            <div class="thresh-side left"><b>Draft</b>analytical zone</div>
+            <div class="thresh-side right"><b>Issued</b>critical zone</div>
+          </div>
+        </div>
+        <div class="monsoon-cell emergence">
+          <div class="mch">
+            <div class="mlbl">Logic · 03</div>
+            <h4>Emergence</h4>
+            <p>Content resolves through fog, not through opacity. AI responses, scenario outputs, and live data appear by becoming legible — not by appearing whole.</p>
+          </div>
+          <div class="mstage">
+            <div class="fog-overlay"></div>
+            <div class="mcontent">
+              <b>Atrium · response</b>
+              Bishan and Toa Payoh<br/>show the steepest canopy drop —<br/>about 3.1pp since 2022.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COLOR ============ -->
+    <section id="color" class="s">
+      <div class="s-head">
+        <div class="s-num">Palette<b>05</b></div>
+        <div>
+          <h2>Five families, semantic discipline</h2>
+          <p class="blurb">v0.3 introduces <b>Sepia</b> as a true semantic family for historical/memory layers — alongside Graphite, Paper, Cyan, Bronze, and demoted Canopy. The system now speaks fluently in <i>past</i>, <i>present</i>, and <i>future</i> as colorways, not just states.</p>
+        </div>
+        <div class="s-meta"><b>New family</b>Sepia · memory · provenance</div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Graphite</b><span class="role"><em>Primary</em> — institutional ink</span></div>
+        <div class="scale s10">
+          <div class="swatch lt" style="background:#eaeae3"><span class="step">050</span><span class="hex">#EAEAE3</span></div>
+          <div class="swatch lt" style="background:#dbddd5"><span class="step">100</span><span class="hex">#DBDDD5</span></div>
+          <div class="swatch lt" style="background:#c2c4bc"><span class="step">200</span><span class="hex">#C2C4BC</span></div>
+          <div class="swatch lt" style="background:#9a9d96"><span class="step">300</span><span class="hex">#9A9D96</span></div>
+          <div class="swatch" style="background:#6d736e"><span class="step">400</span><span class="hex">#6D736E</span></div>
+          <div class="swatch" style="background:#4a504c"><span class="step">500</span><span class="hex">#4A504C</span></div>
+          <div class="swatch" style="background:#363c39"><span class="step">600</span><span class="hex">#363C39</span></div>
+          <div class="swatch" style="background:#222826"><span class="step">700</span><span class="hex">#222826</span></div>
+          <div class="swatch" style="background:#161a18"><span class="step">800</span><span class="hex">#161A18</span></div>
+          <div class="swatch" style="background:#0b0e0d"><span class="step">900</span><span class="hex">#0B0E0D</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Sepia</b><span class="role"><em>New</em> — historical layers, memory, archival provenance</span></div>
+        <div class="scale s5">
+          <div class="swatch lt" style="background:#ece0c8"><span class="step">100</span><span class="hex">#ECE0C8</span></div>
+          <div class="swatch lt" style="background:#dcc8a5"><span class="step">200</span><span class="hex">#DCC8A5</span></div>
+          <div class="swatch lt" style="background:#c4a982"><span class="step">300</span><span class="hex">#C4A982</span></div>
+          <div class="swatch" style="background:#8e6d44"><span class="step">500</span><span class="hex">#8E6D44</span></div>
+          <div class="swatch" style="background:#6a4d2a"><span class="step">700</span><span class="hex">#6A4D2A</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Reflected cyan</b><span class="role"><em>Atmosphere</em> — future, live, transit, focus, info</span></div>
+        <div class="scale s5">
+          <div class="swatch lt" style="background:#e2ecf0"><span class="step">100</span><span class="hex">#E2ECF0</span></div>
+          <div class="swatch lt" style="background:#c9dde4"><span class="step">200</span><span class="hex">#C9DDE4</span></div>
+          <div class="swatch" style="background:#7fa6b6"><span class="step">400</span><span class="hex">#7FA6B6</span></div>
+          <div class="swatch" style="background:#5d8a9b"><span class="step">500</span><span class="hex">#5D8A9B</span></div>
+          <div class="swatch" style="background:#2d5566"><span class="step">700</span><span class="hex">#2D5566</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Bronze</b><span class="role"><em>Warmth</em> — sodium light, hospitality, heat-island</span></div>
+        <div class="scale s7">
+          <div class="swatch lt" style="background:#faf4ec"><span class="step">050</span><span class="hex">#FAF4EC</span></div>
+          <div class="swatch lt" style="background:#f0e3cc"><span class="step">100</span><span class="hex">#F0E3CC</span></div>
+          <div class="swatch lt" style="background:#e0c79a"><span class="step">200</span><span class="hex">#E0C79A</span></div>
+          <div class="swatch lt" style="background:#c9a36a"><span class="step">300</span><span class="hex">#C9A36A</span></div>
+          <div class="swatch" style="background:#a87f49"><span class="step">400</span><span class="hex">#A87F49</span></div>
+          <div class="swatch" style="background:#8a6336"><span class="step">500</span><span class="hex">#8A6336</span></div>
+          <div class="swatch" style="background:#6e4d28"><span class="step">700</span><span class="hex">#6E4D28</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Canopy</b> <span class="role"><em>Demoted</em> — ecology layers + positive signal · never chrome</span></div>
+        <div class="scale s4">
+          <div class="swatch lt" style="background:#d4dec9"><span class="step">100</span><span class="hex">#D4DEC9</span></div>
+          <div class="swatch lt" style="background:#a8bb9a"><span class="step">300</span><span class="hex">#A8BB9A</span></div>
+          <div class="swatch" style="background:#4a7140"><span class="step">500</span><span class="hex">#4A7140</span></div>
+          <div class="swatch" style="background:#2f4a24"><span class="step">700</span><span class="hex">#2F4A24</span></div>
+        </div>
+      </div>
+
+      <div class="semantic">
+        <div class="sem"><div class="chip" style="background:var(--signal-positive)"></div><span class="role">Positive</span><b class="label">#3F7A4A</b><span class="use">Confirmations, healthy ecology, growth.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-warning)"></div><span class="role">Warning</span><b class="label">#C08434</b><span class="use">Drift, attention, heat-island flags.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-critical)"></div><span class="role">Critical</span><b class="label">#8C2E20</b><span class="use">Hard blocks, destructive, quota breach.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-info)"></div><span class="role">Info</span><b class="label">#5D8A9B</b><span class="use">System messages, agent voice, live data.</span></div>
+      </div>
+
+      <p class="palette-note"><b>Temporal palette compact:</b> <i>Sepia</i> = past · <i>Paper + Graphite</i> = present · <i>Cyan</i> = future / live. This compact is honored everywhere temporal information appears — memory strata, scenario theatre, layer panels, citation chips.</p>
+    </section>
+
+    <!-- ============ TYPE (compact) ============ -->
+    <section id="type" class="s">
+      <div class="s-head">
+        <div class="s-num">Type<b>06</b></div>
+        <div>
+          <h2>Sans for clarity, serif for invitation, mono for fact</h2>
+          <p class="blurb">v0.3 keeps v0.2's typographic system; mono now carries a heavier semantic load (provenance, coordinates, time, layer numbers, audit codes). Display weights are reserved for thresholds — never for body, never for repeating UI labels.</p>
+        </div>
+        <div class="s-meta"><b>Stack</b>Söhne · Iowan · JetBrains Mono</div>
+      </div>
+      <div class="type-row"><div class="type-meta"><b>Monument</b>60 / 0.98<br/>300 weight</div><div class="t-monument">Civic intelligence,<br/>built to last.</div></div>
+      <div class="type-row"><div class="type-meta"><b>Display</b>40 / 1.04<br/>500 weight</div><div class="t-display">A pedagogy for <em>Urban AI.</em></div></div>
+      <div class="type-row"><div class="type-meta"><b>H1</b>26 / 1.18</div><div class="t-h1">Containers named for cities</div></div>
+      <div class="type-row"><div class="type-meta"><b>H2</b>19 / 1.25</div><div class="t-h2">Six cognitive zones, one system</div></div>
+      <div class="type-row"><div class="type-meta"><b>Lede serif</b>18 / 1.55<br/>editorial only</div><div class="t-body-serif">If your discipline doesn't already treat siting and permitting of AI infrastructure as a first-class problem, it isn't doing Urban AI.</div></div>
+      <div class="type-row"><div class="type-meta"><b>Body</b>14.5 / 1.6</div><div class="t-body">Tokens travel via CSS custom properties at root, scoped per density mode, room mode, and platform export. Components never read raw hex.</div></div>
+      <div class="type-row"><div class="type-meta"><b>Mono — fact</b>12.5 / 1.5<br/>provenance &amp; coords</div><div class="t-mono">PR-1042 · 1.2766°N 103.8518°E · q2-2025 · src: canopy-raster · conf 0.78</div></div>
+      <div class="type-row"><div class="type-meta"><b>Eyebrow</b>10.5 / 1.5<br/>+.16em uppercase</div><div class="t-tag">Layer · 03 / canopy continuity / opacity 35</div></div>
+    </section>
+
+    <!-- ============ FRAME (compact) ============ -->
+    <section id="frame" class="s">
+      <div class="s-head">
+        <div class="s-num">Frame<b>07</b></div>
+        <div>
+          <h2>Hairlines, square radii, named primitives</h2>
+          <p class="blurb">Frame primitives from v0.2 carry through unchanged: corner ticks signal "governed surface." Radii capped at 8px on chrome; pill reserved for status. Spacing follows a 4px base, calibrated by density.</p>
+        </div>
+        <div class="s-meta"><b>Posture</b>Drafted, not floated</div>
+      </div>
+      <div class="frame-row">
+        <div class="fr">
+          <h4 class="t-tag">Spacing scale · 4px base</h4>
+          <div class="space-row"><span class="lbl">s-1</span><div class="bar" style="width:4px"></div><span>4px</span></div>
+          <div class="space-row"><span class="lbl">s-2</span><div class="bar" style="width:8px"></div><span>8px</span></div>
+          <div class="space-row"><span class="lbl">s-3</span><div class="bar" style="width:12px"></div><span>12px</span></div>
+          <div class="space-row"><span class="lbl">s-4</span><div class="bar" style="width:16px"></div><span>16px</span></div>
+          <div class="space-row"><span class="lbl">s-5</span><div class="bar" style="width:24px"></div><span>24px</span></div>
+          <div class="space-row"><span class="lbl">s-6</span><div class="bar" style="width:32px"></div><span>32px</span></div>
+          <div class="space-row"><span class="lbl">s-7</span><div class="bar" style="width:48px"></div><span>48px</span></div>
+          <div class="space-row"><span class="lbl">s-8</span><div class="bar" style="width:64px"></div><span>64px</span></div>
+        </div>
+        <div class="fr">
+          <h4 class="t-tag">Radii — disciplined</h4>
+          <div class="radius-row">
+            <div class="swatch-r" style="border-radius:0">0</div>
+            <div class="swatch-r" style="border-radius:2px">2</div>
+            <div class="swatch-r" style="border-radius:4px">4</div>
+            <div class="swatch-r" style="border-radius:8px">8</div>
+            <div class="swatch-r" style="border-radius:999px">pill</div>
+          </div>
+          <h4 class="t-tag" style="margin-top:22px">Elevation tiers</h4>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <div style="width:54px;height:54px;background:var(--bg-elevated);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e0</div>
+            <div style="width:54px;height:54px;background:var(--bg-elevated);border:1px solid var(--rule-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e1</div>
+            <div style="width:54px;height:54px;background:var(--bg-elevated);border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e2</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MOTION ============ -->
+    <section id="motion" class="s">
+      <div class="s-head">
+        <div class="s-num">Motion<b>08</b></div>
+        <div>
+          <h2>Four climatological curves</h2>
+          <p class="blurb">v0.3 adds a fourth — <b>Reveal</b> — for consequential content (AI responses, scenario outputs, approvals). It mimics monsoon clearing: a horizontal wipe with a slight pause at full reveal. No fade, no slide, no bounce.</p>
+        </div>
+        <div class="s-meta"><b>Default duration</b>200ms · slower on idle</div>
+      </div>
+      <div class="motion-grid">
+        <div class="m-cell"><div class="ml">Curve · 01</div><h4>Settle</h4><p>cubic-bezier(.4,0,.2,1) · 200–420ms · state changes, layout shifts.</p><div class="stage"><span class="puck"></span></div></div>
+        <div class="m-cell"><div class="ml">Curve · 02</div><h4>Fog-pass</h4><p>Linear · 5s+ · loading, idle. No spinners.</p><div class="stage"><span class="puck"></span></div></div>
+        <div class="m-cell"><div class="ml">Curve · 03</div><h4>Light-shift</h4><p>ease-in-out · 4s · live state hint.</p><div class="stage"><span class="puck"></span></div></div>
+        <div class="m-cell"><div class="ml">Curve · 04 · NEW</div><h4>Reveal</h4><p>monsoon-ease · 1.2–2s · consequential content emerging from fog. Horizontal wipe.</p><div class="stage"><span class="puck"></span></div></div>
+      </div>
+    </section>
+
+    <!-- ============ TEMPORAL LAYERS ============ -->
+    <section id="temporal" class="s">
+      <div class="s-head">
+        <div class="s-num">Time<b>09</b></div>
+        <div>
+          <h2>Past, live, future — as colorways</h2>
+          <p class="blurb">Urban planning is a temporal discipline. v0.3 encodes time in the design system: <b>historical</b> renders sedimentary in sepia; <b>live</b> renders humid and kinetic in cyan-100; <b>future</b> renders luminous and dashed. Used in memory views, scenario theatre, and citation chips throughout.</p>
+        </div>
+        <div class="s-meta"><b>Compact</b>Sepia · paper · cyan = past · now · next</div>
+      </div>
+
+      <div class="temporal">
+        <div class="tlayer historical">
+          <div class="th"><div class="tlabel">Layer · 01</div><h4>Historical</h4><p>Sedimentary. Archival. Read-only. Sepia tones with horizontal grain.</p></div>
+          <div class="tstage">
+            <div class="strata"><i></i><i></i><i></i><i></i></div>
+            <div class="tcontent">
+              <b>S-04 · 1985</b>
+              Joo Chiat Road · low-rise · canopy 71% · vernacular shophouses, mid-block voids.
+            </div>
+          </div>
+        </div>
+        <div class="tlayer live">
+          <div class="th"><div class="tlabel">Layer · 02</div><h4>Live</h4><p>Current state. Humid, kinetic, subject to revision. Cyan-100 base with slow humid drift.</p></div>
+          <div class="tstage">
+            <div class="tcontent">
+              <b>S-04 · 2025</b>
+              <span class="pulse"><i></i>SYNC · 14:22 SGT</span><br/>
+              <span style="margin-top:6px;display:inline-block;font-size:12px;color:var(--ink-2)">Canopy 62% · surface +3.4°C · 11 reports.</span>
+            </div>
+          </div>
+        </div>
+        <div class="tlayer future">
+          <div class="th"><div class="tlabel">Layer · 03</div><h4>Future</h4><p>Probabilistic, partial, dashed. Luminous cyan with diagonal hatch — always uncertain.</p></div>
+          <div class="tstage">
+            <div class="tcontent">
+              <b>S-04 · 2040 (projected)</b>
+              <span class="scenario">A · mid-rise</span><span class="scenario">B · corridor</span><br/>
+              <span style="margin-top:4px;display:inline-block;font-size:12px;color:var(--cyan-700)">Canopy 58–74% · conf. 0.61</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRUST LAYER ============ -->
+    <section id="trust" class="s">
+      <div class="s-head">
+        <div class="s-num">Trust<b>10</b></div>
+        <div>
+          <h2>Visible epistemic structure</h2>
+          <p class="blurb">AI in planning fails without traceability. v0.3 codifies a <b>trust layer</b>: every consequential AI surface carries source lineage, a confidence band, a policy badge, a temporal validity marker, and a review status strip. None of this is decoration. All of it is auditable.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>Authority is shown, not implied</div>
+      </div>
+
+      <div class="trust-grid">
+        <div class="trust-demo">
+          <div class="tdh"><span>Atrium · session AT-2071</span><b>Audit · on</b></div>
+          <div class="tdbody">
+            <div class="answer">Bishan and Toa Payoh show the steepest canopy drop — about <b>3.1pp</b> since 2022. Main contributors: MRT line works (DTL3e) and estate renewal in three precincts.</div>
+
+            <div class="trust-footer">
+              <div class="tf">
+                <div class="tlbl">Lineage</div>
+                <div class="lineage">
+                  <span class="src"><b>canopy-raster</b> · q1-2025</span>
+                  <span class="arrow">→</span>
+                  <span class="src"><b>URA renewal log</b> · 2022–25</span>
+                  <span class="arrow">→</span>
+                  <span class="src"><b>LTA schedule</b> · DTL3e</span>
+                </div>
+              </div>
+              <div class="tf">
+                <div class="tlbl">Confidence</div>
+                <div class="conf-band">
+                  <div class="cb"><i style="left:78%"></i></div>
+                  <span class="cn">0.78</span>
+                </div>
+                <div class="tmeta">Above policy threshold · 0.65</div>
+              </div>
+              <div class="tf">
+                <div class="tlbl">Policy authority</div>
+                <div class="policy-badge"><i></i>URA · 2024-12</div>
+                <div class="tmeta" style="margin-top:6px">Canopy continuity guideline</div>
+              </div>
+              <div class="tf">
+                <div class="tlbl">Temporal validity</div>
+                <div class="tval">Valid until q4-2025</div>
+                <div class="tmeta">Re-run on raster refresh</div>
+              </div>
+              <div class="tf">
+                <div class="tlbl">Review status</div>
+                <div class="review-status">
+                  <span class="done">Drafted</span>
+                  <span class="done">Sourced</span>
+                  <span class="active">In review</span>
+                  <span>Cleared</span>
+                </div>
+              </div>
+              <div class="tf">
+                <div class="tlbl">Reviewer</div>
+                <div class="tval">S. Koh</div>
+                <div class="tmeta">Assigned · 13:42 SGT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-rules">
+          <div class="tr">
+            <div class="tn">Rule · 01</div>
+            <h5>Citation is structural</h5>
+            <p>Any consequential answer carries at least one source chip. Citation-less answers must be marked with a <code>think</code> indicator and excluded from approval flows.</p>
+          </div>
+          <div class="tr">
+            <div class="tn">Rule · 02</div>
+            <h5>Confidence is visible, not whispered</h5>
+            <p>A 5px gradient band, marker, and number. Below 0.65 → degraded state with warning tone. Below 0.45 → blocked from issued surfaces.</p>
+          </div>
+          <div class="tr">
+            <div class="tn">Rule · 03</div>
+            <h5>Policy authority is named</h5>
+            <p>Every AI claim that touches policy carries the governing document and version. "URA · 2024-12" is more useful than a soft confidence pill.</p>
+          </div>
+          <div class="tr">
+            <div class="tn">Rule · 04</div>
+            <h5>Time-bound by default</h5>
+            <p>Every answer has an explicit validity window. The system auto-flags claims past their re-run trigger and downranks them in retrieval.</p>
+          </div>
+          <div class="tr">
+            <div class="tn">Rule · 05</div>
+            <h5>Review state is public</h5>
+            <p>The four-stage strip (Drafted → Sourced → Reviewed → Cleared) is visible on every AI surface intended for governance. State changes are logged.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CARTOGRAPHY ============ -->
+    <section id="gis" class="s deep">
+      <div class="s-head">
+        <div class="s-num">Maps<b>11</b></div>
+        <div>
+          <h2>Tropical civic cartography — refined</h2>
+          <p class="blurb">The map carries identity. Roads are drafting-style hairlines, transit lines are the only glow in the system, ecology is translucent strata, heat is bronze wash, AI overlays are flow particles, and labels are cartouches with embedded trust chips. The legend is a dark rail that matches the platform shell.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>Map-native AI, not AI on maps</div>
+      </div>
+
+      <div class="gis-intro">
+        <div class="gis-rule"><div class="gh">Layer · 01</div><h4>Roads — drafted</h4><p>Hairline strokes in graphite-400. Major arteries gain weight (2px), never color. Drafting-board discipline.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 02</div><h4>Transit — luminous veins</h4><p>Cyan with 2–4px outer glow. The only licensed glow in the system. Stations appear as bordered dots.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 03</div><h4>Ecology — translucent strata</h4><p>Canopy as 40–55% green washes with hard 1px boundaries. Layered, not painted over.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 04</div><h4>Heat — atmospheric depth</h4><p>Surface temperature as bronze washes. Elevation as warm-to-cool grey gradient.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 05</div><h4>AI overlay — flow</h4><p>Predictions render as drifting particle vectors — pedestrian flow, monsoon shelter, simulated metabolism. They behave like weather, not like buttons.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 06</div><h4>Cartouches — anchored</h4><p>Cream rectangles with corner ticks, embedded trust chips, mono fields. Hand-placed, not floated.</p></div>
+      </div>
+
+      <div class="gis-map-wrap">
+        <div class="gtitle">
+          <b>Marina South · canopy + heat + flow composite</b>
+          <span class="coords">1.2766°N 103.8518°E · z14 · q2-2025</span>
+        </div>
+        <div class="gis-map">
+          <svg viewBox="0 0 800 480" preserveAspectRatio="none">
+            <!-- ecology strata -->
+            <path d="M 80 60 Q 180 40 280 80 L 320 160 Q 240 200 140 180 Z" fill="#4a7140" fill-opacity=".46" stroke="#2f4a24" stroke-opacity=".5"/>
+            <path d="M 480 290 Q 600 270 700 330 L 680 420 Q 580 430 500 400 Z" fill="#4a7140" fill-opacity=".42" stroke="#2f4a24" stroke-opacity=".45"/>
+            <path d="M 600 60 Q 700 50 760 120 L 740 200 Q 660 180 600 140 Z" fill="#a8bb9a" fill-opacity=".45" stroke="#4a7140" stroke-opacity=".4"/>
+            <!-- heat wash -->
+            <path d="M 320 200 Q 440 180 560 220 Q 600 280 540 340 Q 420 360 300 320 Z" fill="#a87f49" fill-opacity=".34"/>
+            <!-- roads — drafted hairlines -->
+            <path d="M 0 220 Q 200 200 400 240 T 800 230" stroke="#6d736e" stroke-width="1.4" fill="none" opacity=".9"/>
+            <path d="M 0 320 Q 220 310 420 330 T 800 320" stroke="#6d736e" stroke-width="1" fill="none" opacity=".7"/>
+            <path d="M 0 120 Q 220 110 420 130 T 800 120" stroke="#6d736e" stroke-width=".8" fill="none" opacity=".55"/>
+            <path d="M 120 0 Q 130 200 140 480" stroke="#6d736e" stroke-width="1" fill="none" opacity=".7"/>
+            <path d="M 360 0 Q 370 230 380 480" stroke="#6d736e" stroke-width="1.6" fill="none" opacity=".9"/>
+            <path d="M 580 0 Q 590 200 600 480" stroke="#6d736e" stroke-width=".9" fill="none" opacity=".65"/>
+            <!-- minor grid -->
+            <path d="M 200 0 L 210 480 M 280 0 L 290 480 M 440 0 L 450 480 M 520 0 L 530 480 M 660 0 L 670 480 M 720 0 L 730 480" stroke="#9a9d96" stroke-width=".4" fill="none" opacity=".5"/>
+            <path d="M 0 60 L 800 70 M 0 160 L 800 170 M 0 280 L 800 290 M 0 380 L 800 390 M 0 440 L 800 450" stroke="#9a9d96" stroke-width=".4" fill="none" opacity=".5"/>
+            <!-- transit veins -->
+            <g style="filter:drop-shadow(0 0 4px rgba(127,166,182,.9))">
+              <path d="M 0 250 Q 200 240 380 260 Q 540 270 680 240 L 800 235" stroke="#7fa6b6" stroke-width="2.2" fill="none"/>
+              <path d="M 400 0 Q 410 150 420 260 Q 430 360 440 480" stroke="#7fa6b6" stroke-width="2.2" fill="none"/>
+            </g>
+            <!-- AI flow overlay — particle field hint -->
+            <g class="flow-overlay" stroke="#5d8a9b" stroke-width="1" fill="none" opacity=".5">
+              <path d="M 100 150 Q 140 140 180 150" stroke-dasharray="4 4"/>
+              <path d="M 200 180 Q 240 170 280 180" stroke-dasharray="4 4"/>
+              <path d="M 320 200 Q 360 190 400 200" stroke-dasharray="4 4"/>
+              <path d="M 440 220 Q 480 210 520 220" stroke-dasharray="4 4"/>
+              <path d="M 560 200 Q 600 190 640 200" stroke-dasharray="4 4"/>
+              <path d="M 140 280 Q 180 270 220 280" stroke-dasharray="4 4"/>
+              <path d="M 260 310 Q 300 300 340 310" stroke-dasharray="4 4"/>
+              <path d="M 380 340 Q 420 330 460 340" stroke-dasharray="4 4"/>
+              <path d="M 520 360 Q 560 350 600 360" stroke-dasharray="4 4"/>
+            </g>
+            <!-- water hint -->
+            <path d="M 0 440 Q 200 460 400 445 T 800 460 L 800 480 L 0 480 Z" fill="#5d8a9b" fill-opacity=".2"/>
+          </svg>
+
+          <!-- stations -->
+          <div class="gis-station" style="left:18%;top:53.5%"></div>
+          <div class="gis-station" style="left:46%;top:56%"></div>
+          <div class="gis-station" style="left:74%;top:51%"></div>
+          <div class="gis-station" style="left:52%;top:32%"></div>
+          <div class="gis-station" style="left:53%;top:78%"></div>
+
+          <!-- pins -->
+          <div class="gis-pin" style="left:38%;top:38%"></div>
+          <div class="gis-pin eco" style="left:22%;top:24%"></div>
+          <div class="gis-pin eco" style="left:72%;top:74%"></div>
+          <div class="gis-pin crit" style="left:48%;top:62%"></div>
+          <div class="gis-pin" style="left:62%;top:46%"></div>
+
+          <div class="gis-scale"><i></i>500 m</div>
+
+          <div class="gis-cartouche">
+            <b>S-04 · Marina South</b>
+            <div class="row"><span class="k">Canopy</span><span class="v">62.0%</span></div>
+            <div class="row"><span class="k">Surface temp</span><span class="v">+3.4°C</span></div>
+            <div class="row"><span class="k">Heat-island</span><span class="v">moderate</span></div>
+            <div class="row"><span class="k">Active reports</span><span class="v">11</span></div>
+            <div class="row"><span class="k">DC siting</span><span class="v">restricted</span></div>
+            <div class="trust-mini">
+              <span>conf 0.78</span>
+              <span>URA 24-12</span>
+              <span>q2-2025</span>
+            </div>
+          </div>
+
+          <div class="gis-legend">
+            <b>Composite · q2 2025</b>
+            <div class="li"><i class="swatch-rd"></i>Roads · minor</div>
+            <div class="li"><i class="swatch-rd-major"></i>Roads · major</div>
+            <div class="li"><i class="swatch-mrt"></i>MRT lines</div>
+            <div class="li"><i class="swatch-eco"></i>Canopy stratum</div>
+            <div class="li"><i class="swatch-heat"></i>Heat island</div>
+            <div class="li"><i style="width:14px;height:1.5px;background:#5d8a9b;border-top:1px dashed #5d8a9b"></i>AI flow vectors</div>
+            <div class="li"><i style="width:8px;height:8px;background:#4a7140"></i>Ecology asset</div>
+            <div class="li"><i style="width:8px;height:8px;background:#8c2e20"></i>Critical alert</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCENARIO THEATRE ============ -->
+    <section id="theatre" class="s">
+      <div class="s-head">
+        <div class="s-num">Theatre<b>12</b></div>
+        <div>
+          <h2>Scenario Theatre — comparing futures</h2>
+          <p class="blurb">Urban design is fundamentally comparative. v0.3 introduces a dedicated <b>Scenario Theatre</b> primitive: two (or more) scenarios share a base district, render their proposed states side-by-side, and surface their deltas through a shared metric strip. No PowerPoint dashboards.</p>
+        </div>
+        <div class="s-meta"><b>Use</b>Plan reviews · public consultation · workshops</div>
+      </div>
+
+      <div class="theatre">
+        <div class="scenario-col">
+          <div class="scen-head">
+            <b>Scenario A · Mid-rise infill</b>
+            <span class="scen-tag">6–8 storeys</span>
+          </div>
+          <div class="scen-map">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="none">
+              <path d="M 60 50 Q 140 40 220 70 L 240 130 Q 180 150 100 140 Z" fill="#4a7140" fill-opacity=".42"/>
+              <path d="M 240 180 Q 320 170 360 210 L 340 250 Q 280 260 240 240 Z" fill="#4a7140" fill-opacity=".35"/>
+              <path d="M 140 130 Q 220 120 300 150 Q 320 200 280 230 Q 200 240 140 220 Z" fill="#a87f49" fill-opacity=".4"/>
+              <path d="M 0 160 Q 130 150 260 170 T 400 165" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".75"/>
+              <path d="M 200 0 Q 210 140 220 280" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".75"/>
+              <g style="filter:drop-shadow(0 0 3px rgba(127,166,182,.85))">
+                <path d="M 0 195 Q 130 185 260 205 T 400 200" stroke="#7fa6b6" stroke-width="2" fill="none"/>
+              </g>
+              <rect x="125" y="105" width="30" height="30" fill="#363c39" opacity=".55"/>
+              <rect x="170" y="115" width="22" height="22" fill="#363c39" opacity=".55"/>
+              <rect x="210" y="100" width="28" height="35" fill="#363c39" opacity=".55"/>
+              <rect x="250" y="120" width="25" height="25" fill="#363c39" opacity=".55"/>
+            </svg>
+            <div class="gis-station" style="left:30%;top:70%"></div>
+            <div class="gis-station" style="left:78%;top:72%"></div>
+          </div>
+          <div class="scen-metrics">
+            <div class="scen-metric"><div class="smk">Canopy</div><div class="smv">58%</div><div class="smd diff down">↓ 4pp vs base</div></div>
+            <div class="scen-metric"><div class="smk">Units / ha</div><div class="smv">240</div><div class="smd">density target met</div></div>
+            <div class="scen-metric"><div class="smk">Heat</div><div class="smv">+3.9°</div><div class="smd diff down">↑ 0.5°</div></div>
+          </div>
+        </div>
+
+        <div class="scenario-col">
+          <div class="scen-head">
+            <b>Scenario B · Low-rise corridor</b>
+            <span class="scen-tag">3–4 storeys · linear</span>
+          </div>
+          <div class="scen-map">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="none">
+              <path d="M 60 50 Q 140 40 220 70 L 240 130 Q 180 150 100 140 Z" fill="#4a7140" fill-opacity=".55"/>
+              <path d="M 240 180 Q 320 170 360 210 L 340 250 Q 280 260 240 240 Z" fill="#4a7140" fill-opacity=".5"/>
+              <path d="M 140 130 Q 220 120 300 150 Q 320 200 280 230 Q 200 240 140 220 Z" fill="#a87f49" fill-opacity=".22"/>
+              <path d="M 0 160 Q 130 150 260 170 T 400 165" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".75"/>
+              <path d="M 200 0 Q 210 140 220 280" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".75"/>
+              <g style="filter:drop-shadow(0 0 3px rgba(127,166,182,.85))">
+                <path d="M 0 195 Q 130 185 260 205 T 400 200" stroke="#7fa6b6" stroke-width="2" fill="none"/>
+              </g>
+              <rect x="105" y="125" width="180" height="14" fill="#363c39" opacity=".55"/>
+              <rect x="105" y="148" width="180" height="14" fill="#363c39" opacity=".55"/>
+            </svg>
+            <div class="gis-station" style="left:30%;top:70%"></div>
+            <div class="gis-station" style="left:78%;top:72%"></div>
+          </div>
+          <div class="scen-metrics">
+            <div class="scen-metric"><div class="smk">Canopy</div><div class="smv">71%</div><div class="smd diff">↑ 9pp vs base</div></div>
+            <div class="scen-metric"><div class="smk">Units / ha</div><div class="smv">160</div><div class="smd diff down">−80 vs A</div></div>
+            <div class="scen-metric"><div class="smk">Heat</div><div class="smv">+2.8°</div><div class="smd diff">↓ 0.6°</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="theatre-diff" style="border-top:none;border-left:1px solid var(--rule-bold);border-right:1px solid var(--rule-bold);border-bottom:1px solid var(--rule-bold)">
+        <span><b>Delta · A → B</b> · canopy +13pp · density −80/ha · heat −1.1°C · monsoon shelter coverage +18%</span>
+        <span>Run · S-04-thtr-009 · conf 0.71</span>
+      </div>
+    </section>
+
+    <!-- ============ URBAN MEMORY ============ -->
+    <section id="memory" class="s">
+      <div class="s-head">
+        <div class="s-num">Memory<b>13</b></div>
+        <div>
+          <h2>Urban Memory — districts as accumulations</h2>
+          <p class="blurb">A city is its decisions. Clicking a district should reveal its lineage — historical plans, policy evolution, past proposals, environmental change, and AI-projected futures, rendered as <b>evolving strata</b>. Sepia for past, paper-cyan for live, dashed cyan for future. The temporal palette becomes a reading mode.</p>
+        </div>
+        <div class="s-meta"><b>Use</b>District deep-views · policy archaeology</div>
+      </div>
+
+      <div class="memory">
+        <div class="memory-spine">
+          <div class="spine-label">District lineage</div>
+          <div class="spine-district">Marina South<br/>S-04</div>
+          <div class="spine-coords">1.2766°N<br/>103.8518°E</div>
+        </div>
+        <div class="memory-strata">
+          <div class="stratum historical">
+            <div class="year">1965</div>
+            <div class="desc">
+              <span class="epoch-tag">Foundational</span>
+              <b>Independence-era plan</b>
+              Industrial waterfront. Low canopy, no MRT, exclusion zoning. Surveys archived in URA microfilm.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+          <div class="stratum historical">
+            <div class="year">1985</div>
+            <div class="desc">
+              <span class="epoch-tag">Concept Plan</span>
+              <b>Marina South vision adopted</b>
+              First reclamation phase. Conservation overlay for adjacent shophouse blocks. Population: 2,400.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+          <div class="stratum past">
+            <div class="year">2005</div>
+            <div class="desc">
+              <span class="epoch-tag">Master Plan</span>
+              <b>Mixed-use intensification</b>
+              First MRT works begin (CCL). Canopy 68%. Public realm framework introduced. 3 amendments through 2014.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+          <div class="stratum live">
+            <div class="year">2025</div>
+            <div class="desc">
+              <span class="epoch-tag">Live</span>
+              <b>Current state — under review</b>
+              Canopy 62%, surface temp +3.4°C, 11 active reports. DTL3e works underway. Heat-island moderate. Trust state: drafted.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+          <div class="stratum future">
+            <div class="year">2040</div>
+            <div class="desc">
+              <span class="epoch-tag">Projected · A</span>
+              <b>Mid-rise infill scenario</b>
+              Density +80/ha, canopy 58% (−4pp), heat +3.9°C. Conf. 0.71. Atrium recommends revisit at q4-2027.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+          <div class="stratum future">
+            <div class="year">2040</div>
+            <div class="desc">
+              <span class="epoch-tag">Projected · B</span>
+              <b>Low-rise corridor scenario</b>
+              Density −80/ha, canopy 71% (+9pp), heat +2.8°C. Conf. 0.69. Monsoon shelter coverage +18%.
+            </div>
+            <div class="stratum-vis"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COMPONENTS ============ -->
+    <section id="components" class="s">
+      <div class="s-head">
+        <div class="s-num">Kit<b>14</b></div>
+        <div>
+          <h2>Primitives, retuned</h2>
+          <p class="blurb">Components are now the smallest unit of vocabulary. Larger constructs (district, corridor, layer-stack, cartouche, trust-footer) compose from them. Pill survives only on chips; everything else has angles.</p>
+        </div>
+        <div class="s-meta"><b>Posture</b>Square, named, accountable</div>
+      </div>
+
+      <div class="comp-grid">
+        <div class="comp">
+          <div class="clabel">Buttons<span>radius 2</span></div>
+          <div class="crow">
+            <button class="btn">Approve <span class="key">⌘↵</span></button>
+            <button class="btn secondary">Secondary</button>
+          </div>
+          <div class="crow">
+            <button class="btn ghost">Ghost</button>
+            <button class="btn cool">Run</button>
+            <button class="btn warm">Flag</button>
+          </div>
+        </div>
+        <div class="comp">
+          <div class="clabel">Inputs<span>bottom-rule</span></div>
+          <label class="field-label">District</label>
+          <input class="input" value="S-04 · Marina South"/>
+          <label class="field-label" style="margin-top:12px">Record ID</label>
+          <input class="input" placeholder="PR-####"/>
+        </div>
+        <div class="comp">
+          <div class="clabel">Chips<span>pill</span></div>
+          <div class="crow">
+            <span class="tag active">Active</span>
+            <span class="tag warm">Review</span>
+            <span class="tag cool">Synced</span>
+            <span class="tag">Archived</span>
+          </div>
+          <div class="crow" style="margin-top:12px">
+            <div class="toggle">
+              <button class="on">Day</button><button>Night</button><button>Auto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footnote">Conservatory · v0.3 · <b>Spatial Operating System</b> · A philosophy of urban intelligence — for planning authorities, civic AI, and long-horizon governance</p>
+
+  </main>
+</div>
+
+<script>
+  const root=document.documentElement;
+  document.querySelectorAll('#seg-mode button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#seg-mode button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      root.dataset.mode=b.dataset.m;
+    });
+  });
+  document.querySelectorAll('#seg-density button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#seg-density button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      root.dataset.density=b.dataset.d;
+    });
+  });
+  document.querySelectorAll('#seg-room button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#seg-room button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      root.dataset.room=b.dataset.r;
+    });
+  });
+  document.querySelectorAll('.toggle').forEach(tg=>{
+    tg.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        tg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+  // Scrollspy
+  const links=[...document.querySelectorAll('.rail nav a')];
+  const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id='#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('on', a.getAttribute('href')===id));
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  sections.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

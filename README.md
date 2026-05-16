@@ -14,6 +14,7 @@ Two self-contained HTML pages, no build step, no dependencies:
 - **[`guide.html`](./guide.html)** — a guided reading of the paper itself. Ten stops with a sticky table of contents, scroll-spy, hover annotations, and inline interactives at the spots where the argument turns.
 - **[`style-guide.html`](./style-guide.html)** — *Conservatory v0.1*, a biophilic design system (tokens, type, components, motion, and mockups for mobile / GIS / CRM / AI surfaces). Influenced by Gardens by the Bay.
 - **[`style-guide-v02.html`](./style-guide-v02.html)** — *Conservatory v0.2*, repositioned as **Tropical Civic Futurism** — heavier framing, institutional contrast, demoted green, climatological motion, three operational density modes, and a proper tropical civic cartography. Hosted alongside the paper site for convenience.
+- **[`style-guide-v03.html`](./style-guide-v03.html)** — *Conservatory v0.3*, evolved into a **Spatial Operating System**. Adds spatial primitives (district, corridor, node, layer-stack), cognitive zones, an urban-intelligence cartography, temporal layers (historical / live / future), an explicit trust layer (lineage, confidence band, policy badge, temporal validity, review status), monsoon logic, Review Room mode, Scenario Theatre, and Urban Memory strata.
 
 The two paper pages link to each other; start from either.
 
