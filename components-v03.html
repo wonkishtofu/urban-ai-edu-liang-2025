@@ -1,0 +1,1703 @@
+<!doctype html>
+<html lang="en" data-density="operational" data-mode="light" data-room="standard">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Conservatory v0.3 — Components</title>
+<style>
+/* =========================================================
+   CONSERVATORY v0.3 — COMPONENTS
+   Every UI primitive expressed in the v0.3 design language.
+   Token set is identical to style-guide-v03 so this file is
+   a faithful component gallery for the spatial OS.
+   ========================================================= */
+
+:root{
+  --graphite-900:#0b0e0d; --graphite-800:#161a18; --graphite-700:#222826;
+  --graphite-600:#363c39; --graphite-500:#4a504c; --graphite-400:#6d736e;
+  --graphite-300:#9a9d96; --graphite-200:#c2c4bc; --graphite-100:#dbddd5;
+  --graphite-50:#eaeae3;
+
+  --paper-0:#ffffff; --paper-1:#fbfaf4; --paper-2:#f4f3ec; --paper-3:#ebeae2;
+  --paper-warm:#f7f2e6; --paper-cool:#f0f3f4;
+
+  --cyan-700:#2d5566; --cyan-500:#5d8a9b; --cyan-400:#7fa6b6;
+  --cyan-200:#c9dde4; --cyan-100:#e2ecf0;
+  --bronze-700:#6e4d28; --bronze-500:#8a6336; --bronze-400:#a87f49;
+  --bronze-300:#c9a36a; --bronze-200:#e0c79a; --bronze-100:#f0e3cc; --bronze-50:#faf4ec;
+  --canopy-700:#2f4a24; --canopy-500:#4a7140; --canopy-300:#a8bb9a; --canopy-100:#d4dec9;
+  --sepia-700:#6a4d2a; --sepia-500:#8e6d44; --sepia-300:#c4a982; --sepia-100:#ece0c8;
+  --orchid-500:#8a4570; --orchid-200:#d8b6c8;
+
+  --signal-positive:#3f7a4a; --signal-warning:#c08434;
+  --signal-critical:#8c2e20; --signal-info:var(--cyan-500);
+
+  --bg:var(--paper-1); --bg-elevated:var(--paper-0); --bg-sunken:var(--paper-2);
+  --bg-deep:var(--graphite-900); --bg-deep-text:#dbddd5;
+  --ink:var(--graphite-900); --ink-2:var(--graphite-600); --ink-3:var(--graphite-400);
+  --rule:var(--paper-3); --rule-strong:var(--graphite-200); --rule-bold:var(--graphite-900);
+  --accent:var(--cyan-500); --accent-warm:var(--bronze-400); --accent-eco:var(--canopy-500);
+
+  --font-display:"Söhne","Inter","SF Pro Display",-apple-system,system-ui,sans-serif;
+  --font-body:"Söhne","Inter","SF Pro Text",-apple-system,system-ui,sans-serif;
+  --font-serif:"Iowan Old Style","Source Serif Pro",Georgia,serif;
+  --font-mono:"JetBrains Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  --t-monument:60px; --t-display:40px; --t-h1:26px; --t-h2:19px;
+  --t-h3:15px; --t-body:14.5px; --t-small:13px; --t-micro:11px;
+
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px;
+  --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+  --row-y:10px; --row-x:14px; --pad-card:18px; --pad-section:56px;
+
+  --r-0:0; --r-1:2px; --r-2:4px; --r-3:8px; --r-pill:999px;
+  --hairline:1px solid var(--rule);
+  --hairline-strong:1px solid var(--rule-strong);
+  --hairline-bold:1.5px solid var(--ink);
+
+  --ease-atmosphere:cubic-bezier(.4,0,.2,1);
+  --ease-monsoon:cubic-bezier(.45,.05,.55,.95);
+  --dur-fast:120ms; --dur:200ms; --dur-slow:420ms;
+}
+
+[data-density="ambient"]    { --row-y:14px; --row-x:18px; --pad-card:24px; --pad-section:80px; --t-body:15.5px; --t-h1:30px; }
+[data-density="operational"]{ --row-y:10px; --row-x:14px; --pad-card:18px; --pad-section:56px; --t-body:14.5px; --t-h1:26px; }
+[data-density="dense"]      { --row-y:6px;  --row-x:10px; --pad-card:12px; --pad-section:40px; --t-body:12.5px; --t-h1:22px; }
+
+[data-mode="dark"]{
+  --bg:#0e1110; --bg-elevated:#161a18; --bg-sunken:#0a0d0c; --bg-deep:#000;
+  --ink:#ebeae2; --ink-2:#9a9d96; --ink-3:#6d736e;
+  --rule:#222826; --rule-strong:#363c39; --rule-bold:#ebeae2;
+  --accent:var(--cyan-400);
+  --paper-0:#161a18; --paper-1:#0e1110; --paper-2:#0a0d0c; --paper-3:#222826;
+  --paper-warm:#1c1813; --paper-cool:#0e1414;
+  --cyan-100:#15282e; --bronze-50:#1a140d;
+}
+[data-room="review"]{
+  --t-body:16px; --t-h1:32px; --t-h2:22px;
+  --rule:var(--graphite-300); --rule-strong:var(--ink);
+  --hairline:1.25px solid var(--rule); --hairline-strong:1.5px solid var(--ink);
+}
+[data-room="review"] body{font-weight:450}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+
+/* =============================================================
+   SHELL — same as v0.3 style guide
+   ============================================================= */
+.shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.rail{background:var(--bg-deep);color:var(--bg-deep-text);padding:28px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--graphite-700);display:flex;flex-direction:column}
+.rail .mark{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.rail .glyph{width:30px;height:30px;background:var(--bg-deep-text);position:relative;flex-shrink:0}
+.rail .glyph::before{content:"";position:absolute;inset:5px;background:var(--bg-deep)}
+.rail .glyph::after{content:"";position:absolute;left:0;top:50%;right:0;height:1.5px;background:var(--bg-deep);transform:translateY(-50%)}
+.rail .name{font-family:var(--font-display);font-weight:600;font-size:15px;letter-spacing:.01em;line-height:1.15}
+.rail .name span{display:block;font-family:var(--font-mono);font-weight:400;font-size:10px;color:var(--graphite-300);letter-spacing:.16em;margin-top:3px;text-transform:uppercase}
+.rail-section{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;color:var(--graphite-400);text-transform:uppercase;margin:14px 0 6px;padding-bottom:5px;border-bottom:1px solid var(--graphite-700)}
+.rail nav{display:flex;flex-direction:column}
+.rail nav a{color:var(--graphite-300);text-decoration:none;padding:5px 10px;font-size:12px;border-left:2px solid transparent;display:flex;align-items:center;gap:10px;transition:color var(--dur) var(--ease-atmosphere),border-color var(--dur) var(--ease-atmosphere),background var(--dur) var(--ease-atmosphere)}
+.rail nav a .num{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--graphite-400);width:22px}
+.rail nav a:hover{color:var(--bg-deep-text);background:rgba(255,255,255,.025)}
+.rail nav a.on{color:var(--bg-deep-text);border-left-color:var(--cyan-400);background:rgba(127,166,182,.06)}
+.rail nav a.on .num{color:var(--cyan-400)}
+.rail .rail-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--graphite-700);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--graphite-400);text-transform:uppercase;line-height:1.7}
+.rail .rail-foot b{display:block;color:var(--graphite-200);font-weight:500}
+
+.canvas{min-width:0}
+
+.station{display:flex;justify-content:space-between;align-items:stretch;border-bottom:1.5px solid var(--ink);background:var(--bg);position:sticky;top:0;z-index:20}
+.station .crumb{display:flex;align-items:center;padding:13px 30px;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-2);text-transform:uppercase}
+.station .crumb b{color:var(--ink);font-weight:500}
+.station .crumb .bar{width:18px;height:1.5px;background:var(--ink)}
+.station .controls{display:flex;align-items:stretch;border-left:1px solid var(--rule-strong)}
+.station .ctrl-group{display:flex;align-items:center;padding:0 16px;gap:8px;border-right:1px solid var(--rule)}
+.station .ctrl-group:last-child{border-right:none}
+.station .ctrl-label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.station .seg{display:flex;background:var(--bg-sunken);border:1px solid var(--rule-strong)}
+.station .seg button{appearance:none;border:none;background:transparent;font:inherit;font-size:10.5px;color:var(--ink-2);padding:5px 10px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid var(--rule-strong)}
+.station .seg button:last-child{border-right:none}
+.station .seg button.on{background:var(--ink);color:var(--bg)}
+
+/* =============================================================
+   SECTION SCAFFOLD
+   ============================================================= */
+section.s{padding:var(--pad-section) 56px;border-bottom:1px solid var(--rule-strong)}
+.s-head{display:grid;grid-template-columns:120px 1fr 200px;gap:32px;align-items:start;margin-bottom:36px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+.s-num{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;padding-top:6px}
+.s-num b{display:block;color:var(--ink);font-family:var(--font-display);font-size:44px;letter-spacing:-.02em;line-height:1;font-weight:300;margin-top:6px}
+.s-head h2{font-family:var(--font-display);font-size:var(--t-h1);font-weight:500;letter-spacing:-.015em;margin:0 0 8px}
+.s-head .blurb{color:var(--ink-2);font-size:14px;max-width:62ch;margin:0;line-height:1.6}
+.s-meta{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;line-height:1.7;border-left:1px solid var(--rule-strong);padding-left:18px}
+.s-meta b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:var(--font-display);font-size:13px}
+
+/* Demo grid scaffold */
+.demos{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.demos.cols-1{grid-template-columns:1fr}
+.demos.cols-3{grid-template-columns:repeat(3,1fr)}
+.demos.cols-4{grid-template-columns:repeat(4,1fr)}
+.demo{padding:22px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative;min-height:160px;display:flex;flex-direction:column;gap:14px}
+.demo:nth-child(2n){border-right:none}
+.demos.cols-1 .demo{border-right:none}
+.demos.cols-3 .demo:nth-child(3n){border-right:none}
+.demos.cols-3 .demo:nth-child(2n){border-right:1px solid var(--rule)}
+.demos.cols-4 .demo:nth-child(4n){border-right:none}
+.demos.cols-4 .demo:nth-child(2n){border-right:1px solid var(--rule)}
+.demos.cols-4 .demo:nth-child(3n){border-right:1px solid var(--rule)}
+.demo .demo-h{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed var(--rule);padding-bottom:8px}
+.demo .demo-h .dlbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;font-weight:500}
+.demo .demo-h .dnum{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-3)}
+.demo .demo-body{flex:1;display:flex;flex-direction:column;gap:12px;align-items:flex-start;justify-content:flex-start}
+.demo.center .demo-body{align-items:center;justify-content:center}
+.demo .demo-note{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.04em;line-height:1.5;padding-top:6px;border-top:1px dashed var(--rule)}
+
+/* =============================================================
+   BUTTONS
+   ============================================================= */
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:inherit;font-family:var(--font-display);font-size:13px;font-weight:500;letter-spacing:-.005em;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;line-height:1;transition:background var(--dur-fast) var(--ease-atmosphere),color var(--dur-fast) var(--ease-atmosphere),border-color var(--dur-fast) var(--ease-atmosphere)}
+.btn:hover{background:var(--graphite-700)}
+.btn:active{background:var(--graphite-600)}
+.btn:focus-visible{outline:2px solid var(--cyan-400);outline-offset:2px}
+.btn.secondary{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.secondary:hover{background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:transparent}
+.btn.ghost:hover{background:var(--paper-2)}
+.btn.link{background:transparent;border-color:transparent;color:var(--ink);padding:6px 0;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.btn.link:hover{color:var(--cyan-700)}
+.btn.warn{background:var(--signal-warning);border-color:var(--signal-warning);color:var(--bg)}
+.btn.danger{background:var(--signal-critical);border-color:var(--signal-critical);color:#fff}
+.btn.eco{background:var(--canopy-700);border-color:var(--canopy-700);color:#fff}
+.btn.cool{background:var(--cyan-700);border-color:var(--cyan-700);color:#fff}
+.btn.sm{font-size:11.5px;padding:6px 12px}
+.btn.lg{font-size:14px;padding:12px 20px}
+.btn.icon{padding:8px;width:34px;height:34px;justify-content:center}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn .kbd{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:inherit;opacity:.7;border:1px solid currentColor;padding:1px 5px;margin-left:6px;border-radius:2px}
+.btn-group{display:inline-flex}
+.btn-group .btn{border-radius:0;border-right-width:0}
+.btn-group .btn:last-child{border-right-width:1px}
+.btn-group .btn.on{background:var(--ink);color:var(--bg)}
+.btn-fab{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* =============================================================
+   INPUTS
+   ============================================================= */
+.field{display:flex;flex-direction:column;gap:5px;width:100%;max-width:340px}
+.field .flbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;font-weight:500;display:flex;justify-content:space-between;align-items:baseline}
+.field .flbl .freq{color:var(--signal-critical)}
+.field .fhint{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--ink-3);line-height:1.5}
+.field .ferr{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--signal-critical);line-height:1.5}
+.input{appearance:none;font:inherit;font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:var(--bg-elevated);border:1px solid var(--rule-strong);padding:9px 12px;outline:none;width:100%;transition:border-color var(--dur-fast) var(--ease-atmosphere),background var(--dur-fast) var(--ease-atmosphere)}
+.input::placeholder{color:var(--ink-3)}
+.input:hover{border-color:var(--graphite-400)}
+.input:focus{border-color:var(--ink);box-shadow:inset 0 -1.5px 0 var(--cyan-500)}
+.input.err{border-color:var(--signal-critical);box-shadow:inset 0 -1.5px 0 var(--signal-critical)}
+.input.ok{border-color:var(--signal-positive);box-shadow:inset 0 -1.5px 0 var(--signal-positive)}
+.input[disabled]{background:var(--bg-sunken);color:var(--ink-3);cursor:not-allowed}
+textarea.input{font-family:var(--font-body);min-height:80px;resize:vertical;line-height:1.5}
+.input-wrap{position:relative;width:100%;max-width:340px}
+.input-wrap .input{padding-left:34px}
+.input-wrap .pref{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:var(--font-mono);font-size:11px;color:var(--ink-3);pointer-events:none}
+.input-wrap.suf .input{padding-left:12px;padding-right:42px}
+.input-wrap.suf .pref{left:auto;right:10px}
+select.input{background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:30px}
+
+/* Selection: checkbox / radio / switch */
+.opt-row{display:flex;align-items:center;gap:10px;cursor:pointer}
+.opt-row input{position:absolute;opacity:0;pointer-events:none}
+.chk{width:16px;height:16px;border:1.5px solid var(--ink);background:var(--bg-elevated);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;transition:background var(--dur-fast) var(--ease-atmosphere)}
+.chk::after{content:"";width:8px;height:4px;border-left:1.5px solid var(--bg);border-bottom:1.5px solid var(--bg);transform:rotate(-45deg) translate(1px,-1px);opacity:0;transition:opacity var(--dur-fast)}
+.opt-row input:checked + .chk{background:var(--ink)}
+.opt-row input:checked + .chk::after{opacity:1}
+.opt-row input:focus-visible + .chk{outline:2px solid var(--cyan-400);outline-offset:2px}
+.opt-row input:disabled + .chk{opacity:.4}
+.opt-row input[type=checkbox]:indeterminate + .chk{background:var(--ink)}
+.opt-row input[type=checkbox]:indeterminate + .chk::after{content:"";width:8px;height:1.5px;border:none;background:var(--bg);transform:none;opacity:1}
+.rad{width:16px;height:16px;border:1.5px solid var(--ink);border-radius:50%;background:var(--bg-elevated);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.rad::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink);opacity:0;transition:opacity var(--dur-fast)}
+.opt-row input:checked + .rad::after{opacity:1}
+.opt-row input:focus-visible + .rad{outline:2px solid var(--cyan-400);outline-offset:2px}
+.opt-label{font-size:13.5px;color:var(--ink);line-height:1.4}
+.opt-label .opt-note{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--ink-3);margin-top:1px}
+
+.sw{position:relative;width:38px;height:20px;border:1.5px solid var(--ink);background:var(--bg-elevated);flex-shrink:0;transition:background var(--dur-fast) var(--ease-atmosphere)}
+.sw::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:14px;background:var(--ink);transition:left var(--dur-fast) var(--ease-atmosphere),background var(--dur-fast) var(--ease-atmosphere)}
+.opt-row input:checked + .sw{background:var(--ink)}
+.opt-row input:checked + .sw::after{left:20px;background:var(--bg)}
+
+/* Slider */
+.range{appearance:none;width:100%;max-width:280px;height:24px;background:transparent;outline:none;cursor:pointer}
+.range::-webkit-slider-runnable-track{height:1.5px;background:var(--ink)}
+.range::-webkit-slider-thumb{appearance:none;width:14px;height:14px;background:var(--ink);margin-top:-6px;border:none;border-radius:0}
+.range::-moz-range-track{height:1.5px;background:var(--ink)}
+.range::-moz-range-thumb{width:14px;height:14px;background:var(--ink);border:none;border-radius:0}
+.range-row{display:flex;align-items:center;gap:14px;width:100%}
+.range-row .rval{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);min-width:40px}
+.range-row .rmark{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.04em}
+
+/* =============================================================
+   BADGES / CHIPS / TAGS / PILLS
+   ============================================================= */
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--ink);color:var(--ink);background:transparent;padding:3px 8px;font-weight:500;line-height:1}
+.badge.solid{background:var(--ink);color:var(--bg)}
+.badge.pos{border-color:var(--signal-positive);color:var(--signal-positive)}
+.badge.pos.solid{background:var(--signal-positive);color:#fff;border-color:var(--signal-positive)}
+.badge.warn{border-color:var(--signal-warning);color:var(--signal-warning)}
+.badge.warn.solid{background:var(--signal-warning);color:#fff;border-color:var(--signal-warning)}
+.badge.crit{border-color:var(--signal-critical);color:var(--signal-critical)}
+.badge.crit.solid{background:var(--signal-critical);color:#fff;border-color:var(--signal-critical)}
+.badge.info{border-color:var(--cyan-500);color:var(--cyan-700)}
+.badge.eco{border-color:var(--canopy-500);color:var(--canopy-700)}
+.badge.warmt{border-color:var(--bronze-500);color:var(--bronze-700)}
+.badge.dot::before{content:"";width:5px;height:5px;background:currentColor;display:inline-block}
+
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);background:var(--bg-sunken);border:1px solid var(--rule-strong);padding:4px 10px}
+.chip .x{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);cursor:pointer;margin-left:2px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);letter-spacing:.04em;padding:2px 6px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.tag.solid{background:var(--bg-sunken)}
+
+.status{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.status::before{content:"";width:7px;height:7px;background:var(--ink-3);display:inline-block;flex-shrink:0}
+.status.live::before{background:var(--cyan-500);box-shadow:0 0 0 2px var(--cyan-100)}
+.status.ok::before{background:var(--signal-positive)}
+.status.warn::before{background:var(--signal-warning)}
+.status.crit::before{background:var(--signal-critical)}
+
+/* =============================================================
+   AVATARS
+   ============================================================= */
+.av{width:34px;height:34px;background:var(--bg-sunken);border:1px solid var(--rule-strong);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink);flex-shrink:0;font-weight:500}
+.av.sm{width:24px;height:24px;font-size:10px}
+.av.lg{width:48px;height:48px;font-size:14px}
+.av.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.av.round{border-radius:50%}
+.av-group{display:inline-flex}
+.av-group .av{margin-left:-6px;box-shadow:0 0 0 2px var(--bg-elevated)}
+.av-group .av:first-child{margin-left:0}
+
+/* =============================================================
+   CARDS / DATA TILES
+   ============================================================= */
+.card{border:1px solid var(--rule-strong);background:var(--bg-elevated);padding:var(--pad-card);position:relative}
+.card.framed::before,.card.framed::after,.card.framed > .frcorner::before,.card.framed > .frcorner::after{content:"";position:absolute;width:22px;height:1.5px;background:var(--ink)}
+.card.framed::before{left:-1px;top:-1px}
+.card.framed::after{left:-1px;top:-1px;width:1.5px;height:22px}
+.card.framed > .frcorner::before{right:-1px;top:-1px}
+.card.framed > .frcorner::after{right:-1px;top:-1px;width:1.5px;height:22px}
+.card .ch{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:12px}
+.card .ch h4{font-family:var(--font-display);font-size:15px;font-weight:600;margin:0;letter-spacing:-.005em}
+.card .ch .meta{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+.card p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.55}
+.card .cf{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--rule);padding-top:10px;margin-top:14px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
+
+/* KPI tile */
+.kpi{border:1px solid var(--rule-strong);background:var(--bg-elevated);padding:16px 18px;position:relative;min-width:140px}
+.kpi .klbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between}
+.kpi .kval{font-family:var(--font-display);font-size:34px;font-weight:300;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+.kpi .kval sub{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em;font-weight:400;vertical-align:baseline;margin-left:4px}
+.kpi .kdelta{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;margin-top:8px;color:var(--signal-positive)}
+.kpi .kdelta.down{color:var(--signal-critical)}
+
+/* =============================================================
+   ALERTS / BANNERS / TOASTS
+   ============================================================= */
+.alert{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:start;padding:12px 14px;border:1px solid var(--rule-strong);background:var(--bg-elevated);position:relative}
+.alert::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ink)}
+.alert .aicon{width:24px;height:24px;border:1.5px solid var(--ink);font-family:var(--font-mono);font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--ink);font-weight:600}
+.alert .abody h5{font-family:var(--font-display);font-size:13.5px;font-weight:600;margin:0 0 3px;letter-spacing:-.005em}
+.alert .abody p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.alert .axn{display:flex;align-items:center;gap:8px}
+.alert.pos::before{background:var(--signal-positive)}.alert.pos .aicon{border-color:var(--signal-positive);color:var(--signal-positive)}
+.alert.warn::before{background:var(--signal-warning)}.alert.warn .aicon{border-color:var(--signal-warning);color:var(--signal-warning)}
+.alert.crit::before{background:var(--signal-critical)}.alert.crit .aicon{border-color:var(--signal-critical);color:var(--signal-critical)}
+.alert.info::before{background:var(--cyan-500)}.alert.info .aicon{border-color:var(--cyan-500);color:var(--cyan-700)}
+
+.banner{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--bg);padding:10px 18px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em}
+.banner b{color:inherit;font-family:var(--font-display);font-weight:500;letter-spacing:-.005em;font-size:13px}
+.banner .bx{cursor:pointer;font-family:var(--font-mono);opacity:.7}
+
+.toast{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--ink);background:var(--bg-elevated);min-width:280px;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.toast .tic{width:7px;height:7px;background:var(--signal-positive);align-self:start;margin-top:6px}
+.toast .tb h5{font-family:var(--font-display);font-size:13px;font-weight:600;margin:0 0 2px;letter-spacing:-.005em}
+.toast .tb p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.4}
+.toast .tx{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);cursor:pointer}
+
+/* =============================================================
+   DIALOG / SHEET / DRAWER (rendered inline, mocked)
+   ============================================================= */
+.dlg-host{border:1px solid var(--rule-strong);background:var(--bg-sunken);min-height:220px;position:relative;padding:14px;overflow:hidden}
+.dlg-host .scrim{position:absolute;inset:0;background:rgba(11,14,13,.5);backdrop-filter:blur(2px)}
+.dlg{position:relative;width:80%;max-width:380px;margin:14px auto;background:var(--bg-elevated);border:1.5px solid var(--ink);padding:0;z-index:2}
+.dlg::before{content:"";position:absolute;left:-1px;top:-1px;width:24px;height:1.5px;background:var(--ink)}
+.dlg::after{content:"";position:absolute;left:-1px;top:-1px;width:1.5px;height:24px;background:var(--ink)}
+.dlg .dh{display:flex;justify-content:space-between;align-items:baseline;padding:14px 18px;border-bottom:1px solid var(--rule-strong)}
+.dlg .dh h4{font-family:var(--font-display);font-size:15px;font-weight:600;margin:0;letter-spacing:-.005em}
+.dlg .dh .dnum{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+.dlg .dbody{padding:14px 18px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.dlg .df{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--rule-strong);background:var(--bg-sunken)}
+
+.sheet-host{border:1px solid var(--rule-strong);background:var(--bg-sunken);min-height:240px;position:relative;overflow:hidden;display:flex}
+.sheet-host .stage{flex:1;padding:14px;color:var(--ink-3);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em}
+.sheet{width:240px;background:var(--bg-elevated);border-left:1.5px solid var(--ink);padding:0;position:relative}
+.sheet .sh{padding:14px;border-bottom:1px solid var(--rule-strong);display:flex;justify-content:space-between;align-items:baseline}
+.sheet .sh h4{font-family:var(--font-display);font-size:14px;font-weight:600;margin:0}
+.sheet .sbody{padding:14px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+
+/* =============================================================
+   POPOVER / TOOLTIP / DROPDOWN / HOVER CARD
+   ============================================================= */
+.pop{position:relative;display:inline-block}
+.pop .popbody{position:absolute;top:calc(100% + 10px);left:0;background:var(--bg-elevated);border:1px solid var(--ink);padding:12px 14px;width:240px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.pop .popbody::before{content:"";position:absolute;left:18px;top:-7px;width:12px;height:12px;background:var(--bg-elevated);border-left:1px solid var(--ink);border-top:1px solid var(--ink);transform:rotate(45deg)}
+.pop .popbody h5{font-family:var(--font-display);font-size:13px;font-weight:600;margin:0 0 4px}
+.pop .popbody p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.45}
+
+.tip{position:relative;display:inline-block}
+.tip .tipbody{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:5px 10px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;white-space:nowrap;z-index:5}
+.tip .tipbody::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink)}
+
+.menu{display:inline-block;position:relative}
+.menu .menubody{position:absolute;top:calc(100% + 6px);left:0;background:var(--bg-elevated);border:1px solid var(--ink);min-width:200px;z-index:5;padding:5px 0}
+.menu .menubody a{display:flex;justify-content:space-between;padding:7px 14px;font-size:12.5px;color:var(--ink);text-decoration:none;font-family:var(--font-body)}
+.menu .menubody a:hover{background:var(--bg-sunken)}
+.menu .menubody a .kbd{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);border:1px solid var(--rule-strong);padding:1px 5px}
+.menu .menubody .sep{height:1px;background:var(--rule);margin:5px 0}
+.menu .menubody .mglbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);padding:8px 14px 4px;text-transform:uppercase}
+.menu .menubody a.danger{color:var(--signal-critical)}
+
+.hovcard{position:relative;display:inline-block;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer;color:var(--ink)}
+.hovcard .hc{position:absolute;top:calc(100% + 8px);left:0;background:var(--bg-elevated);border:1px solid var(--ink);padding:12px;width:240px;z-index:5;display:flex;gap:12px}
+.hovcard .hc .hh{font-family:var(--font-display);font-size:13px;font-weight:600;margin:0 0 4px}
+.hovcard .hc .hb{font-size:12px;color:var(--ink-2);line-height:1.5;margin:0}
+.hovcard .hc .hf{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);margin-top:6px}
+
+/* =============================================================
+   TABS / ACCORDION / DISCLOSURE
+   ============================================================= */
+.tabs{border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.tabs .tablist{display:flex;border-bottom:1.5px solid var(--ink);background:var(--bg-sunken)}
+.tabs .tab{appearance:none;border:none;background:transparent;font:inherit;padding:10px 18px;font-family:var(--font-display);font-size:13px;font-weight:500;letter-spacing:-.005em;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--rule-strong);position:relative}
+.tabs .tab.on{background:var(--bg-elevated);color:var(--ink);box-shadow:inset 0 -1.5px 0 var(--cyan-500)}
+.tabs .tab:hover:not(.on){color:var(--ink)}
+.tabs .tab .tc{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.04em;margin-left:6px}
+.tabs .tpanel{padding:18px;font-size:13px;color:var(--ink-2);line-height:1.55;display:none}
+.tabs .tpanel.on{display:block}
+
+.tabs.pills .tablist{background:transparent;border-bottom:1px solid var(--rule-strong);padding:8px;gap:6px}
+.tabs.pills .tab{border:1px solid var(--rule-strong);border-right:1px solid var(--rule-strong);background:transparent}
+.tabs.pills .tab.on{background:var(--ink);color:var(--bg);box-shadow:none;border-color:var(--ink)}
+
+.acc{border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.acc .ai{border-bottom:1px solid var(--rule-strong)}
+.acc .ai:last-child{border-bottom:none}
+.acc .ah{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;font-family:var(--font-display);font-size:13.5px;font-weight:500}
+.acc .ah .anum{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);margin-right:14px;text-transform:uppercase}
+.acc .ah .achev{font-family:var(--font-mono);font-size:13px;color:var(--ink-2);transition:transform var(--dur)}
+.acc .ai.on .achev{transform:rotate(45deg)}
+.acc .ab{padding:0 16px 14px;font-size:13px;color:var(--ink-2);line-height:1.55;display:none}
+.acc .ai.on .ab{display:block}
+
+/* =============================================================
+   BREADCRUMB / PAGINATION / STEPS / COMMAND
+   ============================================================= */
+.crumbs{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase}
+.crumbs a{color:var(--ink-2);text-decoration:none}
+.crumbs a:hover{color:var(--ink)}
+.crumbs .csep{color:var(--ink-3)}
+.crumbs b{color:var(--ink);font-weight:500}
+
+.pag{display:inline-flex;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.pag a,.pag span{padding:6px 12px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-2);text-decoration:none;border-right:1px solid var(--rule-strong)}
+.pag a:last-child,.pag span:last-child{border-right:none}
+.pag a:hover{background:var(--bg-sunken);color:var(--ink)}
+.pag .on{background:var(--ink);color:var(--bg)}
+.pag .dis{color:var(--ink-3);cursor:not-allowed}
+
+.steps{display:flex;width:100%;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.steps .step{flex:1;padding:12px 16px;border-right:1px solid var(--rule-strong);position:relative;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase}
+.steps .step:last-child{border-right:none}
+.steps .step b{display:block;font-family:var(--font-display);font-size:13px;color:var(--ink);font-weight:500;letter-spacing:-.005em;text-transform:none;margin-top:3px}
+.steps .step.done{background:var(--bg-sunken)}
+.steps .step.done b::before{content:"✓ ";color:var(--signal-positive)}
+.steps .step.on{background:var(--ink);color:var(--bg)}
+.steps .step.on b{color:var(--bg)}
+
+.cmd{border:1.5px solid var(--ink);background:var(--bg-elevated);max-width:480px}
+.cmd .cmdinp{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--rule-strong);font-family:var(--font-mono);font-size:12px}
+.cmd .cmdinp input{flex:1;border:none;outline:none;background:transparent;font:inherit;font-family:var(--font-mono);color:var(--ink)}
+.cmd .cmdinp .cmdk{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;border:1px solid var(--rule-strong);padding:1px 5px;color:var(--ink-3)}
+.cmd .cmdlist{padding:6px 0;max-height:220px;overflow-y:auto}
+.cmd .cmdgrp{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;padding:8px 14px 4px}
+.cmd .cmdrow{display:flex;justify-content:space-between;align-items:center;padding:7px 14px;font-size:12.5px;color:var(--ink);cursor:pointer}
+.cmd .cmdrow:hover,.cmd .cmdrow.on{background:var(--bg-sunken)}
+.cmd .cmdrow .crk{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.06em}
+
+/* =============================================================
+   TABLE
+   ============================================================= */
+.table-wrap{border:1px solid var(--rule-strong);background:var(--bg-elevated);overflow:hidden}
+table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+table.t thead th{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1.5px solid var(--ink);background:var(--bg-sunken);font-weight:500;white-space:nowrap}
+table.t thead th .sort{margin-left:5px;color:var(--ink-2)}
+table.t tbody td{padding:9px 12px;border-bottom:1px solid var(--rule);color:var(--ink);font-family:var(--font-body)}
+table.t tbody tr:hover{background:var(--bg-sunken)}
+table.t tbody tr.on{background:var(--cyan-100)}
+table.t tbody td.num{font-family:var(--font-mono);color:var(--ink-2)}
+table.t tbody td.right{text-align:right}
+table.t .row-chk{width:20px}
+
+/* =============================================================
+   LIST / TREE
+   ============================================================= */
+.list{border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.list .li{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--rule);gap:14px}
+.list .li:last-child{border-bottom:none}
+.list .li:hover{background:var(--bg-sunken)}
+.list .li .ll{display:flex;align-items:center;gap:12px;min-width:0}
+.list .li .ll .lt{display:flex;flex-direction:column;min-width:0}
+.list .li .ll .lt b{font-family:var(--font-display);font-size:13px;font-weight:500;letter-spacing:-.005em;color:var(--ink)}
+.list .li .ll .lt span{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
+.list .li .lr{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);letter-spacing:.04em;text-align:right;white-space:nowrap}
+
+.tree{font-family:var(--font-mono);font-size:12px;line-height:1.65;color:var(--ink)}
+.tree .tn{display:flex;align-items:center;gap:6px}
+.tree .tn .tg{color:var(--ink-3);width:14px}
+.tree .indent{padding-left:18px;border-left:1px dashed var(--rule-strong);margin-left:6px}
+.tree b{font-weight:500;color:var(--ink)}
+.tree .leaf{color:var(--ink-2)}
+
+/* =============================================================
+   CALENDAR
+   ============================================================= */
+.cal{border:1px solid var(--rule-strong);background:var(--bg-elevated);max-width:300px;display:inline-block}
+.cal .calh{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--rule-strong)}
+.cal .calh b{font-family:var(--font-display);font-size:13.5px;font-weight:600}
+.cal .calh .calnav{display:flex;gap:6px}
+.cal .calh button{appearance:none;border:1px solid var(--rule-strong);background:transparent;width:22px;height:22px;font:inherit;font-family:var(--font-mono);color:var(--ink-2);cursor:pointer}
+.cal table.calt{width:100%;border-collapse:collapse}
+.cal table.calt th{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;padding:6px 0;font-weight:500;text-align:center}
+.cal table.calt td{text-align:center;padding:0}
+.cal table.calt td button{appearance:none;border:none;background:transparent;font:inherit;font-family:var(--font-mono);font-size:11.5px;color:var(--ink);width:100%;padding:6px 0;cursor:pointer}
+.cal table.calt td button:hover{background:var(--bg-sunken)}
+.cal table.calt td.dim button{color:var(--ink-3)}
+.cal table.calt td.today button{box-shadow:inset 0 -1.5px 0 var(--cyan-500)}
+.cal table.calt td.on button{background:var(--ink);color:var(--bg)}
+.cal table.calt td.range button{background:var(--cyan-100);color:var(--cyan-700)}
+
+/* =============================================================
+   PROGRESS / METER / SKELETON / SPINNER
+   ============================================================= */
+.prog{display:flex;flex-direction:column;gap:5px;width:100%;max-width:260px}
+.prog .ph{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
+.prog .ph b{color:var(--ink);font-weight:500}
+.prog .pbar{height:6px;background:var(--bg-sunken);border:1px solid var(--rule-strong);overflow:hidden;position:relative}
+.prog .pfill{height:100%;background:var(--ink)}
+.prog.cool .pfill{background:var(--cyan-500)}
+.prog.warn .pfill{background:var(--signal-warning)}
+.prog.crit .pfill{background:var(--signal-critical)}
+.prog.indet .pbar::after{content:"";position:absolute;top:0;bottom:0;width:30%;background:var(--ink);animation:indet 1.4s linear infinite}
+@keyframes indet{0%{left:-30%}100%{left:100%}}
+
+.meter{display:grid;grid-template-columns:1fr 60px;gap:10px;align-items:center;width:100%;max-width:260px}
+.meter .mh{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
+.meter .mbar{grid-column:1/3;display:flex;height:8px;border:1px solid var(--rule-strong);background:var(--bg-sunken);overflow:hidden}
+.meter .mbar i{display:block;height:100%;background:var(--signal-positive);border-right:1px solid var(--bg-elevated)}
+.meter .mbar i.w{background:var(--signal-warning)}
+.meter .mbar i.c{background:var(--signal-critical)}
+.meter .mlbl{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);letter-spacing:.04em;text-align:right}
+
+.sk{background:linear-gradient(90deg,var(--bg-sunken) 0%,var(--paper-3) 50%,var(--bg-sunken) 100%);background-size:200% 100%;animation:sk 1.6s linear infinite;height:12px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.spin{width:18px;height:18px;border:1.5px solid var(--rule-strong);border-top-color:var(--ink);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* =============================================================
+   CODE / KBD / INLINE
+   ============================================================= */
+code.inline{font-family:var(--font-mono);font-size:12px;background:var(--bg-sunken);border:1px solid var(--rule-strong);padding:1px 5px;color:var(--ink)}
+.kbd{display:inline-flex;align-items:center;padding:2px 6px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink);border:1px solid var(--ink);border-bottom-width:2px;background:var(--bg-elevated);font-weight:500;line-height:1}
+pre.code{font-family:var(--font-mono);font-size:11.5px;color:var(--ink);background:var(--bg-sunken);border:1px solid var(--rule-strong);padding:12px 14px;margin:0;line-height:1.55;overflow-x:auto}
+pre.code .c-com{color:var(--ink-3)}
+pre.code .c-kw{color:var(--cyan-700)}
+pre.code .c-str{color:var(--bronze-700)}
+pre.code .c-num{color:var(--signal-warning)}
+
+/* =============================================================
+   MINI CHARTS
+   ============================================================= */
+.spark{width:100%;height:40px;display:block}
+.spark path.line{fill:none;stroke:var(--ink);stroke-width:1.25}
+.spark path.area{fill:var(--paper-3);opacity:.6}
+.bars{width:100%;height:64px;display:block}
+.bars rect{fill:var(--ink)}
+.bars rect.hi{fill:var(--cyan-500)}
+.bars line{stroke:var(--rule-strong);stroke-width:1}
+
+/* =============================================================
+   TRUST LAYER (carry-over from v0.3)
+   ============================================================= */
+.trust-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.trust-row .lineage{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--ink-2);letter-spacing:.04em}
+.trust-row .lineage .src{padding:2px 6px;background:var(--bg-sunken);border:1px solid var(--rule-strong)}
+.trust-row .lineage .arr{color:var(--ink-3)}
+.policy-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--ink);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink);text-transform:uppercase;font-weight:500;background:var(--bg-elevated)}
+.policy-badge::before{content:"";width:6px;height:6px;background:var(--ink)}
+.policy-badge.pub::before{background:var(--signal-positive)}
+.policy-badge.int::before{background:var(--signal-warning)}
+.policy-badge.res::before{background:var(--signal-critical)}
+.conf-band{display:flex;align-items:center;gap:8px;min-width:160px}
+.conf-band .cb{flex:1;height:5px;background:linear-gradient(90deg,var(--signal-critical) 0%,var(--signal-warning) 50%,var(--signal-positive) 100%);position:relative}
+.conf-band .cb i{position:absolute;top:-3px;width:2px;height:11px;background:var(--ink);transform:translateX(-50%)}
+.conf-band .cv{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);letter-spacing:.04em}
+.conf-band .clbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+.valid{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.valid b{color:var(--ink);font-family:var(--font-display);font-size:11.5px;font-weight:500;letter-spacing:-.005em}
+
+/* =============================================================
+   SPATIAL PRIMITIVES (carry-over)
+   ============================================================= */
+.district{border:1px solid var(--ink);background:var(--bg-elevated);position:relative;max-width:300px}
+.district .district-bar{background:var(--ink);color:var(--bg-elevated);padding:5px 10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+.district .district-body{padding:10px 12px}
+.district .district-body p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.45}
+.corridor{border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);padding:10px 14px;position:relative;background:var(--bg-elevated);max-width:320px;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-2);margin:0 6px}
+.corridor::before{content:"";position:absolute;top:-1px;bottom:-1px;left:-6px;width:6px;background:var(--ink);clip-path:polygon(100% 0,0 50%,100% 100%)}
+.corridor::after{content:"";position:absolute;top:-1px;bottom:-1px;right:-6px;width:6px;background:var(--ink);clip-path:polygon(0 0,100% 50%,0 100%)}
+.node{display:inline-block;background:var(--bg-elevated);border:1px solid var(--ink);padding:7px 12px;position:relative;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+.node::before{content:"";position:absolute;top:-3px;left:-3px;width:6px;height:6px;background:var(--ink)}
+.node::after{content:"";position:absolute;bottom:-3px;right:-3px;width:6px;height:6px;background:var(--ink)}
+
+/* =============================================================
+   MAP CARTOUCHE (carry-over compact)
+   ============================================================= */
+.mapplate{position:relative;height:200px;background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper-3) 100%);border:1px solid var(--rule-bold);overflow:hidden}
+.mapplate svg{position:absolute;inset:0;width:100%;height:100%}
+.cartouche{position:absolute;background:var(--bg-elevated);border:1px solid var(--ink);padding:8px 10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--ink);min-width:140px}
+.cartouche::before{content:"";position:absolute;left:-1px;top:-1px;width:14px;height:1.5px;background:var(--ink)}
+.cartouche::after{content:"";position:absolute;left:-1px;top:-1px;width:1.5px;height:14px;background:var(--ink)}
+.cartouche b{display:block;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:-.005em;color:var(--ink);margin-bottom:2px}
+.cartouche .meta{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em;margin-top:3px}
+
+/* =============================================================
+   EMPTY / ERROR STATES
+   ============================================================= */
+.empty{border:1px dashed var(--rule-strong);padding:36px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;background:var(--bg-sunken)}
+.empty .eglyph{width:48px;height:48px;border:1.5px solid var(--ink-3);position:relative;margin-bottom:8px}
+.empty .eglyph::before{content:"";position:absolute;inset:8px;border:1.5px solid var(--ink-3)}
+.empty h5{font-family:var(--font-display);font-size:14px;font-weight:600;margin:0}
+.empty p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5;max-width:36ch}
+
+/* =============================================================
+   COLOPHON
+   ============================================================= */
+.colophon{padding:36px 56px;background:var(--bg-deep);color:var(--bg-deep-text);display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
+.colophon h6{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--graphite-400);text-transform:uppercase;margin:0 0 10px;font-weight:500}
+.colophon p{margin:0;font-size:12.5px;color:var(--graphite-200);line-height:1.55}
+.colophon .markline{font-family:var(--font-display);font-size:16px;color:var(--bg-deep-text);font-weight:500;letter-spacing:-.005em}
+
+/* =============================================================
+   RESPONSIVE
+   ============================================================= */
+@media (max-width:1100px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:none;border-bottom:1px solid var(--graphite-700)}
+  section.s{padding:40px 24px}
+  .s-head{grid-template-columns:1fr;gap:14px}
+  .demos,.demos.cols-3,.demos.cols-4{grid-template-columns:1fr}
+  .demo,.demos.cols-3 .demo,.demos.cols-4 .demo{border-right:none !important}
+  .station{flex-direction:column;align-items:stretch}
+  .station .controls{border-left:none;border-top:1px solid var(--rule-strong);overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============================================================ RAIL -->
+  <aside class="rail">
+    <div class="mark">
+      <div class="glyph"></div>
+      <div class="name">Conservatory<span>Components · v0.3</span></div>
+    </div>
+    <div class="rail-section">Foundations</div>
+    <nav>
+      <a href="#buttons" class="on"><span class="num">01</span>Buttons</a>
+      <a href="#inputs"><span class="num">02</span>Inputs</a>
+      <a href="#selection"><span class="num">03</span>Selection</a>
+      <a href="#sliders"><span class="num">04</span>Sliders</a>
+    </nav>
+    <div class="rail-section">Surfaces</div>
+    <nav>
+      <a href="#cards"><span class="num">05</span>Cards</a>
+      <a href="#kpis"><span class="num">06</span>KPI tiles</a>
+      <a href="#stats"><span class="num">07</span>Stats &amp; charts</a>
+    </nav>
+    <div class="rail-section">Signals</div>
+    <nav>
+      <a href="#badges"><span class="num">08</span>Badges</a>
+      <a href="#avatars"><span class="num">09</span>Avatars</a>
+      <a href="#alerts"><span class="num">10</span>Alerts</a>
+      <a href="#toasts"><span class="num">11</span>Toasts</a>
+      <a href="#progress"><span class="num">12</span>Progress</a>
+    </nav>
+    <div class="rail-section">Overlays</div>
+    <nav>
+      <a href="#dialog"><span class="num">13</span>Dialog &amp; Sheet</a>
+      <a href="#overlays"><span class="num">14</span>Popover &amp; menu</a>
+    </nav>
+    <div class="rail-section">Navigation</div>
+    <nav>
+      <a href="#tabs"><span class="num">15</span>Tabs &amp; Accordion</a>
+      <a href="#wayfinding"><span class="num">16</span>Wayfinding</a>
+      <a href="#command"><span class="num">17</span>Command menu</a>
+    </nav>
+    <div class="rail-section">Data</div>
+    <nav>
+      <a href="#tables"><span class="num">18</span>Tables</a>
+      <a href="#lists"><span class="num">19</span>Lists &amp; trees</a>
+      <a href="#calendar"><span class="num">20</span>Calendar</a>
+    </nav>
+    <div class="rail-section">Code &amp; Atomic</div>
+    <nav>
+      <a href="#code"><span class="num">21</span>Code &amp; KBD</a>
+      <a href="#empty"><span class="num">22</span>Empty &amp; error</a>
+    </nav>
+    <div class="rail-section">Spatial OS</div>
+    <nav>
+      <a href="#trust"><span class="num">23</span>Trust layer</a>
+      <a href="#spatial"><span class="num">24</span>Spatial primitives</a>
+      <a href="#cartouche"><span class="num">25</span>Map cartouche</a>
+    </nav>
+    <div class="rail-foot"><b>Components · v0.3</b>Spatial OS · sibling of style-guide-v03</div>
+  </aside>
+
+  <!-- ============================================================ CANVAS -->
+  <main class="canvas">
+
+    <header class="station">
+      <div class="crumb"><span>System</span><span class="bar"></span><b>Conservatory</b><span class="bar"></span><span>v0.3 — Components</span></div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Density</span>
+          <div class="seg" data-seg="density">
+            <button data-d="ambient">Amb</button>
+            <button data-d="operational" class="on">Ops</button>
+            <button data-d="dense">Dense</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Room</span>
+          <div class="seg" data-seg="room">
+            <button data-r="standard" class="on">Standard</button>
+            <button data-r="review">Review Room</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Mode</span>
+          <div class="seg" data-seg="mode">
+            <button data-m="light" class="on">Day</button>
+            <button data-m="dark">Night</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ====================================================== BUTTONS -->
+    <section class="s" id="buttons">
+      <div class="s-head">
+        <div class="s-num">Section<b>01</b></div>
+        <div>
+          <h2>Buttons</h2>
+          <p class="blurb">Primary action is hairline-black on paper. No drop shadow. No rounded corners. Hover deepens the fill; focus draws a 2px cyan ring at 2px offset. Destructive and signal variants reserve themselves for state, never style.</p>
+        </div>
+        <div class="s-meta"><b>Use sparingly</b>One primary per surface. Group secondary actions left of primary. Never stack three primary buttons in a row.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Primary · Secondary · Ghost</span><span class="dnum">btn / btn.secondary / btn.ghost</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn">Submit plan</button><button class="btn secondary">Save draft</button><button class="btn ghost">Discard</button><button class="btn link">Read brief</button></div>
+            <div class="demo-note">Three weights for three roles. Link variant inherits ink, underline-offset 3px.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Sizes</span><span class="dnum">.sm / default / .lg</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn sm">Small</button><button class="btn">Default</button><button class="btn lg">Large</button></div>
+            <div class="demo-note">Body type scales with density; buttons scale by variant.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Signal variants</span><span class="dnum">.cool / .eco / .warn / .danger</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn cool">Issue advisory</button><button class="btn eco">Approve EIA</button><button class="btn warn">Revise</button><button class="btn danger">Reject scheme</button></div>
+            <div class="demo-note">Signal colour is a status claim. Reserve for irreversible or stateful actions.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Icon &amp; FAB</span><span class="dnum">.icon / .btn-fab</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:8px;align-items:center"><button class="btn icon" aria-label="Add"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5"/></svg></button><button class="btn icon secondary" aria-label="Filter"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5"/></svg></button><button class="btn-fab" aria-label="Compose"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6"/></svg></button></div>
+            <div class="demo-note">Square by default. FAB anchored in floating contexts only.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Button group</span><span class="dnum">.btn-group</span></div>
+          <div class="demo-body">
+            <div class="btn-group"><button class="btn secondary on">Plan</button><button class="btn secondary">Scheme</button><button class="btn secondary">Built</button></div>
+            <div class="btn-group"><button class="btn secondary">List</button><button class="btn secondary on">Map</button><button class="btn secondary">Strata</button></div>
+            <div class="demo-note">Shared border between siblings; active sibling fills ink.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">States</span><span class="dnum">loading / disabled / with kbd</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn"><span class="spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff;width:12px;height:12px"></span> Issuing…</button><button class="btn secondary" disabled>Unavailable</button><button class="btn ghost">Save<span class="kbd">⌘S</span></button></div>
+            <div class="demo-note">Loading uses a 12px spinner inverted against the fill.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== INPUTS -->
+    <section class="s" id="inputs">
+      <div class="s-head">
+        <div class="s-num">Section<b>02</b></div>
+        <div>
+          <h2>Inputs &amp; forms</h2>
+          <p class="blurb">Hairline borders, no fill in rest state. Focus lays a 1.5px cyan rule under the bottom edge — a draftsman's underline rather than a glow. Labels are mono, uppercase, micro.</p>
+        </div>
+        <div class="s-meta"><b>Two-row field</b>Label · Input · Hint stacks tightly. Errors replace hints, never appear alongside them.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Text input</span><span class="dnum">.input</span></div>
+          <div class="demo-body">
+            <div class="field"><label class="flbl">Parcel ID<span>required</span></label><input class="input" placeholder="MK-04-12345"/><span class="fhint">Singapore Land Authority cadastral reference.</span></div>
+            <div class="field"><label class="flbl">Description</label><textarea class="input" placeholder="What is being proposed at this site?">Mixed-use redevelopment with retained heritage frontage along Tras Street.</textarea></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">With prefix / suffix</span><span class="dnum">.input-wrap</span></div>
+          <div class="demo-body">
+            <div class="field"><label class="flbl">Search</label><div class="input-wrap"><span class="pref">⌕</span><input class="input" placeholder="Search the plan registry…"/></div></div>
+            <div class="field"><label class="flbl">Plot ratio</label><div class="input-wrap suf"><input class="input" value="2.8"/><span class="pref">GFA·m²/site·m²</span></div></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Select</span><span class="dnum">select.input</span></div>
+          <div class="demo-body">
+            <div class="field"><label class="flbl">Land-use zone</label><select class="input"><option>Residential — pure</option><option>Mixed-use · Residential / Commercial</option><option>White site · open programme</option><option>Park &amp; Open Space</option></select></div>
+            <div class="field"><label class="flbl">Review status</label><select class="input"><option>Submitted</option><option>Under review</option><option>Issued</option><option>Returned</option></select></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Validation states</span><span class="dnum">.input.ok / .err</span></div>
+          <div class="demo-body">
+            <div class="field"><label class="flbl">GFA submitted</label><input class="input ok" value="142,800 m²"/><span class="fhint">Within allowed envelope.</span></div>
+            <div class="field"><label class="flbl">Setback north</label><input class="input err" value="2.4 m"/><span class="ferr">Minimum setback is 3 m. Adjust the elevation drawing.</span></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Disabled / read-only</span><span class="dnum">[disabled]</span></div>
+          <div class="demo-body">
+            <div class="field"><label class="flbl">Issued ref</label><input class="input" value="URA·MS·2026·041" disabled/></div>
+            <div class="field"><label class="flbl">Date issued</label><input class="input" value="2026-04-30" disabled/><span class="fhint">System-set on issuance. Not editable.</span></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Form group</span><span class="dnum">grid of fields</span></div>
+          <div class="demo-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%">
+              <div class="field"><label class="flbl">Applicant</label><input class="input" value="ABG Architects"/></div>
+              <div class="field"><label class="flbl">Lead reviewer</label><input class="input" value="Tan W.H."/></div>
+              <div class="field"><label class="flbl">Stage</label><select class="input"><option>Concept</option><option selected>Provisional Permission</option></select></div>
+              <div class="field"><label class="flbl">Due</label><input class="input" value="2026-06-12"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== SELECTION -->
+    <section class="s" id="selection">
+      <div class="s-head">
+        <div class="s-num">Section<b>03</b></div>
+        <div>
+          <h2>Selection controls</h2>
+          <p class="blurb">Checkbox, radio, switch. All square except the radio (the only circular control in the system). Filled state uses ink; the check mark is paper. No animation other than fill swap and a 120 ms ease.</p>
+        </div>
+        <div class="s-meta"><b>Switch vs checkbox</b>Switch implies immediate effect. Checkbox implies stored intent that submits with a form.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Checkbox</span><span class="dnum">.chk</span></div>
+          <div class="demo-body">
+            <label class="opt-row"><input type="checkbox" checked/><span class="chk"></span><span class="opt-label">Show retained-tree overlay<span class="opt-note">+412 mature trees in scope</span></span></label>
+            <label class="opt-row"><input type="checkbox"/><span class="chk"></span><span class="opt-label">Compare against 2014 master plan</span></label>
+            <label class="opt-row"><input type="checkbox" id="ix1"/><span class="chk"></span><span class="opt-label">Heat-island wash<span class="opt-note">indeterminate</span></span></label>
+            <script>document.getElementById('ix1').indeterminate=true;</script>
+            <label class="opt-row"><input type="checkbox" disabled/><span class="chk"></span><span class="opt-label" style="color:var(--ink-3)">AI-generated scenario (locked)</span></label>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Radio</span><span class="dnum">.rad</span></div>
+          <div class="demo-body">
+            <label class="opt-row"><input type="radio" name="cv" checked/><span class="rad"></span><span class="opt-label">Plan view<span class="opt-note">orthogonal, 1:5000</span></span></label>
+            <label class="opt-row"><input type="radio" name="cv"/><span class="rad"></span><span class="opt-label">Axonometric<span class="opt-note">true heights, no foreshortening</span></span></label>
+            <label class="opt-row"><input type="radio" name="cv"/><span class="rad"></span><span class="opt-label">Perspective<span class="opt-note">eye-level, pedestrian datum</span></span></label>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Switch</span><span class="dnum">.sw</span></div>
+          <div class="demo-body">
+            <label class="opt-row"><input type="checkbox" checked/><span class="sw"></span><span class="opt-label">Live data feed<span class="opt-note">10s polling</span></span></label>
+            <label class="opt-row"><input type="checkbox"/><span class="sw"></span><span class="opt-label">AI suggestions in editor</span></label>
+            <label class="opt-row"><input type="checkbox" checked/><span class="sw"></span><span class="opt-label">Show confidence band</span></label>
+            <label class="opt-row"><input type="checkbox" disabled/><span class="sw"></span><span class="opt-label" style="color:var(--ink-3)">Auto-publish to portal</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== SLIDERS -->
+    <section class="s" id="sliders">
+      <div class="s-head">
+        <div class="s-num">Section<b>04</b></div>
+        <div>
+          <h2>Sliders &amp; range</h2>
+          <p class="blurb">Thin 1.5px track, square 14px thumb. The slider doubles as a temporal scrub when paired with the temporal layer system.</p>
+        </div>
+        <div class="s-meta"><b>Always paired</b>A slider without a numeric readout is incomplete. Pair with mono value &amp; unit.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Range</span><span class="dnum">.range</span></div>
+          <div class="demo-body" style="gap:18px;width:100%">
+            <div class="field" style="max-width:100%"><label class="flbl">Plot ratio · 0–6.0<span>2.8</span></label><div class="range-row"><input type="range" class="range" min="0" max="6" step="0.1" value="2.8"/><span class="rval">2.8</span></div></div>
+            <div class="field" style="max-width:100%"><label class="flbl">Setback opacity<span>62%</span></label><div class="range-row"><input type="range" class="range" min="0" max="100" value="62"/><span class="rval">62%</span></div></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Temporal scrub</span><span class="dnum">range · year</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="field" style="max-width:100%"><label class="flbl">Year · 1965 → 2040<span>2026 · today</span></label><div class="range-row"><input type="range" class="range" min="1965" max="2040" value="2026"/><span class="rval">2026</span></div>
+              <div style="display:flex;justify-content:space-between;width:100%;margin-top:6px;color:var(--ink-3)"><span class="rmark">1965</span><span class="rmark">1985</span><span class="rmark">2005</span><span class="rmark">2026</span><span class="rmark">2040</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== CARDS -->
+    <section class="s" id="cards">
+      <div class="s-head">
+        <div class="s-num">Section<b>05</b></div>
+        <div>
+          <h2>Cards</h2>
+          <p class="blurb">A card is a hairline rectangle on paper. Optional corner ticks promote a card to a "governed surface" — a piece of state that records its own boundary.</p>
+        </div>
+        <div class="s-meta"><b>Frame · don't shadow</b>Elevation in this system is structural, never atmospheric. Frame the surface, don't lift it.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Basic</span><span class="dnum">.card</span></div>
+          <div class="demo-body">
+            <div class="card">
+              <div class="ch"><h4>Tras Street SUDS</h4><span class="meta">DBR · 04</span></div>
+              <p>Soakaway and bio-retention strip along the south frontage, retaining canopy datum.</p>
+              <div class="cf"><span>Last reviewed 4d ago</span><span>4 comments</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Framed (governed)</span><span class="dnum">.card.framed</span></div>
+          <div class="demo-body">
+            <div class="card framed"><span class="frcorner"></span>
+              <div class="ch"><h4>Marina South — Provisional</h4><span class="meta">URA·PP·2026·041</span></div>
+              <p>Two-tower mixed use; 142 800 m² GFA; setback compliant on N/E faces.</p>
+              <div class="cf"><span class="status live">Active</span><span>Issued by Tan W.H.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Card with action</span><span class="dnum">card + .btn</span></div>
+          <div class="demo-body">
+            <div class="card">
+              <div class="ch"><h4>Pending review</h4><span class="meta">3 of 12</span></div>
+              <p>You have outstanding reviewer comments on three planning briefs.</p>
+              <div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm">Open queue</button><button class="btn sm ghost">Mark all read</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== KPIs -->
+    <section class="s" id="kpis">
+      <div class="s-head">
+        <div class="s-num">Section<b>06</b></div>
+        <div>
+          <h2>KPI tiles</h2>
+          <p class="blurb">A tile is a card whose centre of gravity is one number. Display weight uses the light cut at 300 to keep monuments quiet.</p>
+        </div>
+        <div class="s-meta"><b>One number per tile</b>If you can't isolate the leading metric, it's a card, not a KPI.</div>
+      </div>
+
+      <div class="demos cols-4">
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Plain</span><span class="dnum">.kpi</span></div>
+          <div class="demo-body"><div class="kpi"><div class="klbl"><span>GFA committed</span><span>2026 Q2</span></div><div class="kval">142,800<sub>m²</sub></div><div class="kdelta">▲ 3.2% vs Q1</div></div></div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Cool accent</span><span class="dnum">.kpi · cyan</span></div>
+          <div class="demo-body"><div class="kpi" style="border-color:var(--cyan-500);box-shadow:inset 3px 0 0 var(--cyan-500)"><div class="klbl"><span>Active applications</span><span>now</span></div><div class="kval">187</div><div class="kdelta">▲ 6 this hour</div></div></div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Down delta</span><span class="dnum">.kdelta.down</span></div>
+          <div class="demo-body"><div class="kpi"><div class="klbl"><span>Canopy cover · Bishan</span><span>vs 2022</span></div><div class="kval">23.4<sub>%</sub></div><div class="kdelta down">▼ 3.1 pp since 2022</div></div></div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">With sparkline</span><span class="dnum">.kpi + .spark</span></div>
+          <div class="demo-body"><div class="kpi" style="min-width:170px"><div class="klbl"><span>MRT loading</span><span>DTL3e</span></div><div class="kval">82<sub>%</sub></div><svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none"><path class="area" d="M0,22 L10,18 L20,20 L30,14 L40,10 L50,12 L60,8 L70,6 L80,9 L90,4 L100,5 L100,30 L0,30 Z"/><path class="line" d="M0,22 L10,18 L20,20 L30,14 L40,10 L50,12 L60,8 L70,6 L80,9 L90,4 L100,5"/></svg></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== STATS / CHARTS -->
+    <section class="s" id="stats">
+      <div class="s-head">
+        <div class="s-num">Section<b>07</b></div>
+        <div>
+          <h2>Stats &amp; mini charts</h2>
+          <p class="blurb">Charts in this system are quiet. No grid lines, no axis labels unless meaningful. The chart's purpose is comparison; chrome that doesn't serve comparison gets removed.</p>
+        </div>
+        <div class="s-meta"><b>Stroke 1.25</b>Default line weight. Increase only when the chart sits in Review Room.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Sparkline</span><span class="dnum">svg.spark</span></div>
+          <div class="demo-body"><svg class="spark" viewBox="0 0 200 50" preserveAspectRatio="none" style="height:60px"><path class="area" d="M0,42 L20,35 L40,38 L60,28 L80,20 L100,24 L120,16 L140,12 L160,18 L180,8 L200,10 L200,50 L0,50 Z"/><path class="line" d="M0,42 L20,35 L40,38 L60,28 L80,20 L100,24 L120,16 L140,12 L160,18 L180,8 L200,10"/></svg><div class="demo-note">Applications received · last 30 days · 187 today</div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Bar series</span><span class="dnum">svg.bars</span></div>
+          <div class="demo-body"><svg class="bars" viewBox="0 0 200 70" style="height:90px"><line x1="0" y1="60" x2="200" y2="60"/><rect x="8" y="38" width="14" height="22"/><rect x="28" y="30" width="14" height="30"/><rect x="48" y="22" width="14" height="38"/><rect x="68" y="34" width="14" height="26"/><rect x="88" y="18" width="14" height="42"/><rect x="108" y="12" width="14" height="48" class="hi"/><rect x="128" y="20" width="14" height="40"/><rect x="148" y="26" width="14" height="34"/><rect x="168" y="14" width="14" height="46"/><rect x="188" y="22" width="14" height="38"/></svg><div class="demo-note">Approvals · 2017→2026 · 2022 peak highlighted in cyan</div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Meter (segmented)</span><span class="dnum">.meter</span></div>
+          <div class="demo-body">
+            <div class="meter"><span class="mh">Land-use breakdown · 142.8 ha</span><div class="mbar"><i style="width:48%"></i><i class="w" style="width:24%"></i><i style="width:14%;background:var(--cyan-500)"></i><i class="c" style="width:14%"></i></div></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--ink-2);margin-top:8px"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;background:var(--signal-positive);display:inline-block"></i>Residential 48%</span><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;background:var(--signal-warning);display:inline-block"></i>Mixed 24%</span><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;background:var(--cyan-500);display:inline-block"></i>Public 14%</span><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;background:var(--signal-critical);display:inline-block"></i>Industrial 14%</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== BADGES -->
+    <section class="s" id="badges">
+      <div class="s-head">
+        <div class="s-num">Section<b>08</b></div>
+        <div>
+          <h2>Badges, chips, tags &amp; status</h2>
+          <p class="blurb">Four sibling primitives. <b>Badge</b> = stateful label, mono caps. <b>Chip</b> = removable selection. <b>Tag</b> = passive metadata. <b>Status</b> = state-of-system, with a 7px dot.</p>
+        </div>
+        <div class="s-meta"><b>One per row</b>Never mix three signal colours next to each other — collapse to status dot if you need to.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Badges · outline / solid / dot</span><span class="dnum">.badge</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge">draft</span><span class="badge info">analytical</span><span class="badge eco">EIA cleared</span><span class="badge warmt">heritage</span><span class="badge pos dot">approved</span><span class="badge warn dot">revise</span><span class="badge crit dot">rejected</span></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge solid">issued</span><span class="badge pos solid">approved</span><span class="badge warn solid">revise</span><span class="badge crit solid">rejected</span></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Chips (selectable)</span><span class="dnum">.chip</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip on">Residential <span class="x">×</span></span><span class="chip">Mixed</span><span class="chip on">Park <span class="x">×</span></span><span class="chip">Industrial</span><span class="chip">Civic</span></div>
+            <div class="demo-note">Filter chip set. "On" is filled; close affordance is mono ×.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Tags · metadata</span><span class="dnum">.tag</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">scheme/04</span><span class="tag">v0.3.4</span><span class="tag solid">marina-south</span><span class="tag">CC-BY-SA</span><span class="tag">last-edit 2d</span></div>
+            <div class="demo-note">Mono, no semantic colour. For machine-readable handles.</div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Status indicators</span><span class="dnum">.status</span></div>
+          <div class="demo-body">
+            <div style="display:flex;gap:18px;flex-wrap:wrap"><span class="status live">Live · feed</span><span class="status ok">Healthy</span><span class="status warn">Degraded</span><span class="status crit">Offline</span><span class="status">Unknown</span></div>
+            <div class="demo-note">Live state pulses on cyan with a 2px halo ring.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== AVATARS -->
+    <section class="s" id="avatars">
+      <div class="s-head">
+        <div class="s-num">Section<b>09</b></div>
+        <div>
+          <h2>Avatars</h2>
+          <p class="blurb">Square by default — institutional. Round variant for personal contexts (comments, signatures). Initials only; no photographic chrome.</p>
+        </div>
+        <div class="s-meta"><b>Group stack</b>Negative margin of 6px and a 2px paper ring per sibling. Cap at four visible + "+N".</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Sizes</span><span class="dnum">.sm / default / .lg</span></div>
+          <div class="demo-body"><div style="display:flex;gap:8px;align-items:center"><span class="av sm">TW</span><span class="av">TW</span><span class="av lg">TW</span><span class="av lg round">XL</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Solid &amp; round</span><span class="dnum">.solid / .round</span></div>
+          <div class="demo-body"><div style="display:flex;gap:8px;align-items:center"><span class="av solid">URA</span><span class="av round">SK</span><span class="av solid round">AI</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Group</span><span class="dnum">.av-group</span></div>
+          <div class="demo-body"><div class="av-group"><span class="av">TW</span><span class="av">SK</span><span class="av">RB</span><span class="av">+4</span></div><div class="demo-note">Reviewer collegium · 7 total · 3 shown</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== ALERTS -->
+    <section class="s" id="alerts">
+      <div class="s-head">
+        <div class="s-num">Section<b>10</b></div>
+        <div>
+          <h2>Alerts &amp; banners</h2>
+          <p class="blurb">Four tones — info, positive, warning, critical. Left-rail colour bar carries the semantic weight; body type stays graphite.</p>
+        </div>
+        <div class="s-meta"><b>One alert per surface</b>If you must stack, banner the system-level alert at top, inline-alert the contextual one.</div>
+      </div>
+
+      <div class="demos cols-1">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Banner (system)</span><span class="dnum">.banner</span></div>
+          <div class="demo-body" style="width:100%"><div class="banner" style="width:100%"><span><b>Merge window opens 06:00 SGT.</b> All scenario branches will be frozen at 05:55. <span style="opacity:.7;margin-left:8px">— Platform Ops</span></span><span class="bx">×</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Info</span><span class="dnum">.alert.info</span></div>
+          <div class="demo-body" style="width:100%"><div class="alert info" style="width:100%"><div class="aicon">i</div><div class="abody"><h5>AI-generated insight</h5><p>The model identified a 0.42 correlation between station egress count and adjacent retail vacancy in Q1. Lineage available.</p></div><div class="axn"><button class="btn sm secondary">View lineage</button></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Positive</span><span class="dnum">.alert.pos</span></div>
+          <div class="demo-body" style="width:100%"><div class="alert pos" style="width:100%"><div class="aicon">✓</div><div class="abody"><h5>EIA accepted</h5><p>Environmental impact assessment for Marina South Tower 2 passed all four substantive tests on 30 Apr 2026.</p></div><div class="axn"><button class="btn sm ghost">Open file</button></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Warning</span><span class="dnum">.alert.warn</span></div>
+          <div class="demo-body" style="width:100%"><div class="alert warn" style="width:100%"><div class="aicon">!</div><div class="abody"><h5>Setback non-conforming</h5><p>North-face setback of 2.4 m falls below the 3 m minimum for this zone. Revise the elevation drawing before resubmission.</p></div><div class="axn"><button class="btn sm warn">Revise</button></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Critical</span><span class="dnum">.alert.crit</span></div>
+          <div class="demo-body" style="width:100%"><div class="alert crit" style="width:100%"><div class="aicon">!</div><div class="abody"><h5>Heritage conflict — irreversible</h5><p>Proposed demolition of 17 Tras Street shophouse falls within the 2019 conservation gazette. This action cannot proceed without ministerial deviation.</p></div><div class="axn"><button class="btn sm danger">Halt scheme</button></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== TOASTS -->
+    <section class="s" id="toasts">
+      <div class="s-head">
+        <div class="s-num">Section<b>11</b></div>
+        <div>
+          <h2>Toasts</h2>
+          <p class="blurb">Acknowledgement, never instruction. Toasts confirm an action you just took; they never tell you to do something. Auto-dismiss at 4 s for positive, 8 s for warning, manual-only for critical.</p>
+        </div>
+        <div class="s-meta"><b>Top-right · stack 3</b>Then collapse to "+N more" pill.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Stack</span><span class="dnum">.toast</span></div>
+          <div class="demo-body" style="gap:8px"><div class="toast"><span class="tic" style="background:var(--signal-positive)"></span><div class="tb"><h5>Plan saved</h5><p>Marina South · scheme/04 · v0.3.5</p></div><span class="tx">×</span></div><div class="toast"><span class="tic" style="background:var(--cyan-500)"></span><div class="tb"><h5>Lineage updated</h5><p>3 new sources attached to brief MS-04.</p></div><span class="tx">×</span></div><div class="toast"><span class="tic" style="background:var(--signal-warning)"></span><div class="tb"><h5>Auto-save paused</h5><p>You are offline. Local changes will sync when reconnected.</p></div><span class="tx">×</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">With action</span><span class="dnum">.toast + .btn</span></div>
+          <div class="demo-body" style="gap:8px"><div class="toast" style="grid-template-columns:auto 1fr auto auto;gap:10px"><span class="tic" style="background:var(--signal-critical)"></span><div class="tb"><h5>Setback violation persists</h5><p>The 2.4 m north setback failed validation twice.</p></div><button class="btn sm secondary">View</button><span class="tx">×</span></div><div class="toast" style="grid-template-columns:auto 1fr auto auto;gap:10px"><span class="tic"></span><div class="tb"><h5>Layer added</h5><p>Heat-island overlay · 35% · canopy datum.</p></div><button class="btn sm ghost">Undo</button><span class="tx">×</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== PROGRESS -->
+    <section class="s" id="progress">
+      <div class="s-head">
+        <div class="s-num">Section<b>12</b></div>
+        <div>
+          <h2>Progress, meter, skeleton, spinner</h2>
+          <p class="blurb">Determinate progress for known durations, indeterminate for unknown. Skeleton for content; spinner only when content is not yet structured.</p>
+        </div>
+        <div class="s-meta"><b>Never spin alone</b>A bare spinner is a failure of taste. Pair it with a label, or use a skeleton.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Progress · determinate</span><span class="dnum">.prog</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="prog"><div class="ph"><span>Validating envelope</span><b>62%</b></div><div class="pbar"><div class="pfill" style="width:62%"></div></div></div>
+            <div class="prog cool"><div class="ph"><span>Uploading shapefile</span><b>34%</b></div><div class="pbar"><div class="pfill" style="width:34%"></div></div></div>
+            <div class="prog warn"><div class="ph"><span>Validating EIA</span><b>88%</b></div><div class="pbar"><div class="pfill" style="width:88%"></div></div></div>
+            <div class="prog crit"><div class="ph"><span>Backfilling lineage</span><b>14%</b></div><div class="pbar"><div class="pfill" style="width:14%"></div></div></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Indeterminate</span><span class="dnum">.prog.indet</span></div>
+          <div class="demo-body" style="width:100%"><div class="prog indet"><div class="ph"><span>Computing scenario delta</span><b>—</b></div><div class="pbar"></div></div><div class="demo-note">For tasks whose duration is unknown but bounded.</div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Skeleton</span><span class="dnum">.sk</span></div>
+          <div class="demo-body" style="width:100%;gap:8px"><div class="sk" style="width:60%;height:14px"></div><div class="sk" style="width:90%"></div><div class="sk" style="width:78%"></div><div class="sk" style="width:40%"></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Spinner</span><span class="dnum">.spin</span></div>
+          <div class="demo-body"><div style="display:flex;gap:14px;align-items:center"><div class="spin"></div><span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-2)">Resolving 3 references…</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Meter (semantic)</span><span class="dnum">.meter</span></div>
+          <div class="demo-body" style="width:100%"><div class="meter" style="max-width:100%"><span class="mh">Reviewer load · today</span><span class="mlbl">17 / 24</span><div class="mbar"><i style="width:62%"></i><i class="w" style="width:18%"></i><i class="c" style="width:8%"></i></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Step indicator</span><span class="dnum">.steps inline</span></div>
+          <div class="demo-body" style="width:100%"><div class="steps"><div class="step done"><b>Drafted</b>04 Apr</div><div class="step done"><b>Submitted</b>12 Apr</div><div class="step on"><b>Under review</b>active</div><div class="step"><b>Issued</b>—</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== DIALOG / SHEET -->
+    <section class="s" id="dialog">
+      <div class="s-head">
+        <div class="s-num">Section<b>13</b></div>
+        <div>
+          <h2>Dialog &amp; Sheet</h2>
+          <p class="blurb">Two overlay shapes. <b>Dialog</b> is centred and interrupts. <b>Sheet</b> slides from an edge and continues the conversation. Both carry corner ticks.</p>
+        </div>
+        <div class="s-meta"><b>Scrim opacity</b>0.5 graphite-900, 2 px blur. Never above 0.6.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Dialog</span><span class="dnum">.dlg</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="dlg-host" style="width:100%">
+              <div class="scrim"></div>
+              <div class="dlg">
+                <div class="dh"><h4>Reject scheme — confirm</h4><span class="dnum">irreversible</span></div>
+                <div class="dbody">This will return Marina South · scheme/04 to the applicant with three reviewer comments attached. The action is logged against your reviewer record.</div>
+                <div class="df"><button class="btn ghost sm">Cancel</button><button class="btn sm danger">Reject &amp; return</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Sheet (right)</span><span class="dnum">.sheet</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="sheet-host" style="width:100%">
+              <div class="stage">— parcel canvas —</div>
+              <aside class="sheet">
+                <div class="sh"><h4>Layer inspector</h4><span class="dnum" style="font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.12em">L · 03</span></div>
+                <div class="sbody">
+                  <div class="field" style="max-width:100%;margin-bottom:10px"><label class="flbl">Opacity</label><input type="range" class="range" value="35"/></div>
+                  <label class="opt-row"><input type="checkbox" checked/><span class="sw"></span><span class="opt-label">Heat-island wash</span></label>
+                  <label class="opt-row" style="margin-top:8px"><input type="checkbox"/><span class="sw"></span><span class="opt-label">Transit veins</span></label>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== OVERLAYS -->
+    <section class="s" id="overlays">
+      <div class="s-head">
+        <div class="s-num">Section<b>14</b></div>
+        <div>
+          <h2>Popover, tooltip, hover card, menu</h2>
+          <p class="blurb">Four overlay shapes. The popover declares its source with a small notch. Tooltip is the only overlay that uses an inverted fill (ink on paper-on-paper).</p>
+        </div>
+        <div class="s-meta"><b>Anchor truthfully</b>If the overlay can't physically point at its source, it isn't a popover — make it a sheet.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo" style="min-height:240px">
+          <div class="demo-h"><span class="dlbl">Popover</span><span class="dnum">.pop</span></div>
+          <div class="demo-body"><div class="pop"><button class="btn secondary sm">▾ Open lineage</button><div class="popbody"><h5>Source lineage</h5><p>This figure was derived from URA cadastral 2024-Q4, weather station 23.05, and LTA passenger counts 2026-W17.</p></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Tooltip</span><span class="dnum">.tip</span></div>
+          <div class="demo-body" style="margin-top:24px"><div class="tip"><button class="btn sm">Hover me<div class="tipbody">Press ⌘ + K to open the command bar</div></button></div></div>
+        </div>
+        <div class="demo" style="min-height:260px">
+          <div class="demo-h"><span class="dlbl">Dropdown menu</span><span class="dnum">.menu</span></div>
+          <div class="demo-body"><div class="menu"><button class="btn secondary sm">▾ Reviewer actions</button><div class="menubody"><div class="mglbl">Decisions</div><a href="#">Approve scheme<span class="kbd">⌘↵</span></a><a href="#">Return for revision<span class="kbd">⌘R</span></a><a href="#" class="danger">Reject &amp; close<span class="kbd">⌘⌫</span></a><div class="sep"></div><div class="mglbl">Tools</div><a href="#">Open lineage<span class="kbd">L</span></a><a href="#">Compare to scheme/03<span class="kbd">D</span></a></div></div></div>
+        </div>
+        <div class="demo" style="min-height:260px">
+          <div class="demo-h"><span class="dlbl">Hover card</span><span class="dnum">.hovcard</span></div>
+          <div class="demo-body"><p style="font-size:13.5px;color:var(--ink-2);line-height:1.6;margin:0;max-width:36ch">Decision logged by <span class="hovcard">Tan W.H.<span class="hc"><span class="av lg solid">TW</span><div><div class="hh">Tan Wei Han</div><p class="hb">Lead reviewer · URA · Planning Group 04. Joined 2019.</p><div class="hf">tan.weihan@ura.gov.sg</div></div></span></span> on 30 Apr 2026.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== TABS / ACCORDION -->
+    <section class="s" id="tabs">
+      <div class="s-head">
+        <div class="s-num">Section<b>15</b></div>
+        <div>
+          <h2>Tabs &amp; accordion</h2>
+          <p class="blurb">Tabs slice a single surface horizontally; accordion stacks them vertically. The active tab carries a 1.5 px cyan rule under its label — the system's only persistent glow line.</p>
+        </div>
+        <div class="s-meta"><b>Count siblings</b>Tabs reveal a small count in mono next to the label.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Tabs · underline</span><span class="dnum">.tabs</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="tabs" data-tabs>
+              <div class="tablist"><button class="tab on" data-t="t1">Overview <span class="tc">·</span></button><button class="tab" data-t="t2">Reviewers <span class="tc">7</span></button><button class="tab" data-t="t3">Activity <span class="tc">142</span></button><button class="tab" data-t="t4">Lineage <span class="tc">12</span></button></div>
+              <div class="tpanel on" data-p="t1">Marina South · scheme/04 — submitted 12 Apr 2026 by ABG Architects. 142 800 m² GFA across two towers with retained heritage frontage along Tras Street.</div>
+              <div class="tpanel" data-p="t2">Seven reviewers attached, three primary, four advisory.</div>
+              <div class="tpanel" data-p="t3">142 events logged this week. Latest: heat-island overlay added by reviewer SK.</div>
+              <div class="tpanel" data-p="t4">12 lineage sources: 7 SLA cadastral, 3 LTA passenger, 1 NEA air-quality, 1 model output.</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Tabs · pills</span><span class="dnum">.tabs.pills</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="tabs pills" data-tabs>
+              <div class="tablist"><button class="tab on" data-t="p1">Plan</button><button class="tab" data-t="p2">Scheme</button><button class="tab" data-t="p3">Built</button></div>
+              <div class="tpanel on" data-p="p1">Master-plan layer — gazetted intent for the parcel.</div>
+              <div class="tpanel" data-p="p2">Scheme drawings as currently submitted.</div>
+              <div class="tpanel" data-p="p3">Built-form data as captured by the cadastral survey.</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo" style="grid-column:span 2">
+          <div class="demo-h"><span class="dlbl">Accordion</span><span class="dnum">.acc</span></div>
+          <div class="demo-body" style="width:100%"><div class="acc" data-acc>
+            <div class="ai on"><div class="ah"><span><span class="anum">01</span>What is the scheme proposing?</span><span class="achev">+</span></div><div class="ab">Two-tower mixed-use development with retained heritage shophouse frontages along Tras Street. 142 800 m² GFA, plot ratio 2.8, max height 200 m AOD.</div></div>
+            <div class="ai"><div class="ah"><span><span class="anum">02</span>What was returned by the previous review?</span><span class="achev">+</span></div><div class="ab">North-face setback non-conforming, EIA addendum required for groundwater, public realm strategy missing south frontage.</div></div>
+            <div class="ai"><div class="ah"><span><span class="anum">03</span>Which models inform the heat-island overlay?</span><span class="achev">+</span></div><div class="ab">Microclimate model v2.4 (NUS-CCS, 2025), calibrated against 8 weather stations within 2 km. 35% canopy datum applied uniformly.</div></div>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== WAYFINDING -->
+    <section class="s" id="wayfinding">
+      <div class="s-head">
+        <div class="s-num">Section<b>16</b></div>
+        <div>
+          <h2>Wayfinding</h2>
+          <p class="blurb">Breadcrumb, pagination, steps. Three navigation shapes for three temporal positions — where you are, where you've been, where you're going.</p>
+        </div>
+        <div class="s-meta"><b>Always mono</b>Wayfinding stays in IBM Plex Mono. It speaks in coordinates.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Breadcrumb</span><span class="dnum">.crumbs</span></div>
+          <div class="demo-body"><div class="crumbs"><a>System</a><span class="csep">/</span><a>Planning</a><span class="csep">/</span><a>Marina South</a><span class="csep">/</span><b>scheme/04</b></div><div class="demo-note">Last segment is the position; never linkable.</div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Pagination</span><span class="dnum">.pag</span></div>
+          <div class="demo-body"><div class="pag"><span class="dis">‹</span><a>1</a><span class="on">2</span><a>3</a><a>4</a><span>…</span><a>14</a><a>›</a></div></div>
+        </div>
+        <div class="demo" style="grid-column:span 2">
+          <div class="demo-h"><span class="dlbl">Step indicator</span><span class="dnum">.steps</span></div>
+          <div class="demo-body" style="width:100%"><div class="steps"><div class="step done"><b>Drafted</b>04 Apr</div><div class="step done"><b>Submitted</b>12 Apr</div><div class="step done"><b>EIA cleared</b>30 Apr</div><div class="step on"><b>Under review</b>day 14</div><div class="step"><b>Decision</b>—</div><div class="step"><b>Issued</b>—</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== COMMAND -->
+    <section class="s" id="command">
+      <div class="s-head">
+        <div class="s-num">Section<b>17</b></div>
+        <div>
+          <h2>Command menu</h2>
+          <p class="blurb">A keyboard-first surface, addressable from anywhere. The only place we permit a 1.5px bold-ink frame on an interactive panel — it's the system's "speak to me" affordance.</p>
+        </div>
+        <div class="s-meta"><b>⌘K</b>Universal. ⌘P for files, ⌘. for actions on selection.</div>
+      </div>
+
+      <div class="demos cols-1">
+        <div class="demo center" style="min-height:380px">
+          <div class="demo-h"><span class="dlbl">Command palette</span><span class="dnum">.cmd</span></div>
+          <div class="demo-body center"><div class="cmd"><div class="cmdinp"><span style="color:var(--ink-3)">⌕</span><input placeholder="Search schemes, parcels, reviewers…"/><span class="cmdk">esc</span></div><div class="cmdlist"><div class="cmdgrp">Suggested</div><div class="cmdrow on"><span>Open Marina South · scheme/04</span><span class="crk">go</span></div><div class="cmdrow"><span>Run scenario A vs B comparison</span><span class="crk">⌘.</span></div><div class="cmdrow"><span>Toggle heat-island overlay</span><span class="crk">H</span></div><div class="cmdgrp">Reviewers</div><div class="cmdrow"><span>Reassign to Tan W.H.</span><span class="crk">↵</span></div><div class="cmdrow"><span>Notify reviewer collegium</span><span class="crk">⌘N</span></div><div class="cmdgrp">System</div><div class="cmdrow"><span>Switch to Review Room</span><span class="crk">⌘⇧R</span></div></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== TABLES -->
+    <section class="s" id="tables">
+      <div class="s-head">
+        <div class="s-num">Section<b>18</b></div>
+        <div>
+          <h2>Tables</h2>
+          <p class="blurb">Tables are the workhorse of urban data — rosters, queues, registers, gazettes. Header is a 1.5 px bold rule; rows are 1 px hairlines. Hover row gets a paper-sunken wash; selected row gets a cyan-100 wash.</p>
+        </div>
+        <div class="s-meta"><b>Numbers in mono</b>All numeric columns set in JetBrains Mono. Right-aligned, always.</div>
+      </div>
+
+      <div class="demos cols-1">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Plan registry</span><span class="dnum">table.t</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="table-wrap" style="width:100%">
+              <table class="t">
+                <thead><tr><th class="row-chk"><label class="opt-row" style="gap:0"><input type="checkbox" id="cha"/><span class="chk"></span></label></th><th>Scheme</th><th>Parcel</th><th>Stage</th><th>Reviewer</th><th class="num">GFA · m²</th><th class="num">Plot ratio</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><label class="opt-row" style="gap:0"><input type="checkbox" checked/><span class="chk"></span></label></td><td><b>scheme/04</b><br><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)">Marina South</span></td><td class="num">MK-04-12345</td><td><span class="badge info">analytical</span></td><td>Tan W.H.</td><td class="num right">142,800</td><td class="num right">2.8</td><td><span class="status warn">Revise</span></td><td><button class="btn sm ghost">▸</button></td></tr>
+                  <tr class="on"><td><label class="opt-row" style="gap:0"><input type="checkbox" checked/><span class="chk"></span></label></td><td><b>scheme/08</b><br><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)">Bishan East</span></td><td class="num">MK-22-09812</td><td><span class="badge eco">EIA cleared</span></td><td>Koh S.</td><td class="num right">68,400</td><td class="num right">2.1</td><td><span class="status ok">Issued</span></td><td><button class="btn sm ghost">▸</button></td></tr>
+                  <tr><td><label class="opt-row" style="gap:0"><input type="checkbox"/><span class="chk"></span></label></td><td><b>scheme/11</b><br><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)">Toa Payoh</span></td><td class="num">MK-12-44021</td><td><span class="badge">draft</span></td><td>—</td><td class="num right">22,100</td><td class="num right">1.4</td><td><span class="status">Draft</span></td><td><button class="btn sm ghost">▸</button></td></tr>
+                  <tr><td><label class="opt-row" style="gap:0"><input type="checkbox"/><span class="chk"></span></label></td><td><b>scheme/13</b><br><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)">Jurong Lake District</span></td><td class="num">MK-30-77110</td><td><span class="badge warmt">heritage</span></td><td>Rajan B.</td><td class="num right">204,200</td><td class="num right">3.6</td><td><span class="status crit">Rejected</span></td><td><button class="btn sm ghost">▸</button></td></tr>
+                  <tr><td><label class="opt-row" style="gap:0"><input type="checkbox"/><span class="chk"></span></label></td><td><b>scheme/14</b><br><span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)">Punggol Digital</span></td><td class="num">MK-19-23001</td><td><span class="badge info">analytical</span></td><td>Lim H.K.</td><td class="num right">88,640</td><td class="num right">2.5</td><td><span class="status live">Active</span></td><td><button class="btn sm ghost">▸</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:12px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.06em"><span>2 of 18 selected</span><div class="pag"><span class="dis">‹</span><span class="on">1</span><a>2</a><a>3</a><a>4</a><a>›</a></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== LISTS / TREES -->
+    <section class="s" id="lists">
+      <div class="s-head">
+        <div class="s-num">Section<b>19</b></div>
+        <div>
+          <h2>Lists &amp; trees</h2>
+          <p class="blurb">Lists for collections that scroll. Trees for hierarchies that nest. Both render in the same hairline frame; the tree adds a 1 px dashed indent rule.</p>
+        </div>
+        <div class="s-meta"><b>Dashed indent</b>Reads as continuous lineage, not as a hierarchy of dominance.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Resource list</span><span class="dnum">.list</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="list" style="width:100%">
+              <div class="li"><div class="ll"><span class="av sm solid">04</span><div class="lt"><b>scheme/04 · Marina South</b><span>submitted 12 Apr · 142,800 m² · 14 days under review</span></div></div><div class="lr">Tan W.H.<br>Revise</div></div>
+              <div class="li"><div class="ll"><span class="av sm">08</span><div class="lt"><b>scheme/08 · Bishan East</b><span>issued 22 Apr · 68,400 m²</span></div></div><div class="lr">Koh S.<br><span class="status ok">Issued</span></div></div>
+              <div class="li"><div class="ll"><span class="av sm">11</span><div class="lt"><b>scheme/11 · Toa Payoh</b><span>draft · 22,100 m²</span></div></div><div class="lr">—<br>Draft</div></div>
+              <div class="li"><div class="ll"><span class="av sm">14</span><div class="lt"><b>scheme/14 · Punggol Digital</b><span>live · 88,640 m² · scenario A under model</span></div></div><div class="lr">Lim H.K.<br><span class="status live">Live</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">File tree</span><span class="dnum">.tree</span></div>
+          <div class="demo-body" style="width:100%"><div class="tree">
+            <div class="tn"><span class="tg">▾</span><b>marina-south/</b></div>
+            <div class="indent">
+              <div class="tn"><span class="tg">▾</span><b>scheme-04/</b></div>
+              <div class="indent">
+                <div class="tn"><span class="tg">·</span><span class="leaf">brief.md</span></div>
+                <div class="tn"><span class="tg">·</span><span class="leaf">site-plan.geojson</span></div>
+                <div class="tn"><span class="tg">▾</span><b>elevations/</b></div>
+                <div class="indent">
+                  <div class="tn"><span class="tg">·</span><span class="leaf">north.dwg</span></div>
+                  <div class="tn"><span class="tg">·</span><span class="leaf">south.dwg</span></div>
+                </div>
+                <div class="tn"><span class="tg">▸</span><b>eia/</b><span style="color:var(--ink-3);margin-left:6px">12 files</span></div>
+              </div>
+              <div class="tn"><span class="tg">▸</span><b>scheme-03/</b><span style="color:var(--ink-3);margin-left:6px">superseded</span></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== CALENDAR -->
+    <section class="s" id="calendar">
+      <div class="s-head">
+        <div class="s-num">Section<b>20</b></div>
+        <div>
+          <h2>Calendar &amp; date</h2>
+          <p class="blurb">A draftsman's calendar — mono digits, no weekend wash, today carries the same cyan rule the active tab does. Range selection paints with cyan-100.</p>
+        </div>
+        <div class="s-meta"><b>Inline only</b>Date picker as a sheet, not a popover, when range selection is involved.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Calendar</span><span class="dnum">.cal · single</span></div>
+          <div class="demo-body center">
+            <div class="cal">
+              <div class="calh"><b>May 2026</b><div class="calnav"><button>‹</button><button>›</button></div></div>
+              <table class="calt"><thead><tr><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr></thead>
+              <tbody>
+                <tr><td class="dim"><button>27</button></td><td class="dim"><button>28</button></td><td class="dim"><button>29</button></td><td class="dim"><button>30</button></td><td><button>1</button></td><td><button>2</button></td><td><button>3</button></td></tr>
+                <tr><td><button>4</button></td><td><button>5</button></td><td><button>6</button></td><td><button>7</button></td><td><button>8</button></td><td><button>9</button></td><td><button>10</button></td></tr>
+                <tr><td><button>11</button></td><td><button>12</button></td><td><button>13</button></td><td><button>14</button></td><td><button>15</button></td><td class="today"><button>16</button></td><td><button>17</button></td></tr>
+                <tr><td><button>18</button></td><td><button>19</button></td><td><button>20</button></td><td><button>21</button></td><td class="on"><button>22</button></td><td><button>23</button></td><td><button>24</button></td></tr>
+                <tr><td><button>25</button></td><td><button>26</button></td><td><button>27</button></td><td><button>28</button></td><td><button>29</button></td><td><button>30</button></td><td><button>31</button></td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Calendar · range</span><span class="dnum">.cal · range</span></div>
+          <div class="demo-body center">
+            <div class="cal">
+              <div class="calh"><b>May 2026</b><div class="calnav"><button>‹</button><button>›</button></div></div>
+              <table class="calt"><thead><tr><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr></thead>
+              <tbody>
+                <tr><td class="dim"><button>27</button></td><td class="dim"><button>28</button></td><td class="dim"><button>29</button></td><td class="dim"><button>30</button></td><td><button>1</button></td><td><button>2</button></td><td><button>3</button></td></tr>
+                <tr><td><button>4</button></td><td><button>5</button></td><td><button>6</button></td><td><button>7</button></td><td class="on"><button>8</button></td><td class="range"><button>9</button></td><td class="range"><button>10</button></td></tr>
+                <tr><td class="range"><button>11</button></td><td class="range"><button>12</button></td><td class="range"><button>13</button></td><td class="range"><button>14</button></td><td class="on"><button>15</button></td><td><button>16</button></td><td><button>17</button></td></tr>
+                <tr><td><button>18</button></td><td><button>19</button></td><td><button>20</button></td><td><button>21</button></td><td><button>22</button></td><td><button>23</button></td><td><button>24</button></td></tr>
+                <tr><td><button>25</button></td><td><button>26</button></td><td><button>27</button></td><td><button>28</button></td><td><button>29</button></td><td><button>30</button></td><td><button>31</button></td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== CODE -->
+    <section class="s" id="code">
+      <div class="s-head">
+        <div class="s-num">Section<b>21</b></div>
+        <div>
+          <h2>Code &amp; KBD</h2>
+          <p class="blurb">For platform contexts. Inline code in a hairline frame; key caps in a 2 px bottom border to give them a sense of throw.</p>
+        </div>
+        <div class="s-meta"><b>Monolithic shadow line</b>2 px on the bottom of a kbd is the only "physical" depth in the system.</div>
+      </div>
+
+      <div class="demos cols-2">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Inline &amp; kbd</span><span class="dnum">code.inline / .kbd</span></div>
+          <div class="demo-body"><p style="margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.65">Toggle layers with <span class="kbd">L</span> · open command menu with <span class="kbd">⌘</span> <span class="kbd">K</span> · the active room is set via <code class="inline">data-room="review"</code>.</p></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Code block</span><span class="dnum">pre.code</span></div>
+          <div class="demo-body" style="width:100%"><pre class="code">
+<span class="c-com">// switch into Review Room for projection contexts</span>
+<span class="c-kw">document</span>.documentElement.setAttribute(
+  <span class="c-str">"data-room"</span>, <span class="c-str">"review"</span>
+);
+<span class="c-com">// → larger body, bolder rules, no other changes</span>
+</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== EMPTY -->
+    <section class="s" id="empty">
+      <div class="s-head">
+        <div class="s-num">Section<b>22</b></div>
+        <div>
+          <h2>Empty &amp; error states</h2>
+          <p class="blurb">When there's nothing to show, show structure. A dashed-frame empty state is a promise that the surface exists and is waiting.</p>
+        </div>
+        <div class="s-meta"><b>Never blank</b>An empty surface is a system failure to communicate. Always offer one move.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Empty · resource</span><span class="dnum">.empty</span></div>
+          <div class="demo-body center" style="width:100%"><div class="empty" style="width:100%"><div class="eglyph"></div><h5>No schemes assigned</h5><p>You have no schemes under review this week. Schemes are assigned daily at 09:00 SGT.</p><div style="margin-top:10px;display:flex;gap:8px"><button class="btn sm">View queue</button><button class="btn sm ghost">Set notifications</button></div></div></div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Empty · search</span><span class="dnum">.empty</span></div>
+          <div class="demo-body center" style="width:100%"><div class="empty" style="width:100%"><div class="eglyph" style="border-style:dashed"></div><h5>No results for <span style="font-family:var(--font-mono);color:var(--ink)">tras-st</span></h5><p>Try a parcel ID, a reviewer name, or a scheme reference.</p></div></div>
+        </div>
+        <div class="demo center">
+          <div class="demo-h"><span class="dlbl">Error</span><span class="dnum">.empty · crit</span></div>
+          <div class="demo-body center" style="width:100%"><div class="empty" style="width:100%;border-color:var(--signal-critical)"><div class="eglyph" style="border-color:var(--signal-critical)"></div><h5 style="color:var(--signal-critical)">Couldn't reach the lineage service</h5><p>503 from lineage-api · last 4 minutes. The fallback shows cached lineage from 14:02 SGT.</p><div style="margin-top:10px;display:flex;gap:8px"><button class="btn sm danger">Retry</button><button class="btn sm ghost">Open status page</button></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== TRUST -->
+    <section class="s" id="trust">
+      <div class="s-head">
+        <div class="s-num">Section<b>23</b></div>
+        <div>
+          <h2>Trust layer</h2>
+          <p class="blurb">Every AI-touched surface in v0.3 carries five trust primitives — lineage, confidence, policy, validity, review. This section makes them addressable as components rather than custom one-offs.</p>
+        </div>
+        <div class="s-meta"><b>Always footed</b>AI-touched surfaces footer-anchor the trust row. Never hide it behind a toggle.</div>
+      </div>
+
+      <div class="demos cols-1">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Full trust row</span><span class="dnum">.trust-row</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="trust-row" style="width:100%">
+              <span class="lineage"><span class="src">SLA · cad 2024-Q4</span><span class="arr">→</span><span class="src">LTA · 2026-W17</span><span class="arr">→</span><span class="src">model · NUS-CCS v2.4</span></span>
+              <span style="flex:1"></span>
+              <div class="conf-band"><span class="clbl">conf</span><div class="cb"><i style="left:72%"></i></div><span class="cv">0.72</span></div>
+              <span class="policy-badge pub">Public · CC-BY-SA</span>
+              <span class="valid"><b>valid</b> through 30 Jun 2026</span>
+              <span class="status ok">Reviewed</span>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Policy badges · 3 tiers</span><span class="dnum">.policy-badge</span></div>
+          <div class="demo-body"><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="policy-badge pub">Public · CC-BY-SA</span><span class="policy-badge int">Internal · URA</span><span class="policy-badge res">Restricted · gazette only</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Confidence bands</span><span class="dnum">.conf-band</span></div>
+          <div class="demo-body" style="gap:8px"><div class="conf-band" style="min-width:240px"><span class="clbl">low</span><div class="cb"><i style="left:18%"></i></div><span class="cv">0.18</span></div><div class="conf-band" style="min-width:240px"><span class="clbl">mid</span><div class="cb"><i style="left:54%"></i></div><span class="cv">0.54</span></div><div class="conf-band" style="min-width:240px"><span class="clbl">high</span><div class="cb"><i style="left:88%"></i></div><span class="cv">0.88</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== SPATIAL -->
+    <section class="s" id="spatial">
+      <div class="s-head">
+        <div class="s-num">Section<b>24</b></div>
+        <div>
+          <h2>Spatial primitives</h2>
+          <p class="blurb">The OS's spatial vocabulary, exposed as components: <b>district</b>, <b>corridor</b>, <b>node</b>. They mark not "containers" but "places" in the interface.</p>
+        </div>
+        <div class="s-meta"><b>Mirror the city</b>A district has a bar at its top, the way a precinct has a station; a corridor has arrowheads at both ends, the way a desire-line has direction.</div>
+      </div>
+
+      <div class="demos cols-3">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">District</span><span class="dnum">.district</span></div>
+          <div class="demo-body"><div class="district"><div class="district-bar"><span>Marina South</span><span>142.8 ha</span></div><div class="district-body"><p>Two-tower mixed use with retained heritage frontage along Tras Street. Plot ratio 2.8; max height 200 m AOD.</p></div></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Corridor</span><span class="dnum">.corridor</span></div>
+          <div class="demo-body" style="align-items:flex-start"><div class="corridor"><span>Marina South ↔ Tanjong Pagar</span><span>1.4 km · MRT DTL3e</span></div><div class="corridor"><span>East Coast Park ↔ Marina Bay</span><span>3.6 km · cycling</span></div></div>
+        </div>
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Nodes</span><span class="dnum">.node</span></div>
+          <div class="demo-body"><div style="display:flex;gap:14px;flex-wrap:wrap"><span class="node">Stn · MRT</span><span class="node">Park · Esplanade</span><span class="node">Heritage · Tras</span><span class="node">Civic · NGS</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== CARTOUCHE -->
+    <section class="s" id="cartouche">
+      <div class="s-head">
+        <div class="s-num">Section<b>25</b></div>
+        <div>
+          <h2>Map cartouche</h2>
+          <p class="blurb">When the interface surfaces a place, it labels it with a cartouche — a small frame with corner ticks. The cartouche is the system's signature on a map.</p>
+        </div>
+        <div class="s-meta"><b>Corner-tick only</b>Never decorate. Never round. The cartouche carries authority by restraint.</div>
+      </div>
+
+      <div class="demos cols-1">
+        <div class="demo">
+          <div class="demo-h"><span class="dlbl">Plate with three cartouches</span><span class="dnum">.mapplate / .cartouche</span></div>
+          <div class="demo-body" style="width:100%">
+            <div class="mapplate" style="width:100%;height:280px">
+              <svg viewBox="0 0 800 280" preserveAspectRatio="none">
+                <!-- hairline grid -->
+                <g stroke="rgba(11,14,13,.08)" stroke-width="1">
+                  <line x1="0" y1="40" x2="800" y2="40"/><line x1="0" y1="80" x2="800" y2="80"/><line x1="0" y1="120" x2="800" y2="120"/><line x1="0" y1="160" x2="800" y2="160"/><line x1="0" y1="200" x2="800" y2="200"/><line x1="0" y1="240" x2="800" y2="240"/>
+                  <line x1="100" y1="0" x2="100" y2="280"/><line x1="200" y1="0" x2="200" y2="280"/><line x1="300" y1="0" x2="300" y2="280"/><line x1="400" y1="0" x2="400" y2="280"/><line x1="500" y1="0" x2="500" y2="280"/><line x1="600" y1="0" x2="600" y2="280"/><line x1="700" y1="0" x2="700" y2="280"/>
+                </g>
+                <!-- coastline -->
+                <path d="M0,210 C120,200 220,222 340,212 C460,202 560,228 720,214 L800,212 L800,280 L0,280 Z" fill="rgba(127,166,182,.12)" stroke="rgba(45,85,102,.6)" stroke-width="1"/>
+                <!-- transit veins -->
+                <path d="M40,150 C200,120 380,140 600,90 L760,80" fill="none" stroke="var(--cyan-500)" stroke-width="1.5"/>
+                <circle cx="200" cy="132" r="3" fill="var(--cyan-500)"/><circle cx="420" cy="120" r="3" fill="var(--cyan-500)"/><circle cx="600" cy="90" r="3" fill="var(--cyan-500)"/>
+                <!-- canopy -->
+                <path d="M60,40 C140,32 230,52 320,44 L320,90 L60,90 Z" fill="rgba(74,113,64,.15)" stroke="rgba(47,74,36,.4)" stroke-width="1"/>
+                <!-- heat -->
+                <ellipse cx="540" cy="160" rx="120" ry="34" fill="rgba(168,127,73,.18)"/>
+              </svg>
+              <div class="cartouche" style="left:24px;top:24px"><b>Marina South</b>parcel · MK-04-12345<div class="meta">scheme/04 · 142.8 ha</div></div>
+              <div class="cartouche" style="right:24px;top:50px"><b>Heat island · CBD</b>+3.4°C peak deviation<div class="meta">model · NUS-CCS v2.4</div></div>
+              <div class="cartouche" style="left:60%;bottom:18px"><b>DTL3e · Marina Bay</b>82% capacity now<div class="meta">LTA · 2026-W17</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== COLOPHON -->
+    <div class="colophon">
+      <div><h6>System</h6><p class="markline">Conservatory v0.3</p><p style="margin-top:6px">A spatial operating system for urban intelligence. The component kit shown here mirrors the doctrine and primitives in <code class="inline" style="background:transparent;color:var(--graphite-200);border-color:var(--graphite-700)">style-guide-v03.html</code>.</p></div>
+      <div><h6>Tokens</h6><p>Density · Room · Mode all operate on the same token tree. Surfaces respect <code class="inline" style="background:transparent;color:var(--graphite-200);border-color:var(--graphite-700)">data-mode="dark"</code> by re-mapping <code class="inline" style="background:transparent;color:var(--graphite-200);border-color:var(--graphite-700)">--paper-*</code>, not by overriding rules per-component.</p></div>
+      <div><h6>This file</h6><p>Self-contained. Vanilla HTML, vanilla JS, inline SVG. No build step. No external assets. Drop into any static host.</p></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// Station-board toggles (same as v03 style guide)
+function bindSeg(attr, fn){
+  document.querySelectorAll('[data-seg='+attr+'] button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      fn(b);
+    });
+  });
+}
+bindSeg('density', b=>document.documentElement.setAttribute('data-density', b.dataset.d));
+bindSeg('room',    b=>document.documentElement.setAttribute('data-room', b.dataset.r));
+bindSeg('mode',    b=>document.documentElement.setAttribute('data-mode', b.dataset.m));
+
+// Tabs
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  group.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      group.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+      group.querySelectorAll('.tpanel').forEach(x=>x.classList.remove('on'));
+      t.classList.add('on');
+      group.querySelector('.tpanel[data-p="'+t.dataset.t+'"]').classList.add('on');
+    });
+  });
+});
+
+// Accordion
+document.querySelectorAll('[data-acc]').forEach(acc=>{
+  acc.querySelectorAll('.ah').forEach(h=>{
+    h.addEventListener('click',()=>{
+      h.parentElement.classList.toggle('on');
+    });
+  });
+});
+
+// Rail scroll-spy
+const railLinks = document.querySelectorAll('.rail nav a');
+const sections  = Array.from(document.querySelectorAll('section.s'));
+function spy(){
+  const top = window.scrollY + 120;
+  let active = sections[0];
+  for(const s of sections){ if(s.offsetTop <= top) active = s; }
+  if(!active) return;
+  railLinks.forEach(a=>a.classList.toggle('on', a.getAttribute('href') === '#' + active.id));
+}
+window.addEventListener('scroll', spy, {passive:true});
+spy();
+
+// Range live values
+document.querySelectorAll('.range-row').forEach(row=>{
+  const r = row.querySelector('input[type=range]');
+  const v = row.querySelector('.rval');
+  if(r && v){
+    r.addEventListener('input',()=>{
+      const suffix = v.textContent.endsWith('%') ? '%' : '';
+      v.textContent = r.value + suffix;
+    });
+  }
+});
+</script>
+</body>
+</html>
