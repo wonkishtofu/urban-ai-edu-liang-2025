@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Conservatory — a biophilic design system</title>
+<style>
+/* =========================================================
+   CONSERVATORY — biophilic design system
+   Influenced by Gardens by the Bay: light through canopy,
+   weathered bronze, mist on glass, slow growth.
+   ========================================================= */
+
+:root{
+  /* ---------- Color: foundation ---------- */
+  --canopy-50:#f4f7f2;   /* mist on leaf */
+  --canopy-100:#e6ede1;
+  --canopy-200:#cdd9c4;
+  --canopy-300:#a8bb9a;
+  --canopy-400:#7a9669;
+  --canopy-500:#527a40;  /* primary — fern */
+  --canopy-600:#3f6230;
+  --canopy-700:#2f4a24;
+  --canopy-800:#22351a;
+  --canopy-900:#152110;  /* understory */
+
+  --bronze-50:#faf4ec;
+  --bronze-100:#f0e3cc;
+  --bronze-200:#e0c79a;
+  --bronze-300:#c9a36a;   /* weathered bronze accent */
+  --bronze-400:#a87f49;
+  --bronze-500:#8a6336;
+
+  --mist-50:#fbfbf8;     /* paper */
+  --mist-100:#f5f5f0;
+  --mist-200:#e9e9e1;
+  --mist-300:#d6d6cb;
+  --mist-400:#b3b3a6;
+  --mist-500:#888879;
+  --mist-700:#4d4d44;
+  --mist-900:#1a1a14;
+
+  --orchid:#a44a7a;      /* expressive accent — sparing */
+  --signal-positive:#3f7a4a;
+  --signal-warning:#c69440;
+  --signal-critical:#9c3a2a;
+  --signal-info:#3a6a8a;
+
+  /* ---------- Semantic tokens (light) ---------- */
+  --bg:var(--mist-50);
+  --bg-elevated:#ffffff;
+  --bg-sunken:var(--mist-100);
+  --surface:var(--mist-50);
+  --ink:var(--canopy-900);
+  --ink-2:var(--mist-700);
+  --ink-3:var(--mist-500);
+  --rule:var(--mist-200);
+  --rule-strong:var(--mist-300);
+  --accent:var(--canopy-600);
+  --accent-soft:var(--canopy-100);
+  --accent-warm:var(--bronze-300);
+  --hl:rgba(201,163,106,.18);
+
+  /* ---------- Type ---------- */
+  --font-display:"Söhne","Inter","SF Pro Display",-apple-system,system-ui,sans-serif;
+  --font-body:"Söhne","Inter","SF Pro Text",-apple-system,system-ui,sans-serif;
+  --font-serif:"Iowan Old Style","Source Serif Pro",Georgia,serif;
+  --font-mono:"JetBrains Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  --t-display:46px;
+  --t-h1:32px;
+  --t-h2:22px;
+  --t-h3:17px;
+  --t-body:15px;
+  --t-small:13px;
+  --t-micro:11px;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px;
+  --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+
+  /* ---------- Radii ---------- */
+  --r-1:4px; --r-2:8px; --r-3:12px; --r-4:18px; --r-pill:999px;
+
+  /* ---------- Elevation (soft, dew-like) ---------- */
+  --shadow-1:0 1px 2px rgba(21,33,16,.04), 0 1px 1px rgba(21,33,16,.03);
+  --shadow-2:0 4px 14px rgba(21,33,16,.06), 0 1px 2px rgba(21,33,16,.04);
+  --shadow-3:0 18px 40px rgba(21,33,16,.10), 0 4px 10px rgba(21,33,16,.05);
+
+  /* ---------- Motion ---------- */
+  --ease-canopy:cubic-bezier(.2,.7,.2,1);  /* gentle settle */
+  --ease-bloom:cubic-bezier(.16,1,.3,1);   /* slow-out */
+  --dur-fast:140ms; --dur:240ms; --dur-slow:420ms;
+}
+
+/* Dark mode — night conservatory: lit pathways through dim canopy */
+[data-mode="dark"]{
+  --bg:#0e160c;
+  --bg-elevated:#162014;
+  --bg-sunken:#0a110a;
+  --surface:#0e160c;
+  --ink:#e6ede1;
+  --ink-2:#a8bb9a;
+  --ink-3:#7a8473;
+  --rule:#22351a;
+  --rule-strong:#2f4a24;
+  --accent:#a8bb9a;
+  --accent-soft:#22351a;
+  --accent-warm:#c9a36a;
+  --hl:rgba(201,163,106,.16);
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 6px 18px rgba(0,0,0,.45);
+  --shadow-3:0 20px 50px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+
+/* ---------- Page chrome ---------- */
+.page{max-width:1180px;margin:0 auto;padding:var(--s-7) var(--s-6) var(--s-9)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--s-4) 0 var(--s-7);border-bottom:1px solid var(--rule)}
+.mark{display:flex;align-items:center;gap:var(--s-3);font-family:var(--font-display);font-weight:600;letter-spacing:-.01em}
+.mark .glyph{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--canopy-300),var(--canopy-600) 70%);box-shadow:inset 0 0 0 1px rgba(21,33,16,.18)}
+.mark .name{font-size:18px}
+.mark .sub{color:var(--ink-3);font-weight:400;font-size:13px;margin-left:6px}
+.modes{display:flex;gap:var(--s-2);align-items:center}
+.modes button{appearance:none;border:1px solid var(--rule-strong);background:var(--bg-elevated);color:var(--ink-2);font:inherit;padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;transition:all var(--dur) var(--ease-canopy)}
+.modes button:hover{color:var(--ink);border-color:var(--accent)}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* ---------- Hero ---------- */
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--s-7);align-items:end;padding:var(--s-8) 0 var(--s-7)}
+.hero h1{font-family:var(--font-display);font-size:var(--t-display);line-height:1.04;margin:0 0 var(--s-4);letter-spacing:-.02em;font-weight:500}
+.hero h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--accent)}
+.hero .lede{font-family:var(--font-serif);font-size:20px;line-height:1.5;color:var(--ink-2);margin:0}
+.hero .meta{font-size:13px;color:var(--ink-3);display:flex;flex-direction:column;gap:6px;border-left:1px solid var(--rule);padding-left:var(--s-5)}
+.hero .meta b{color:var(--ink-2);font-weight:500;display:block}
+
+/* ---------- Section scaffolding ---------- */
+.sec{padding:var(--s-8) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:160px 1fr;gap:var(--s-6);align-items:baseline;margin-bottom:var(--s-6)}
+.sec-num{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+.sec h2{font-family:var(--font-display);font-size:var(--t-h1);font-weight:500;letter-spacing:-.015em;margin:0 0 var(--s-3)}
+.sec .blurb{color:var(--ink-2);font-size:15px;max-width:60ch;margin:0}
+.sec-body{display:grid;grid-template-columns:160px 1fr;gap:var(--s-6)}
+.sec-body .anchor{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;padding-top:6px}
+
+/* ---------- Principles ---------- */
+.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-5)}
+.principle{padding:var(--s-5);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--bg-elevated);transition:border-color var(--dur) var(--ease-canopy)}
+.principle:hover{border-color:var(--accent)}
+.principle h3{font-family:var(--font-display);font-size:var(--t-h3);margin:0 0 var(--s-2);font-weight:600;display:flex;align-items:center;gap:10px}
+.principle h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.principle:nth-child(2) h3::before{background:var(--bronze-300)}
+.principle:nth-child(3) h3::before{background:var(--orchid)}
+.principle:nth-child(4) h3::before{background:var(--mist-400)}
+.principle p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.55}
+.principle .qual{display:block;margin-top:var(--s-3);font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+
+/* ---------- Color tokens ---------- */
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-bottom:var(--s-4);border-radius:var(--r-2);overflow:hidden;border:1px solid var(--rule)}
+.swatch{aspect-ratio:1.6;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--s-2);font-family:var(--font-mono);font-size:10px;line-height:1.3;color:rgba(255,255,255,.85);position:relative}
+.swatch.lt{color:var(--ink)}
+.swatch .step{opacity:.7}
+.swatch .hex{display:block;letter-spacing:.04em}
+.scale-name{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s-2);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.scale-name b{color:var(--ink);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:var(--font-display);font-size:15px}
+
+.semantic{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-top:var(--s-5)}
+.sem{padding:var(--s-3);border:1px solid var(--rule);border-radius:var(--r-2);background:var(--bg-elevated)}
+.sem .chip{height:36px;border-radius:var(--r-1);margin-bottom:var(--s-3)}
+.sem .role{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em}
+.sem .label{display:block;margin-top:2px;font-weight:500;font-size:14px}
+.sem .use{display:block;margin-top:4px;color:var(--ink-2);font-size:12px;line-height:1.4}
+
+/* ---------- Type ---------- */
+.type-row{display:grid;grid-template-columns:120px 1fr;align-items:baseline;padding:var(--s-4) 0;border-bottom:1px dashed var(--rule)}
+.type-row:last-child{border-bottom:none}
+.type-meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;line-height:1.6}
+.type-meta b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:var(--font-display);font-size:13px}
+.type-sample.display{font-family:var(--font-display);font-size:48px;line-height:1.04;letter-spacing:-.02em;font-weight:500}
+.type-sample.display em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--accent)}
+.type-sample.h1{font-family:var(--font-display);font-size:32px;line-height:1.15;font-weight:500;letter-spacing:-.015em}
+.type-sample.h2{font-family:var(--font-display);font-size:22px;line-height:1.25;font-weight:600}
+.type-sample.body-serif{font-family:var(--font-serif);font-size:18px;line-height:1.55;color:var(--ink-2)}
+.type-sample.body{font-size:15px;line-height:1.6;color:var(--ink-2);max-width:60ch}
+.type-sample.small{font-size:13px;line-height:1.5;color:var(--ink-3)}
+.type-sample.mono{font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-2)}
+
+/* ---------- Components ---------- */
+.compgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-5)}
+.cdemo{padding:var(--s-5);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--bg-elevated)}
+.cdemo .clabel{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:var(--s-4)}
+.cdemo .crow{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center}
+
+/* Buttons */
+.btn{appearance:none;border:none;font:inherit;font-weight:500;font-size:14px;padding:9px 16px;border-radius:var(--r-pill);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all var(--dur) var(--ease-canopy);background:var(--ink);color:var(--bg-elevated)}
+.btn:hover{background:var(--accent);box-shadow:var(--shadow-2)}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--rule-strong)}
+.btn.secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);box-shadow:none}
+.btn.ghost{background:transparent;color:var(--ink-2);padding:9px 12px}
+.btn.ghost:hover{color:var(--accent);background:var(--accent-soft);box-shadow:none}
+.btn.warm{background:var(--accent-warm);color:var(--canopy-900)}
+.btn.warm:hover{background:var(--bronze-400);color:#fff}
+.btn .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.6}
+
+/* Inputs */
+.input{appearance:none;border:1px solid var(--rule-strong);background:var(--bg-elevated);color:var(--ink);font:inherit;font-size:14px;padding:9px 14px;border-radius:var(--r-2);width:100%;transition:border-color var(--dur) var(--ease-canopy),box-shadow var(--dur) var(--ease-canopy)}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.input::placeholder{color:var(--ink-3)}
+.field-label{display:block;font-size:12px;color:var(--ink-2);margin-bottom:6px;font-weight:500}
+
+/* Chip / tag */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:500;border:1px solid transparent}
+.tag.warm{background:rgba(201,163,106,.18);color:var(--bronze-500)}
+.tag.neutral{background:var(--bg-sunken);color:var(--ink-2);border-color:var(--rule)}
+.tag::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7}
+
+/* Toast / banner */
+.toast{display:flex;align-items:flex-start;gap:var(--s-3);padding:var(--s-3) var(--s-4);border-radius:var(--r-2);border:1px solid var(--rule);background:var(--bg-elevated);font-size:14px;line-height:1.5}
+.toast .icon{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:2px;background:var(--signal-info)}
+.toast.positive .icon{background:var(--signal-positive)}
+.toast.warning .icon{background:var(--signal-warning)}
+.toast.critical .icon{background:var(--signal-critical)}
+.toast b{display:block;color:var(--ink);margin-bottom:2px;font-weight:500}
+.toast span{color:var(--ink-2)}
+
+/* Card */
+.card{padding:var(--s-5);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--bg-elevated);box-shadow:var(--shadow-1);transition:box-shadow var(--dur) var(--ease-canopy),transform var(--dur) var(--ease-canopy)}
+.card:hover{box-shadow:var(--shadow-2);transform:translateY(-1px)}
+.card .eyebrow{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:var(--s-2)}
+.card h4{font-family:var(--font-display);font-size:17px;margin:0 0 var(--s-2);font-weight:600}
+.card p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.55}
+
+/* Toggle */
+.toggle{display:inline-flex;background:var(--bg-sunken);padding:3px;border-radius:var(--r-pill);border:1px solid var(--rule)}
+.toggle button{appearance:none;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink-2);padding:5px 12px;border-radius:var(--r-pill);cursor:pointer;font-weight:500}
+.toggle button.on{background:var(--bg-elevated);color:var(--ink);box-shadow:var(--shadow-1)}
+
+/* ---------- Mockups (app sketches) ---------- */
+.mocks{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-6)}
+.mock{border:1px solid var(--rule);border-radius:var(--r-4);background:var(--bg-elevated);overflow:hidden;box-shadow:var(--shadow-2)}
+.mock-title{display:flex;justify-content:space-between;align-items:center;padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--rule);background:var(--bg-sunken)}
+.mock-title b{font-family:var(--font-display);font-size:13px;font-weight:600}
+.mock-title span{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase}
+
+/* Mobile mock */
+.mock-mobile{display:flex;justify-content:center;padding:var(--s-5);background:linear-gradient(180deg,var(--bg-sunken),var(--bg-elevated))}
+.phone{width:240px;border:8px solid var(--canopy-900);border-radius:32px;background:var(--bg);overflow:hidden;box-shadow:var(--shadow-3)}
+.phone .notch{height:18px;background:var(--canopy-900)}
+.phone .ph-content{padding:var(--s-4);min-height:380px;display:flex;flex-direction:column;gap:var(--s-3)}
+.phone h5{font-family:var(--font-display);font-size:18px;margin:var(--s-2) 0 4px;font-weight:600}
+.phone .ph-sub{font-size:11px;color:var(--ink-3);margin:0}
+.phone .ph-card{padding:var(--s-3);background:var(--bg-elevated);border:1px solid var(--rule);border-radius:var(--r-2);font-size:11px;color:var(--ink-2);line-height:1.45}
+.phone .ph-card b{display:block;color:var(--ink);font-size:12px;margin-bottom:3px;font-weight:500}
+.phone .ph-card.warm{background:linear-gradient(135deg,var(--canopy-50),var(--accent-soft));border-color:var(--accent-soft)}
+.phone .ph-card .meter{height:3px;background:var(--bg-sunken);border-radius:99px;margin-top:6px;overflow:hidden}
+.phone .ph-card .meter > span{display:block;height:100%;background:var(--accent);border-radius:99px}
+.phone .ph-nav{margin-top:auto;display:flex;justify-content:space-around;padding-top:var(--s-3);border-top:1px solid var(--rule)}
+.phone .ph-nav i{width:18px;height:18px;border-radius:6px;background:var(--mist-300);display:block}
+.phone .ph-nav i.on{background:var(--accent)}
+
+/* GIS / map mock */
+.mock-map{position:relative;height:360px;background:
+   radial-gradient(ellipse at 30% 35%,var(--canopy-100),transparent 55%),
+   radial-gradient(ellipse at 70% 70%,var(--bronze-100),transparent 50%),
+   var(--bg-sunken)}
+.mock-map .roads{position:absolute;inset:0}
+.mock-map svg{width:100%;height:100%}
+.mock-map .legend{position:absolute;top:var(--s-4);left:var(--s-4);background:rgba(251,251,248,.92);backdrop-filter:blur(6px);padding:var(--s-3);border-radius:var(--r-2);border:1px solid var(--rule);box-shadow:var(--shadow-2);font-size:11px;line-height:1.5;min-width:140px}
+[data-mode="dark"] .mock-map .legend{background:rgba(22,32,20,.9)}
+.mock-map .legend b{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.mock-map .legend .li{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
+.mock-map .legend .li i{width:10px;height:10px;border-radius:2px}
+.mock-map .panel{position:absolute;right:var(--s-4);bottom:var(--s-4);background:var(--bg-elevated);padding:var(--s-3) var(--s-4);border-radius:var(--r-2);border:1px solid var(--rule);box-shadow:var(--shadow-2);font-size:12px;max-width:200px;line-height:1.5}
+.mock-map .panel b{display:block;font-weight:500;font-size:13px;color:var(--ink);margin-bottom:3px}
+.mock-map .panel .stat{display:flex;justify-content:space-between;margin-top:4px;color:var(--ink-2)}
+.mock-map .panel .stat span:last-child{color:var(--ink);font-family:var(--font-mono);font-size:11px}
+.mock-map .pin{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(82,122,64,.22),0 1px 3px rgba(0,0,0,.25);transform:translate(-50%,-50%)}
+.mock-map .pin.warm{background:var(--bronze-400);box-shadow:0 0 0 4px rgba(201,163,106,.25),0 1px 3px rgba(0,0,0,.25)}
+
+/* CRM mock */
+.mock-crm{padding:var(--s-4)}
+.crm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s-4)}
+.crm-head h6{font-family:var(--font-display);font-size:15px;margin:0;font-weight:600}
+.crm-head .search{flex:1;max-width:240px;margin:0 var(--s-4);position:relative}
+.crm-head .search input{font-size:12px;padding:6px 10px 6px 28px}
+.crm-head .search::before{content:"⌕";position:absolute;left:9px;top:5px;color:var(--ink-3);font-size:14px}
+.crm-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.crm-table th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.crm-table td{padding:10px;border-bottom:1px solid var(--rule);color:var(--ink-2)}
+.crm-table tr:hover td{background:var(--accent-soft);color:var(--ink)}
+.crm-table .avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--canopy-300),var(--canopy-600));display:inline-block;margin-right:8px;vertical-align:middle}
+.crm-table .avatar.b{background:linear-gradient(135deg,var(--bronze-200),var(--bronze-400))}
+.crm-table .avatar.o{background:linear-gradient(135deg,#d8a5c2,var(--orchid))}
+.crm-table .name{color:var(--ink);font-weight:500}
+.crm-table .status{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;display:inline-block}
+.crm-table .status.live{background:rgba(63,122,74,.12);color:var(--signal-positive)}
+.crm-table .status.warm{background:rgba(201,163,106,.18);color:var(--bronze-500)}
+.crm-table .status.cold{background:var(--bg-sunken);color:var(--ink-3)}
+
+/* AI chat mock */
+.mock-chat{padding:var(--s-4) var(--s-5) var(--s-5);display:flex;flex-direction:column;gap:var(--s-3);min-height:340px;background:linear-gradient(180deg,var(--bg-elevated),var(--bg-sunken))}
+.bubble{max-width:78%;padding:10px 14px;border-radius:var(--r-3);font-size:13.5px;line-height:1.5}
+.bubble.user{align-self:flex-end;background:var(--ink);color:var(--bg-elevated);border-bottom-right-radius:6px}
+.bubble.ai{align-self:flex-start;background:var(--bg-elevated);border:1px solid var(--rule);color:var(--ink);border-bottom-left-radius:6px;box-shadow:var(--shadow-1)}
+.bubble.ai .agent{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
+.bubble.ai .think{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);font-style:italic}
+.bubble.ai .think i{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 1.4s var(--ease-canopy) infinite}
+.bubble.ai .think i:nth-child(2){animation-delay:.2s}
+.bubble.ai .think i:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
+.composer{margin-top:auto;display:flex;align-items:center;gap:var(--s-2);padding:8px 10px 8px 14px;background:var(--bg-elevated);border:1px solid var(--rule-strong);border-radius:var(--r-pill);box-shadow:var(--shadow-1)}
+.composer input{flex:1;border:none;background:transparent;font:inherit;font-size:14px;outline:none;color:var(--ink)}
+.composer .send{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* Image gen mock */
+.mock-imagegen{padding:var(--s-4);display:grid;grid-template-columns:160px 1fr;gap:var(--s-4)}
+.ig-controls{display:flex;flex-direction:column;gap:var(--s-3)}
+.ig-controls .field-label{margin-bottom:0}
+.ig-prompt{font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--ink);padding:8px 10px;background:var(--bg-sunken);border-left:2px solid var(--accent-warm);border-radius:0 var(--r-2) var(--r-2) 0;line-height:1.5}
+.ig-slider{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-3)}
+.ig-slider .track{flex:1;height:3px;background:var(--bg-sunken);border-radius:99px;position:relative}
+.ig-slider .track::after{content:"";position:absolute;left:0;top:0;height:100%;width:60%;background:var(--accent);border-radius:99px}
+.ig-slider .knob{position:absolute;left:60%;top:50%;width:12px;height:12px;border-radius:50%;background:var(--bg-elevated);border:2px solid var(--accent);transform:translate(-50%,-50%);box-shadow:var(--shadow-1)}
+.ig-results{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-2)}
+.ig-tile{aspect-ratio:1;border-radius:var(--r-2);overflow:hidden;position:relative;border:1px solid var(--rule)}
+.ig-tile.t1{background:radial-gradient(circle at 30% 30%,#cdd9c4,#3f6230 80%)}
+.ig-tile.t2{background:radial-gradient(circle at 70% 40%,#f0e3cc,#a87f49 80%)}
+.ig-tile.t3{background:radial-gradient(circle at 50% 70%,#a8bb9a,#152110 90%)}
+.ig-tile.t4{background:radial-gradient(circle at 40% 50%,#e0c79a,#527a40 90%)}
+.ig-tile::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 40%,rgba(0,0,0,.15));pointer-events:none}
+
+/* ---------- Motion strip ---------- */
+.motion{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4)}
+.motion-cell{padding:var(--s-4);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--bg-elevated)}
+.motion-cell .label{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.motion-cell h4{font-family:var(--font-display);font-size:14px;margin:0 0 6px;font-weight:600}
+.motion-cell p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.motion-cell .ball{width:24px;height:24px;border-radius:50%;background:var(--accent);margin-top:var(--s-3);animation:settle 2.2s var(--ease-canopy) infinite}
+.motion-cell:nth-child(2) .ball{animation:bloom 2.2s var(--ease-bloom) infinite;background:var(--accent-warm)}
+.motion-cell:nth-child(3) .ball{animation:breathe 3s ease-in-out infinite;background:var(--orchid)}
+@keyframes settle{0%{transform:translateX(0)}50%{transform:translateX(200px)}100%{transform:translateX(0)}}
+@keyframes bloom{0%{transform:scale(.4) translateX(0);opacity:.3}50%{transform:scale(1) translateX(200px);opacity:1}100%{transform:scale(.4) translateX(0);opacity:.3}}
+@keyframes breathe{0%,100%{transform:scale(.85);opacity:.7}50%{transform:scale(1.05);opacity:1}}
+
+/* ---------- Spacing & radius diagram ---------- */
+.geom{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5)}
+.geom-block{padding:var(--s-4);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--bg-elevated)}
+.geom h4{font-family:var(--font-display);font-size:14px;margin:0 0 var(--s-3);font-weight:600;color:var(--ink-2)}
+.space-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.space-row .bar{height:8px;background:var(--accent);border-radius:2px}
+.radius-row{display:flex;gap:var(--s-3);flex-wrap:wrap;margin-top:var(--s-2)}
+.radius-row .swatch-r{width:54px;height:54px;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:var(--font-mono);font-size:10px;color:var(--accent)}
+
+/* ---------- Footer note ---------- */
+.footnote{color:var(--ink-3);font-size:12px;font-family:var(--font-mono);text-align:center;letter-spacing:.08em;padding-top:var(--s-7);border-top:1px solid var(--rule);margin-top:var(--s-8)}
+
+@media (max-width:780px){
+  .hero,.sec-head,.sec-body{grid-template-columns:1fr}
+  .principles,.compgrid,.mocks,.geom,.motion{grid-template-columns:1fr}
+  .semantic{grid-template-columns:repeat(2,1fr)}
+  .mock-imagegen{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="topbar">
+    <div class="mark">
+      <span class="glyph" aria-hidden="true"></span>
+      <span class="name">Conservatory</span>
+      <span class="sub">— biophilic design system v0.1</span>
+    </div>
+    <div class="modes">
+      <button id="mode-light" aria-pressed="true">Light</button>
+      <button id="mode-dark" aria-pressed="false">Night</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Calm interfaces, <em>grown slowly.</em></h1>
+      <p class="lede">A system for software that wants to feel cultivated rather than constructed — legible, professional, and quietly alive. Tuned for mobile, mapping, customer data, and AI surfaces with one shared atmosphere.</p>
+    </div>
+    <div class="meta">
+      <span><b>Influence</b> Gardens by the Bay — light through canopy, weathered bronze, mist on glass</span>
+      <span><b>Applies to</b> Mobile · GIS / map · CRM · AI chat &amp; image studios</span>
+      <span><b>Tokens</b> 100% CSS custom properties — no framework lock-in</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 PRINCIPLES ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">01 / Principles</div>
+      <div>
+        <h2>What the system optimizes for</h2>
+        <p class="blurb">Four commitments that resolve every other design decision. When two principles conflict, the earlier one wins.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Foundation</div>
+      <div class="principles">
+        <div class="principle">
+          <h3>Legibility before flourish</h3>
+          <p>Type, contrast, and hierarchy are load-bearing. Decoration is allowed only after a screen reads cleanly at arm's length on a sunny day.</p>
+          <span class="qual">Test: read at 75% brightness, outdoor.</span>
+        </div>
+        <div class="principle">
+          <h3>Calm density</h3>
+          <p>Dense data without anxiety. Generous spacing around clusters, restrained accents inside them. The eye should be able to rest before it works.</p>
+          <span class="qual">Test: 60s on screen, no tension.</span>
+        </div>
+        <div class="principle">
+          <h3>Living surfaces</h3>
+          <p>Motion is slow, organic, and meaningful. Interfaces settle rather than snap. Color shifts hint at state without shouting it.</p>
+          <span class="qual">Test: silence the device — does it still feel responsive?</span>
+        </div>
+        <div class="principle">
+          <h3>Professional warmth</h3>
+          <p>The product is being used at work. Tone is competent and steady, but never sterile — warm bronze and serif italics carry the welcome.</p>
+          <span class="qual">Test: would a regulator trust it? Would a designer want it?</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 COLOR ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">02 / Color</div>
+      <div>
+        <h2>Three families, ten steps each</h2>
+        <p class="blurb">Canopy carries identity. Bronze carries warmth. Mist carries everything else. Signal colors are reserved for state — never decoration.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Foundation</div>
+      <div>
+
+        <div class="scale-name"><b>Canopy</b><span>primary — identity, action, focus</span></div>
+        <div class="scale">
+          <div class="swatch lt" style="background:#f4f7f2"><span class="step">50</span><span class="hex">#F4F7F2</span></div>
+          <div class="swatch lt" style="background:#e6ede1"><span class="step">100</span><span class="hex">#E6EDE1</span></div>
+          <div class="swatch lt" style="background:#cdd9c4"><span class="step">200</span><span class="hex">#CDD9C4</span></div>
+          <div class="swatch lt" style="background:#a8bb9a"><span class="step">300</span><span class="hex">#A8BB9A</span></div>
+          <div class="swatch" style="background:#7a9669"><span class="step">400</span><span class="hex">#7A9669</span></div>
+          <div class="swatch" style="background:#527a40"><span class="step">500</span><span class="hex">#527A40</span></div>
+          <div class="swatch" style="background:#3f6230"><span class="step">600</span><span class="hex">#3F6230</span></div>
+          <div class="swatch" style="background:#2f4a24"><span class="step">700</span><span class="hex">#2F4A24</span></div>
+          <div class="swatch" style="background:#22351a"><span class="step">800</span><span class="hex">#22351A</span></div>
+          <div class="swatch" style="background:#152110"><span class="step">900</span><span class="hex">#152110</span></div>
+        </div>
+
+        <div class="scale-name"><b>Bronze</b><span>warmth — invitation, hospitality, secondary accent</span></div>
+        <div class="scale">
+          <div class="swatch lt" style="background:#faf4ec"><span class="step">50</span><span class="hex">#FAF4EC</span></div>
+          <div class="swatch lt" style="background:#f0e3cc"><span class="step">100</span><span class="hex">#F0E3CC</span></div>
+          <div class="swatch lt" style="background:#e0c79a"><span class="step">200</span><span class="hex">#E0C79A</span></div>
+          <div class="swatch lt" style="background:#c9a36a"><span class="step">300</span><span class="hex">#C9A36A</span></div>
+          <div class="swatch" style="background:#a87f49"><span class="step">400</span><span class="hex">#A87F49</span></div>
+          <div class="swatch" style="background:#8a6336"><span class="step">500</span><span class="hex">#8A6336</span></div>
+          <div class="swatch" style="background:#6e4d28" colspan="4"><span class="step">600+</span><span class="hex">extended on request</span></div>
+        </div>
+
+        <div class="scale-name"><b>Mist</b><span>neutral — ink, surface, rule, scaffolding</span></div>
+        <div class="scale">
+          <div class="swatch lt" style="background:#fbfbf8"><span class="step">50</span><span class="hex">#FBFBF8</span></div>
+          <div class="swatch lt" style="background:#f5f5f0"><span class="step">100</span><span class="hex">#F5F5F0</span></div>
+          <div class="swatch lt" style="background:#e9e9e1"><span class="step">200</span><span class="hex">#E9E9E1</span></div>
+          <div class="swatch lt" style="background:#d6d6cb"><span class="step">300</span><span class="hex">#D6D6CB</span></div>
+          <div class="swatch lt" style="background:#b3b3a6"><span class="step">400</span><span class="hex">#B3B3A6</span></div>
+          <div class="swatch" style="background:#888879"><span class="step">500</span><span class="hex">#888879</span></div>
+          <div class="swatch" style="background:#4d4d44"><span class="step">700</span><span class="hex">#4D4D44</span></div>
+          <div class="swatch" style="background:#1a1a14"><span class="step">900</span><span class="hex">#1A1A14</span></div>
+        </div>
+
+        <div class="semantic">
+          <div class="sem"><div class="chip" style="background:var(--signal-positive)"></div><span class="role">Positive</span><b class="label">#3F7A4A</b><span class="use">Confirmations, healthy state, growth metrics.</span></div>
+          <div class="sem"><div class="chip" style="background:var(--signal-warning)"></div><span class="role">Warning</span><b class="label">#C69440</b><span class="use">Soft warnings, drift, attention required.</span></div>
+          <div class="sem"><div class="chip" style="background:var(--signal-critical)"></div><span class="role">Critical</span><b class="label">#9C3A2A</b><span class="use">Errors, hard blocks, destructive intent.</span></div>
+          <div class="sem"><div class="chip" style="background:var(--signal-info)"></div><span class="role">Info</span><b class="label">#3A6A8A</b><span class="use">Neutral notices, system messages.</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 TYPE ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">03 / Typography</div>
+      <div>
+        <h2>Sans for clarity, serif for warmth</h2>
+        <p class="blurb">A geometric humanist sans (Söhne, Inter as fallback) carries the interface. A bookish serif italic (Iowan Old Style, Source Serif) appears only for invitation moments — heroes, pull quotes, leading paragraphs, AI-prompted prose.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Foundation</div>
+      <div>
+        <div class="type-row">
+          <div class="type-meta"><b>Display</b>46 / 1.04<br/>500 weight<br/>−0.02em</div>
+          <div class="type-sample display">Calm interfaces, <em>grown slowly.</em></div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>H1</b>32 / 1.15<br/>500 weight</div>
+          <div class="type-sample h1">A pedagogy for Urban AI</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>H2</b>22 / 1.25<br/>600 weight</div>
+          <div class="type-sample h2">What the system optimizes for</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Lede serif</b>18 / 1.55<br/>regular italic</div>
+          <div class="type-sample body-serif">The clearest tell: data centers. If your discipline doesn't already treat siting and permitting as a first-class problem, it isn't doing Urban AI.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Body</b>15 / 1.6<br/>regular</div>
+          <div class="type-sample body">Tokens are inherited through CSS custom properties at the document root, then overridden at scope for theme variants — light, night, and any future palette. Components never read raw hex; they read semantic names.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Small</b>13 / 1.5<br/>regular</div>
+          <div class="type-sample small">Caption text, table cells, helper copy.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><b>Mono</b>13 / 1.5<br/>+0.04em</div>
+          <div class="type-sample mono">scale-name, eyebrows, codes, coords — 13.7421°N 100.5018°E</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 SPACE / SHAPE ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">04 / Space &amp; shape</div>
+      <div>
+        <h2>4px base, four soft radii</h2>
+        <p class="blurb">A single rhythm across every surface. Radius reads as a continuum from precision (forms, cells) to hospitality (cards, modals).</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Foundation</div>
+      <div class="geom">
+        <div class="geom-block">
+          <h4>Spacing scale</h4>
+          <div class="space-row"><span style="width:48px">s-1</span><div class="bar" style="width:4px"></div><span>4px</span></div>
+          <div class="space-row"><span style="width:48px">s-2</span><div class="bar" style="width:8px"></div><span>8px</span></div>
+          <div class="space-row"><span style="width:48px">s-3</span><div class="bar" style="width:12px"></div><span>12px</span></div>
+          <div class="space-row"><span style="width:48px">s-4</span><div class="bar" style="width:16px"></div><span>16px</span></div>
+          <div class="space-row"><span style="width:48px">s-5</span><div class="bar" style="width:24px"></div><span>24px</span></div>
+          <div class="space-row"><span style="width:48px">s-6</span><div class="bar" style="width:32px"></div><span>32px</span></div>
+          <div class="space-row"><span style="width:48px">s-7</span><div class="bar" style="width:48px"></div><span>48px</span></div>
+          <div class="space-row"><span style="width:48px">s-8</span><div class="bar" style="width:64px"></div><span>64px</span></div>
+        </div>
+        <div class="geom-block">
+          <h4>Radii</h4>
+          <div class="radius-row">
+            <div class="swatch-r" style="border-radius:4px">4</div>
+            <div class="swatch-r" style="border-radius:8px">8</div>
+            <div class="swatch-r" style="border-radius:12px">12</div>
+            <div class="swatch-r" style="border-radius:18px">18</div>
+            <div class="swatch-r" style="border-radius:999px">pill</div>
+          </div>
+          <h4 style="margin-top:var(--s-5)">Elevation</h4>
+          <div style="display:flex;gap:var(--s-3);margin-top:var(--s-2)">
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border-radius:8px;box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">1</div>
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border-radius:8px;box-shadow:var(--shadow-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">2</div>
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border-radius:8px;box-shadow:var(--shadow-3);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 COMPONENTS ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">05 / Components</div>
+      <div>
+        <h2>Primitives in atmosphere</h2>
+        <p class="blurb">A small kit. Buttons, inputs, tags, toasts, cards — each tuned to feel like part of one room.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Patterns</div>
+      <div class="compgrid">
+
+        <div class="cdemo">
+          <div class="clabel">Buttons</div>
+          <div class="crow">
+            <button class="btn">Primary action</button>
+            <button class="btn secondary">Secondary</button>
+            <button class="btn ghost">Ghost</button>
+            <button class="btn warm">Warm accent</button>
+          </div>
+        </div>
+
+        <div class="cdemo">
+          <div class="clabel">Inputs &amp; field labels</div>
+          <label class="field-label">Property address</label>
+          <input class="input" placeholder="18 Marina Gardens Drive…" value="18 Marina Gardens Drive"/>
+          <label class="field-label" style="margin-top:var(--s-3)">Search records</label>
+          <input class="input" placeholder="Try a customer name or ID"/>
+        </div>
+
+        <div class="cdemo">
+          <div class="clabel">Tags</div>
+          <div class="crow">
+            <span class="tag">Active</span>
+            <span class="tag warm">In review</span>
+            <span class="tag neutral">Archived</span>
+            <span class="tag">Singapore</span>
+          </div>
+        </div>
+
+        <div class="cdemo">
+          <div class="clabel">Segmented toggle</div>
+          <div class="crow">
+            <div class="toggle" id="density">
+              <button class="on">Comfortable</button>
+              <button>Compact</button>
+              <button>Dense</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cdemo">
+          <div class="clabel">Toasts &amp; banners</div>
+          <div style="display:flex;flex-direction:column;gap:var(--s-2)">
+            <div class="toast positive"><div class="icon"></div><div><b>Model fine-tune complete</b><span>15 of 15 evaluations passed. Promoted to canary.</span></div></div>
+            <div class="toast warning"><div class="icon"></div><div><b>Drift detected</b><span>Image classifier accuracy fell 4.2pp since last sync.</span></div></div>
+            <div class="toast critical"><div class="icon"></div><div><b>Data center quota exceeded</b><span>Request requires approval from infrastructure team.</span></div></div>
+          </div>
+        </div>
+
+        <div class="cdemo">
+          <div class="clabel">Card</div>
+          <div class="card">
+            <div class="eyebrow">Planning brief · 002</div>
+            <h4>Tampines green corridor</h4>
+            <p>Reweave east-west pedestrian links through three HDB precincts. Phase one focuses on tree canopy continuity and shaded transit stops.</p>
+            <div class="crow" style="margin-top:var(--s-3)">
+              <span class="tag">Active</span>
+              <span class="tag warm">Awaiting URA</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 MOTION ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">06 / Motion</div>
+      <div>
+        <h2>Three curves, slowly</h2>
+        <p class="blurb">Every animation is named for what it imitates — a leaf settling, a bud opening, a slow breath. Default durations are unusually long (240–420ms) on purpose.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Behavior</div>
+      <div class="motion">
+        <div class="motion-cell">
+          <div class="label">ease-canopy</div>
+          <h4>Settle</h4>
+          <p>cubic-bezier(.2,.7,.2,1) · 240ms · default for state changes, hovers, layout shifts.</p>
+          <div class="ball"></div>
+        </div>
+        <div class="motion-cell">
+          <div class="label">ease-bloom</div>
+          <h4>Bloom</h4>
+          <p>cubic-bezier(.16,1,.3,1) · 420ms · entrances, modal reveals, successful completions.</p>
+          <div class="ball"></div>
+        </div>
+        <div class="motion-cell">
+          <div class="label">ease-in-out</div>
+          <h4>Breathe</h4>
+          <p>3s loop · idle states, loading without anxiety, "the agent is thinking" indicators.</p>
+          <div class="ball"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 APPLICATIONS ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">07 / Applications</div>
+      <div>
+        <h2>One atmosphere, four surfaces</h2>
+        <p class="blurb">The same tokens, applied to wildly different software. The system holds together because the principles do — not because the screens look identical.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">In use</div>
+      <div class="mocks">
+
+        <!-- Mobile -->
+        <div class="mock">
+          <div class="mock-title"><b>Mobile · field reporter</b><span>iOS / Android</span></div>
+          <div class="mock-mobile">
+            <div class="phone">
+              <div class="notch"></div>
+              <div class="ph-content">
+                <span class="ph-sub">TUESDAY, MAY 16</span>
+                <h5>Good morning, Sean</h5>
+                <div class="ph-card warm">
+                  <b>Today's site</b>
+                  Bay East Garden, sector 4. 3 tree-health checks, 1 path audit.
+                  <div class="meter"><span style="width:40%"></span></div>
+                </div>
+                <div class="ph-card">
+                  <b>Last sync</b>
+                  4 photos uploaded · 2 awaiting connection
+                </div>
+                <div class="ph-card">
+                  <b>Nearby</b>
+                  Supertree Grove · 240m east
+                </div>
+              </div>
+              <div class="ph-nav">
+                <i class="on"></i><i></i><i></i><i></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GIS map -->
+        <div class="mock">
+          <div class="mock-title"><b>GIS · planning workspace</b><span>desktop</span></div>
+          <div class="mock-map">
+            <svg viewBox="0 0 400 360" preserveAspectRatio="none">
+              <path d="M 0 160 Q 100 140 200 180 T 400 200" stroke="#b3b3a6" stroke-width="1" fill="none" opacity=".6"/>
+              <path d="M 60 0 L 90 360" stroke="#b3b3a6" stroke-width="1" fill="none" opacity=".5"/>
+              <path d="M 0 240 L 400 220" stroke="#888879" stroke-width="2" fill="none" opacity=".5"/>
+              <path d="M 220 0 L 240 360" stroke="#888879" stroke-width="2" fill="none" opacity=".5"/>
+              <path d="M 150 80 Q 200 100 260 60 L 280 100 Q 240 150 180 140 Z" fill="#a8bb9a" fill-opacity=".5" stroke="#527a40" stroke-opacity=".4"/>
+              <path d="M 280 220 Q 340 200 380 250 L 360 320 Q 300 310 270 280 Z" fill="#c9a36a" fill-opacity=".35" stroke="#a87f49" stroke-opacity=".4"/>
+            </svg>
+            <div class="pin" style="left:38%;top:32%"></div>
+            <div class="pin warm" style="left:74%;top:70%"></div>
+            <div class="pin" style="left:55%;top:55%"></div>
+            <div class="legend">
+              <b>Layers</b>
+              <div class="li"><i style="background:#a8bb9a"></i>Green cover</div>
+              <div class="li"><i style="background:#c9a36a"></i>Heat island</div>
+              <div class="li"><i style="background:#527a40;border-radius:50%"></i>Field reports</div>
+              <div class="li"><i style="background:#a87f49;border-radius:50%"></i>Action items</div>
+            </div>
+            <div class="panel">
+              <b>Marina South · S-04</b>
+              <div class="stat"><span>Canopy</span><span>62%</span></div>
+              <div class="stat"><span>Surface temp</span><span>+3.4°C</span></div>
+              <div class="stat"><span>Reports</span><span>11</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRM -->
+        <div class="mock">
+          <div class="mock-title"><b>CRM · customer pipeline</b><span>web app</span></div>
+          <div class="mock-crm">
+            <div class="crm-head">
+              <h6>Pipeline · Q2</h6>
+              <div class="search"><input class="input" placeholder="Search 1,284 records"/></div>
+              <button class="btn" style="padding:7px 14px;font-size:13px">+ New</button>
+            </div>
+            <table class="crm-table">
+              <thead><tr><th>Account</th><th>Stage</th><th>Value</th><th>Owner</th></tr></thead>
+              <tbody>
+                <tr><td><span class="avatar"></span><span class="name">Marina Bay Sands</span></td><td><span class="status live">Active</span></td><td>S$ 240k</td><td>K. Tan</td></tr>
+                <tr><td><span class="avatar b"></span><span class="name">NParks Operations</span></td><td><span class="status warm">In review</span></td><td>S$ 96k</td><td>S. Koh</td></tr>
+                <tr><td><span class="avatar o"></span><span class="name">URA Planning Dept</span></td><td><span class="status live">Active</span></td><td>S$ 410k</td><td>S. Koh</td></tr>
+                <tr><td><span class="avatar"></span><span class="name">SUTD Architecture</span></td><td><span class="status cold">Dormant</span></td><td>S$ 18k</td><td>M. Lim</td></tr>
+                <tr><td><span class="avatar b"></span><span class="name">Gardens by the Bay</span></td><td><span class="status warm">In review</span></td><td>S$ 312k</td><td>K. Tan</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AI chat -->
+        <div class="mock">
+          <div class="mock-title"><b>AI · planning agent chat</b><span>conversation</span></div>
+          <div class="mock-chat">
+            <div class="bubble user">Where in the central region is canopy cover falling fastest, and what's driving it?</div>
+            <div class="bubble ai">
+              <span class="agent">⌬ Atrium · planning analyst</span>
+              Bishan and Toa Payoh show the steepest drop — about 3.1 percentage points since 2022. The main contributors are MRT line works and recent estate renewal in three precincts.
+              <br/><br/>
+              Want me to plot affected blocks on the map, or summarise the renewal projects?
+            </div>
+            <div class="bubble user">Plot on the map, group by precinct.</div>
+            <div class="bubble ai">
+              <span class="agent">⌬ Atrium</span>
+              <span class="think">Querying canopy raster · 2022→2025<i></i><i></i><i></i></span>
+            </div>
+            <div class="composer">
+              <input placeholder="Ask Atrium…"/>
+              <button class="send">↑</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image gen -->
+        <div class="mock" style="grid-column:span 2">
+          <div class="mock-title"><b>AI · image generation studio</b><span>creative tool</span></div>
+          <div class="mock-imagegen">
+            <div class="ig-controls">
+              <div>
+                <label class="field-label">Prompt</label>
+                <div class="ig-prompt">A shaded pedestrian street in tropical Singapore at golden hour, low-rise vernacular, rain trees overhead, watercolor.</div>
+              </div>
+              <div>
+                <label class="field-label">Style strength</label>
+                <div class="ig-slider"><span>0</span><div class="track"><div class="knob"></div></div><span>100</span></div>
+              </div>
+              <div>
+                <label class="field-label">Aspect</label>
+                <div class="toggle" style="margin-top:0">
+                  <button>1:1</button><button class="on">3:2</button><button>16:9</button>
+                </div>
+              </div>
+              <button class="btn warm" style="margin-top:6px">Generate · 4 variants</button>
+              <span class="tag neutral" style="align-self:flex-start;margin-top:6px">Run 24 · 12s</span>
+            </div>
+            <div class="ig-results">
+              <div class="ig-tile t1"></div>
+              <div class="ig-tile t2"></div>
+              <div class="ig-tile t3"></div>
+              <div class="ig-tile t4"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 08 ACCESSIBILITY ============ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-num">08 / Accessibility</div>
+      <div>
+        <h2>Calm has to be legible</h2>
+        <p class="blurb">Biophilic palettes drift naturally toward low contrast. The system pushes back: every ink-on-surface pair is checked, and signal colors are never the only carrier of meaning.</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="anchor">Guardrails</div>
+      <div>
+        <ul style="margin:0;padding-left:0;list-style:none;color:var(--ink-2);font-size:14px;line-height:1.7">
+          <li style="border-bottom:1px dashed var(--rule);padding:10px 0"><b style="color:var(--ink);font-weight:500">Body text contrast ≥ 7:1.</b> Mist-900 ink on Mist-50 paper, Canopy-300 ink on Canopy-900 in night mode. AA-Large at minimum, AAA where the type allows.</li>
+          <li style="border-bottom:1px dashed var(--rule);padding:10px 0"><b style="color:var(--ink);font-weight:500">No color-only state.</b> Status pills, signal dots, and map layers all pair color with a label or icon. A screenshot in greyscale should still be readable.</li>
+          <li style="border-bottom:1px dashed var(--rule);padding:10px 0"><b style="color:var(--ink);font-weight:500">Focus is visible and bronze.</b> Keyboard focus uses a 3px Canopy-100 ring at all times — never suppressed. On warm surfaces, the ring shifts to Bronze-200.</li>
+          <li style="border-bottom:1px dashed var(--rule);padding:10px 0"><b style="color:var(--ink);font-weight:500">Motion respects prefers-reduced-motion.</b> Settle/Bloom collapse to instant transitions; Breathe stops. Loading still communicates progress via static text.</li>
+          <li style="padding:10px 0"><b style="color:var(--ink);font-weight:500">Type minimum 13px.</b> Mono captions and dense data tables never drop below 12px and only with +1.5 line-height.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="footnote">CONSERVATORY · v0.1 · A living document — tokens travel via CSS custom properties, components are framework-agnostic.</p>
+
+</div>
+
+<script>
+  const root=document.documentElement;
+  const lt=document.getElementById('mode-light');
+  const dk=document.getElementById('mode-dark');
+  function setMode(m){
+    root.dataset.mode=m;
+    lt.setAttribute('aria-pressed', m==='light');
+    dk.setAttribute('aria-pressed', m==='dark');
+  }
+  lt.addEventListener('click',()=>setMode('light'));
+  dk.addEventListener('click',()=>setMode('dark'));
+
+  // Density toggle just for demo
+  document.querySelectorAll('.toggle').forEach(tg=>{
+    tg.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        tg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+</script>
+</body>
+</html>
