@@ -12,7 +12,8 @@ Two self-contained HTML pages, no build step, no dependencies:
 
 - **[`index.html`](./index.html)** — an interactive summary in the spirit of Bret Victor's explorable explanations. Seven hands-on widgets: the criticality matrix, a tension map for pedagogical trade-offs, a data-center siting calculator, zoning failure-mode reader, task-reshuffling exercise, and more.
 - **[`guide.html`](./guide.html)** — a guided reading of the paper itself. Ten stops with a sticky table of contents, scroll-spy, hover annotations, and inline interactives at the spots where the argument turns.
-- **[`style-guide.html`](./style-guide.html)** — *Conservatory*, a biophilic design system (tokens, type, components, motion, and mockups for mobile / GIS / CRM / AI surfaces). Influenced by Gardens by the Bay. Independent of the paper site, hosted here for convenience.
+- **[`style-guide.html`](./style-guide.html)** — *Conservatory v0.1*, a biophilic design system (tokens, type, components, motion, and mockups for mobile / GIS / CRM / AI surfaces). Influenced by Gardens by the Bay.
+- **[`style-guide-v02.html`](./style-guide-v02.html)** — *Conservatory v0.2*, repositioned as **Tropical Civic Futurism** — heavier framing, institutional contrast, demoted green, climatological motion, three operational density modes, and a proper tropical civic cartography. Hosted alongside the paper site for convenience.
 
 The two paper pages link to each other; start from either.
 

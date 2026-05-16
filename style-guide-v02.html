@@ -1,0 +1,1496 @@
+<!doctype html>
+<html lang="en" data-density="operational" data-mode="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Conservatory v0.2 — Tropical Civic Futurism</title>
+<style>
+/* =========================================================
+   CONSERVATORY v0.2
+   Tropical Civic Futurism — a design system for civic intelligence
+   Replaces v0.1's "biophilic UI" with infrastructural gravity:
+   less glow & translucency, more framing, hierarchy, permanence.
+   ========================================================= */
+
+:root{
+  /* ---------- Graphite — warm institutional dark ---------- */
+  --graphite-900:#0b0e0d;     /* primary ink, dark rail */
+  --graphite-800:#161a18;
+  --graphite-700:#222826;
+  --graphite-600:#363c39;
+  --graphite-500:#4a504c;
+  --graphite-400:#6d736e;
+  --graphite-300:#9498917;
+  --graphite-300:#9a9d96;
+  --graphite-200:#c2c4bc;     /* humid grey */
+  --graphite-100:#dbddd5;
+  --graphite-50:#eaeae3;
+
+  /* ---------- Paper — warm atmospheric whites ---------- */
+  --paper-0:#ffffff;
+  --paper-1:#fbfaf4;          /* surface */
+  --paper-2:#f4f3ec;          /* sunken */
+  --paper-3:#ebeae2;          /* rule field */
+
+  /* ---------- Reflected cyan — cool atmospheric accent ---------- */
+  --cyan-700:#2d5566;
+  --cyan-500:#5d8a9b;
+  --cyan-400:#7fa6b6;         /* transit veins, info, focus glow */
+  --cyan-200:#c9dde4;
+  --cyan-100:#e2ecf0;
+
+  /* ---------- Bronze — warm artificial light ---------- */
+  --bronze-700:#6e4d28;
+  --bronze-500:#8a6336;
+  --bronze-400:#a87f49;
+  --bronze-300:#c9a36a;
+  --bronze-200:#e0c79a;
+  --bronze-100:#f0e3cc;
+  --bronze-50:#faf4ec;
+
+  /* ---------- Canopy — DEMOTED to semantic only ---------- */
+  /* Used for: ecology layers, positive signal. Not chrome. */
+  --canopy-700:#2f4a24;
+  --canopy-500:#4a7140;
+  --canopy-300:#a8bb9a;
+  --canopy-100:#d4dec9;
+
+  /* ---------- Orchid — sparing expressive ---------- */
+  --orchid-500:#8a4570;
+  --orchid-200:#d8b6c8;
+
+  /* ---------- Signal ---------- */
+  --signal-positive:#3f7a4a;
+  --signal-warning:#c08434;
+  --signal-critical:#8c2e20;
+  --signal-info:var(--cyan-500);
+
+  /* ---------- Semantic (light) ---------- */
+  --bg:var(--paper-1);
+  --bg-elevated:var(--paper-0);
+  --bg-sunken:var(--paper-2);
+  --bg-deep:var(--graphite-900);       /* dark rails, monumental panels */
+  --bg-deep-text:#dbddd5;
+  --ink:var(--graphite-900);
+  --ink-2:var(--graphite-600);
+  --ink-3:var(--graphite-400);
+  --rule:var(--paper-3);
+  --rule-strong:var(--graphite-200);
+  --rule-bold:var(--graphite-900);
+  --accent:var(--cyan-500);            /* atmospheric, not floral */
+  --accent-warm:var(--bronze-400);
+  --accent-eco:var(--canopy-500);
+  --hl:rgba(201,163,106,.16);
+
+  /* ---------- Type ---------- */
+  --font-display:"Söhne","Inter","SF Pro Display",-apple-system,system-ui,sans-serif;
+  --font-body:"Söhne","Inter","SF Pro Text",-apple-system,system-ui,sans-serif;
+  --font-serif:"Iowan Old Style","Source Serif Pro",Georgia,serif;
+  --font-mono:"JetBrains Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;
+
+  /* Monumental + operational scale */
+  --t-monument:64px;
+  --t-display:42px;
+  --t-h1:28px;
+  --t-h2:20px;
+  --t-h3:16px;
+  --t-body:15px;
+  --t-small:13px;
+  --t-micro:11px;
+  --t-tag:10.5px;
+
+  /* ---------- Spacing — 4px base, redeclared per density ---------- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px;
+  --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+
+  /* Density-controlled row spacing — operational by default */
+  --row-y:10px;
+  --row-x:14px;
+  --pad-card:18px;
+  --pad-section:64px;
+
+  /* ---------- Frame & radius — much squarer than v0.1 ---------- */
+  --r-0:0;
+  --r-1:2px;
+  --r-2:4px;
+  --r-3:8px;        /* max for primary surfaces */
+  --r-pill:999px;   /* only for chips & status */
+
+  /* ---------- Elevation — disciplined, lower ---------- */
+  /* Soft shadows replaced with hairline + minimal lift */
+  --hairline:1px solid var(--rule);
+  --hairline-strong:1px solid var(--rule-strong);
+  --hairline-bold:1.5px solid var(--ink);
+  --shadow-lift:0 1px 0 var(--rule-strong);
+  --shadow-card:0 1px 2px rgba(11,14,13,.04), 0 0 0 1px var(--rule);
+  --shadow-deep:0 2px 0 rgba(11,14,13,.06);
+
+  /* ---------- Motion — climatological ---------- */
+  --ease-atmosphere:cubic-bezier(.4,0,.2,1);
+  --ease-settle:cubic-bezier(.2,.7,.2,1);
+  --dur-fast:120ms;
+  --dur:200ms;
+  --dur-slow:420ms;
+  --dur-fog:6000ms;
+}
+
+/* ---------- Density modes ---------- */
+[data-density="ambient"]{
+  --row-y:16px; --row-x:18px; --pad-card:24px; --pad-section:96px;
+  --t-body:16px; --t-h1:32px;
+}
+[data-density="operational"]{
+  --row-y:10px; --row-x:14px; --pad-card:18px; --pad-section:64px;
+  --t-body:15px; --t-h1:28px;
+}
+[data-density="dense"]{
+  --row-y:6px; --row-x:10px; --pad-card:12px; --pad-section:48px;
+  --t-body:13px; --t-h1:24px;
+}
+
+/* ---------- Dark / Night mode ---------- */
+[data-mode="dark"]{
+  --bg:#0e1110;
+  --bg-elevated:#161a18;
+  --bg-sunken:#0a0d0c;
+  --bg-deep:#000;
+  --bg-deep-text:#dbddd5;
+  --ink:#ebeae2;
+  --ink-2:#9a9d96;
+  --ink-3:#6d736e;
+  --rule:#222826;
+  --rule-strong:#363c39;
+  --rule-bold:#ebeae2;
+  --accent:var(--cyan-400);
+  --hairline:1px solid var(--rule);
+  --hairline-strong:1px solid var(--rule-strong);
+  --shadow-card:0 0 0 1px var(--rule);
+  --hl:rgba(201,163,106,.14);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+
+/* ============================================================
+   PAGE SHELL — left dark rail (institutional), right canvas
+   Models the platform itself: the chrome is the lesson.
+   ============================================================ */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+.rail{background:var(--bg-deep);color:var(--bg-deep-text);padding:32px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--graphite-700)}
+.rail .mark{display:flex;align-items:center;gap:10px;margin-bottom:36px}
+.rail .glyph{width:28px;height:28px;background:var(--bg-deep-text);position:relative;flex-shrink:0}
+.rail .glyph::before{content:"";position:absolute;inset:6px;background:var(--bg-deep)}
+.rail .glyph::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:var(--bg-deep);transform:translateX(-50%)}
+.rail .name{font-family:var(--font-display);font-weight:600;font-size:15px;letter-spacing:.02em;line-height:1.15}
+.rail .name span{display:block;font-family:var(--font-mono);font-weight:400;font-size:10px;color:var(--graphite-300);letter-spacing:.16em;margin-top:3px;text-transform:uppercase}
+
+.rail nav{display:flex;flex-direction:column;gap:1px;margin-bottom:32px}
+.rail nav a{color:var(--graphite-300);text-decoration:none;padding:7px 10px;font-size:12.5px;border-left:2px solid transparent;display:flex;align-items:center;gap:10px;transition:color var(--dur) var(--ease-atmosphere),border-color var(--dur) var(--ease-atmosphere),background var(--dur) var(--ease-atmosphere)}
+.rail nav a .num{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--graphite-400);width:22px}
+.rail nav a:hover{color:var(--bg-deep-text);background:rgba(255,255,255,.025)}
+.rail nav a.on{color:var(--bg-deep-text);border-left-color:var(--cyan-400);background:rgba(127,166,182,.06)}
+.rail nav a.on .num{color:var(--cyan-400)}
+
+.rail .rail-foot{margin-top:auto;padding-top:24px;border-top:1px solid var(--graphite-700);font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--graphite-400);text-transform:uppercase;line-height:1.7}
+.rail .rail-foot b{display:block;color:var(--graphite-200);font-weight:500}
+
+/* ---------- Canvas ---------- */
+.canvas{padding:0;min-width:0}
+
+/* ---------- Station board (wayfinding header) ---------- */
+.station{display:flex;justify-content:space-between;align-items:stretch;border-bottom:1.5px solid var(--ink);background:var(--bg);position:sticky;top:0;z-index:20}
+.station .crumb{display:flex;align-items:center;padding:14px 32px;gap:16px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-2);text-transform:uppercase}
+.station .crumb b{color:var(--ink);font-weight:500}
+.station .crumb .bar{width:18px;height:1.5px;background:var(--ink)}
+.station .controls{display:flex;align-items:stretch;border-left:1px solid var(--rule-strong)}
+.station .ctrl-group{display:flex;align-items:center;padding:0 18px;gap:8px;border-right:1px solid var(--rule)}
+.station .ctrl-group:last-child{border-right:none}
+.station .ctrl-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.station .seg{display:flex;background:var(--bg-sunken);border:1px solid var(--rule-strong)}
+.station .seg button{appearance:none;border:none;background:transparent;font:inherit;font-size:11px;color:var(--ink-2);padding:5px 10px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid var(--rule-strong)}
+.station .seg button:last-child{border-right:none}
+.station .seg button.on{background:var(--ink);color:var(--bg)}
+
+/* ---------- Section scaffolding ---------- */
+section.s{padding:var(--pad-section) 56px;border-bottom:1px solid var(--rule-strong)}
+section.s.deep{background:var(--bg-deep);color:var(--bg-deep-text);border-bottom-color:var(--graphite-700)}
+section.s.deep .s-head h2,section.s.deep .s-num{color:var(--bg-deep-text)}
+section.s.deep .blurb{color:var(--graphite-200)}
+
+.s-head{display:grid;grid-template-columns:120px 1fr 200px;gap:32px;align-items:start;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--rule)}
+section.s.deep .s-head{border-bottom-color:var(--graphite-700)}
+.s-num{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;padding-top:6px}
+.s-num b{display:block;color:var(--ink);font-family:var(--font-display);font-size:46px;letter-spacing:-.02em;line-height:1;font-weight:300;margin-top:6px}
+section.s.deep .s-num b{color:var(--bg-deep-text)}
+.s-head h2{font-family:var(--font-display);font-size:var(--t-h1);font-weight:500;letter-spacing:-.015em;margin:0 0 12px}
+.s-head .blurb{color:var(--ink-2);font-size:15px;max-width:62ch;margin:0;line-height:1.6}
+.s-meta{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;line-height:1.7;border-left:1px solid var(--rule-strong);padding-left:20px}
+section.s.deep .s-meta{border-left-color:var(--graphite-700)}
+.s-meta b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:var(--font-display);font-size:13px}
+section.s.deep .s-meta b{color:var(--graphite-200)}
+
+/* ============================================================
+   00 — POSITIONING / THESIS
+   ============================================================ */
+.thesis{display:grid;grid-template-columns:1fr 380px;gap:64px;align-items:end;padding:80px 56px 64px;border-bottom:1px solid var(--rule-strong);background:linear-gradient(180deg,var(--paper-2) 0%,var(--bg) 70%)}
+.thesis h1{font-family:var(--font-display);font-size:var(--t-monument);line-height:.96;letter-spacing:-.025em;margin:0 0 24px;font-weight:300}
+.thesis h1 b{font-weight:600}
+.thesis h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--cyan-700)}
+.thesis .tag-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.thesis .lede{font-family:var(--font-serif);font-size:19px;line-height:1.5;color:var(--ink-2);margin:0;max-width:60ch}
+.thesis .card-thesis{background:var(--bg-elevated);border:1px solid var(--rule-strong);padding:20px 22px;position:relative}
+.thesis .card-thesis::before{content:"";position:absolute;left:-1px;top:-1px;width:24px;height:1.5px;background:var(--ink)}
+.thesis .card-thesis::after{content:"";position:absolute;left:-1px;top:-1px;width:1.5px;height:24px;background:var(--ink)}
+.thesis .card-thesis h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;margin:0 0 12px;font-weight:500}
+.thesis .card-thesis dl{margin:0;display:grid;grid-template-columns:90px 1fr;gap:8px 16px;font-size:13px;line-height:1.5}
+.thesis .card-thesis dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;padding-top:2px}
+.thesis .card-thesis dd{margin:0;color:var(--ink)}
+
+.shift-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:32px;align-items:center;margin-top:48px;padding:24px 32px;background:var(--paper-0);border:1px solid var(--rule-strong)}
+.shift-row .from,.shift-row .to{font-size:13px;line-height:1.5}
+.shift-row .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:8px;display:block}
+.shift-row .from b,.shift-row .to b{display:block;font-family:var(--font-display);font-size:18px;color:var(--ink);font-weight:600;letter-spacing:-.005em;margin-bottom:4px}
+.shift-row .from{opacity:.65}
+.shift-row .arrow{font-family:var(--font-mono);font-size:18px;text-align:center;color:var(--cyan-500)}
+.shift-row .to{color:var(--ink-2)}
+.shift-row .to b{color:var(--cyan-700)}
+
+/* ============================================================
+   PRINCIPLES — operational tone
+   ============================================================ */
+.princ{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.princ .p{padding:24px;border-right:1px solid var(--rule-strong);position:relative}
+.princ .p:last-child{border-right:none}
+.princ .p .pnum{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:24px}
+.princ .p h3{font-family:var(--font-display);font-size:17px;font-weight:600;margin:0 0 8px;letter-spacing:-.005em;line-height:1.25}
+.princ .p p{margin:0 0 16px;color:var(--ink-2);font-size:13.5px;line-height:1.55}
+.princ .p .test{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em;line-height:1.5;padding-top:12px;border-top:1px dashed var(--rule-strong)}
+.princ .p .test b{display:block;color:var(--ink-2);font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+
+/* ============================================================
+   COLOR
+   ============================================================ */
+.scale-block{margin-bottom:32px}
+.scale-name{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;border-bottom:1px solid var(--rule);padding-bottom:8px}
+.scale-name b{font-family:var(--font-display);font-size:15px;color:var(--ink);font-weight:600;letter-spacing:-.005em}
+.scale-name .role{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.scale-name .role em{font-style:normal;color:var(--cyan-700);font-weight:500}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);border:1px solid var(--rule-strong)}
+.swatch{aspect-ratio:1.4;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;font-family:var(--font-mono);font-size:9.5px;line-height:1.3;color:rgba(255,255,255,.88);border-right:1px solid rgba(255,255,255,.04)}
+.swatch:last-child{border-right:none}
+.swatch.lt{color:var(--graphite-700)}
+.swatch .step{opacity:.7}
+.swatch .hex{display:block;letter-spacing:.04em;font-weight:500}
+
+.semantic{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:24px;border:1px solid var(--rule-strong)}
+.sem{padding:16px;border-right:1px solid var(--rule-strong)}
+.sem:last-child{border-right:none}
+.sem .chip{height:32px;margin-bottom:12px}
+.sem .role{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.14em}
+.sem .label{display:block;margin-top:2px;font-weight:500;font-size:13.5px;font-family:var(--font-mono)}
+.sem .use{display:block;margin-top:6px;color:var(--ink-2);font-size:12px;line-height:1.45}
+
+.palette-note{margin-top:24px;padding:18px 22px;background:var(--bg-sunken);border-left:3px solid var(--cyan-500);font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.palette-note b{color:var(--ink)}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.type-row{display:grid;grid-template-columns:160px 1fr;align-items:baseline;padding:20px 0;border-bottom:1px dashed var(--rule-strong)}
+.type-row:last-child{border-bottom:none}
+.type-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+.type-meta b{display:block;color:var(--ink);font-weight:500;letter-spacing:-.005em;text-transform:none;font-family:var(--font-display);font-size:13.5px;margin-bottom:3px}
+.t-monument{font-family:var(--font-display);font-size:60px;line-height:.98;font-weight:300;letter-spacing:-.025em}
+.t-display{font-family:var(--font-display);font-size:42px;line-height:1.04;font-weight:500;letter-spacing:-.02em}
+.t-display em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--cyan-700)}
+.t-h1{font-family:var(--font-display);font-size:28px;line-height:1.18;font-weight:500;letter-spacing:-.012em}
+.t-h2{font-family:var(--font-display);font-size:20px;line-height:1.25;font-weight:600}
+.t-body-serif{font-family:var(--font-serif);font-size:18px;line-height:1.55;color:var(--ink-2);max-width:60ch}
+.t-body{font-size:15px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+.t-mono{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;color:var(--ink-2)}
+.t-tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;font-weight:500}
+
+/* ============================================================
+   FRAME & SHAPE
+   ============================================================ */
+.frame-row{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.fr{padding:20px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.fr h4{font-family:var(--font-display);font-size:13px;letter-spacing:.04em;font-weight:600;margin:0 0 16px;color:var(--ink)}
+.space-row{display:flex;align-items:center;gap:14px;margin:6px 0;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
+.space-row .lbl{width:42px}
+.space-row .bar{height:6px;background:var(--ink);display:block}
+.radius-row{display:flex;gap:12px;flex-wrap:wrap}
+.radius-row .swatch-r{width:48px;height:48px;background:var(--paper-2);border:1px solid var(--rule-strong);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:var(--font-mono);font-size:10px;color:var(--ink-2)}
+
+.frame-spec{margin-top:24px;padding:20px;border:1px solid var(--ink);background:var(--paper-0);position:relative}
+.frame-spec::before{content:"";position:absolute;top:-1px;left:-1px;width:24px;height:6px;background:var(--ink)}
+.frame-spec::after{content:"";position:absolute;top:-1px;right:-1px;width:24px;height:6px;background:var(--ink)}
+.frame-spec h5{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin:0 0 12px;font-weight:500}
+.frame-spec p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.55}
+.frame-spec b{color:var(--ink)}
+
+/* ============================================================
+   DENSITY MODES
+   ============================================================ */
+.dens-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule-strong)}
+.dens-col{padding:24px;border-right:1px solid var(--rule-strong)}
+.dens-col:last-child{border-right:none}
+.dens-col .dh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:4px}
+.dens-col h4{font-family:var(--font-display);font-size:17px;margin:0 0 4px;font-weight:600}
+.dens-col .duse{font-size:12.5px;color:var(--ink-2);margin:0 0 18px;line-height:1.45}
+
+/* Demo "record" rendered three ways */
+.demo-rec{background:var(--bg-elevated);border:1px solid var(--rule-strong);margin-bottom:8px}
+.demo-rec .head{display:flex;justify-content:space-between;align-items:center;padding:var(--row-y) var(--row-x);border-bottom:1px solid var(--rule)}
+.demo-rec .head b{font-family:var(--font-display);font-size:13.5px;font-weight:600}
+.demo-rec .head .id{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
+.demo-rec .body{padding:var(--row-y) var(--row-x);font-size:12.5px;color:var(--ink-2);line-height:1.45;border-bottom:1px solid var(--rule)}
+.demo-rec .row{display:flex;justify-content:space-between;padding:calc(var(--row-y) / 1.4) var(--row-x);font-size:12px;border-bottom:1px solid var(--rule)}
+.demo-rec .row:last-child{border-bottom:none}
+.demo-rec .row .k{color:var(--ink-3);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em}
+.demo-rec .row .v{color:var(--ink);font-weight:500}
+
+.dens-col[data-d="ambient"] .demo-rec{--row-y:16px;--row-x:18px}
+.dens-col[data-d="ambient"] .demo-rec .head b{font-size:15px}
+.dens-col[data-d="dense"] .demo-rec{--row-y:5px;--row-x:10px}
+.dens-col[data-d="dense"] .demo-rec .head b{font-size:12.5px}
+.dens-col[data-d="dense"] .demo-rec .row{font-size:11px}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+.comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.comp{padding:20px;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.comp .clabel{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.comp .clabel span{color:var(--ink-2)}
+.comp .crow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.comp .crow + .crow{margin-top:10px}
+
+/* Buttons — square, infrastructural */
+.btn{appearance:none;border:1px solid var(--ink);font:inherit;font-weight:500;font-size:13px;padding:8px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background var(--dur) var(--ease-atmosphere),color var(--dur) var(--ease-atmosphere);background:var(--ink);color:var(--bg-elevated);border-radius:var(--r-1);letter-spacing:.005em}
+.btn:hover{background:var(--graphite-700)}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn.secondary:hover{background:var(--ink);color:var(--bg-elevated)}
+.btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--rule-strong)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--ink)}
+.btn.warm{background:var(--bronze-400);color:#fff;border-color:var(--bronze-400)}
+.btn.warm:hover{background:var(--bronze-500);border-color:var(--bronze-500)}
+.btn.cool{background:var(--cyan-500);color:#fff;border-color:var(--cyan-500)}
+.btn.cool:hover{background:var(--cyan-700);border-color:var(--cyan-700)}
+.btn .key{font-family:var(--font-mono);font-size:10px;border:1px solid currentColor;padding:0 5px;border-radius:2px;opacity:.7;margin-left:auto}
+
+/* Inputs — bottom-rule, less floaty */
+.field{position:relative}
+.field-label{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.input{appearance:none;border:none;border-bottom:1.5px solid var(--rule-strong);background:transparent;color:var(--ink);font:inherit;font-size:14px;padding:8px 0 8px;width:100%;border-radius:0;transition:border-color var(--dur) var(--ease-atmosphere)}
+.input:focus{outline:none;border-bottom-color:var(--ink)}
+.input::placeholder{color:var(--ink-3)}
+.input.boxed{border:1px solid var(--rule-strong);padding:8px 12px;background:var(--bg-elevated)}
+.input.boxed:focus{border-color:var(--ink);box-shadow:none}
+
+/* Tags / chips */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;background:var(--bg-sunken);color:var(--ink-2);font-size:11px;font-weight:500;font-family:var(--font-mono);letter-spacing:.06em;border:1px solid var(--rule-strong);border-radius:var(--r-pill)}
+.tag::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink-3)}
+.tag.active{color:var(--canopy-700);border-color:var(--canopy-300);background:var(--canopy-100)}
+.tag.active::before{background:var(--canopy-500)}
+.tag.warm{color:var(--bronze-700);border-color:var(--bronze-200);background:var(--bronze-100)}
+.tag.warm::before{background:var(--bronze-400)}
+.tag.cool{color:var(--cyan-700);border-color:var(--cyan-200);background:var(--cyan-100)}
+.tag.cool::before{background:var(--cyan-500)}
+.tag.crit{color:var(--signal-critical);border-color:#e2b9b1;background:#f7e6e2}
+.tag.crit::before{background:var(--signal-critical)}
+
+/* Toast / banner — left rule, no shadow */
+.toast{display:flex;align-items:stretch;gap:0;border:1px solid var(--rule-strong);background:var(--bg-elevated);font-size:13.5px;line-height:1.5}
+.toast .icon{width:6px;flex-shrink:0;background:var(--signal-info)}
+.toast.positive .icon{background:var(--signal-positive)}
+.toast.warning .icon{background:var(--signal-warning)}
+.toast.critical .icon{background:var(--signal-critical)}
+.toast .body{padding:12px 16px;flex:1}
+.toast b{display:block;color:var(--ink);margin-bottom:2px;font-weight:500}
+.toast span{color:var(--ink-2)}
+.toast .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.08em;margin-top:4px;display:block}
+
+/* Stat card — institutional */
+.stat-card{padding:18px 20px;border:1px solid var(--rule-strong);background:var(--bg-elevated);position:relative}
+.stat-card .scap{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin-bottom:8px}
+.stat-card .sval{font-family:var(--font-display);font-size:36px;font-weight:300;line-height:1;letter-spacing:-.02em;margin-bottom:6px}
+.stat-card .sdelta{font-size:12px;color:var(--ink-2)}
+.stat-card .sdelta b.up{color:var(--signal-positive);font-weight:500}
+.stat-card .sdelta b.down{color:var(--signal-critical);font-weight:500}
+
+/* Toggle / seg control */
+.toggle{display:inline-flex;border:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.toggle button{appearance:none;border:none;background:transparent;font:inherit;font-size:11px;color:var(--ink-2);padding:6px 12px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid var(--rule-strong)}
+.toggle button:last-child{border-right:none}
+.toggle button.on{background:var(--ink);color:var(--bg-elevated)}
+
+/* ============================================================
+   MOTION
+   ============================================================ */
+.motion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule-strong)}
+.m-cell{padding:24px;border-right:1px solid var(--rule-strong);position:relative;overflow:hidden}
+.m-cell:last-child{border-right:none}
+.m-cell .ml{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
+.m-cell h4{font-family:var(--font-display);font-size:16px;margin:0 0 8px;font-weight:600}
+.m-cell p{margin:0 0 18px;font-size:13px;color:var(--ink-2);line-height:1.5}
+.m-cell .stage{height:60px;background:var(--bg-sunken);border:1px solid var(--rule);position:relative;overflow:hidden}
+.m-cell .stage .puck{position:absolute;top:50%;left:14px;transform:translateY(-50%);width:18px;height:18px;background:var(--ink)}
+.m-cell:nth-child(1) .stage .puck{animation:settle 3.4s var(--ease-atmosphere) infinite}
+.m-cell:nth-child(2) .stage .puck{animation:fog 5s linear infinite;background:var(--cyan-500);width:100%;height:100%;left:0;top:0;opacity:.2}
+.m-cell:nth-child(3) .stage .puck{animation:lightshift 4s ease-in-out infinite;background:linear-gradient(90deg,var(--bronze-300),var(--cyan-400));width:100%;height:100%;left:0;top:0;opacity:.5}
+@keyframes settle{0%{left:14px}45%{left:calc(100% - 32px)}55%{left:calc(100% - 32px)}100%{left:14px}}
+@keyframes fog{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes lightshift{0%,100%{filter:hue-rotate(0) brightness(1)}50%{filter:hue-rotate(20deg) brightness(1.15)}}
+
+/* ============================================================
+   GIS — Tropical Civic Cartography
+   ============================================================ */
+.gis-intro{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule-strong);margin-bottom:32px}
+.gis-rule{padding:18px 22px;border-right:1px solid var(--rule-strong)}
+.gis-rule:nth-child(2n){border-right:none}
+.gis-rule:nth-child(n+3){border-top:1px solid var(--rule-strong)}
+.gis-rule .gh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--cyan-700);text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.gis-rule h4{font-family:var(--font-display);font-size:15px;margin:0 0 6px;font-weight:600}
+.gis-rule p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+
+.gis-map-wrap{position:relative;border:1px solid var(--rule-bold);background:var(--graphite-50);overflow:hidden}
+.gis-map-wrap .gtitle{position:absolute;top:0;left:0;right:0;background:var(--graphite-900);color:#dbddd5;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;z-index:5;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.gis-map-wrap .gtitle b{color:#fff;font-weight:500}
+.gis-map-wrap .gtitle .coords{color:var(--graphite-300)}
+.gis-map{height:460px;position:relative;margin-top:36px;background:
+  linear-gradient(180deg,#e8e7df 0%,#dcdcd2 60%,#cdcdc1 100%)}
+.gis-map svg{position:absolute;inset:0;width:100%;height:100%}
+
+.gis-legend{position:absolute;left:18px;bottom:18px;background:var(--graphite-900);color:#dbddd5;padding:16px;min-width:200px;border:1px solid var(--graphite-700);font-size:11px;line-height:1.5}
+.gis-legend b{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--graphite-300);text-transform:uppercase;margin-bottom:10px;font-weight:500;padding-bottom:8px;border-bottom:1px solid var(--graphite-700)}
+.gis-legend .li{display:flex;align-items:center;gap:10px;margin:6px 0;color:var(--graphite-200)}
+.gis-legend .li i{flex-shrink:0;display:inline-block}
+.gis-legend .li .swatch-rd{width:18px;height:1.5px;background:var(--graphite-400)}
+.gis-legend .li .swatch-mrt{width:18px;height:2px;background:var(--cyan-400);box-shadow:0 0 4px var(--cyan-400)}
+.gis-legend .li .swatch-eco{width:14px;height:8px;background:var(--canopy-500);opacity:.5}
+.gis-legend .li .swatch-heat{width:14px;height:8px;background:var(--bronze-400);opacity:.4}
+.gis-legend .li .swatch-pin{width:8px;height:8px;border-radius:50%;background:var(--bronze-400);box-shadow:0 0 0 2px rgba(168,127,73,.3)}
+
+.gis-cartouche{position:absolute;right:18px;top:54px;background:#fbfaf4;color:var(--ink);padding:14px 18px;border:1px solid var(--ink);min-width:220px;font-size:12px;line-height:1.5}
+.gis-cartouche::before{content:"";position:absolute;top:-1px;left:-1px;width:18px;height:4px;background:var(--ink)}
+.gis-cartouche b{display:block;font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--rule-strong)}
+.gis-cartouche .row{display:flex;justify-content:space-between;margin:4px 0;font-size:11.5px}
+.gis-cartouche .row .k{color:var(--ink-3);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.gis-cartouche .row .v{color:var(--ink);font-family:var(--font-mono);letter-spacing:.04em}
+
+.gis-scale{position:absolute;left:18px;top:54px;background:#fbfaf4;padding:6px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase;border:1px solid var(--ink);display:flex;align-items:center;gap:10px}
+.gis-scale i{width:30px;height:2px;background:var(--ink);display:block}
+
+.gis-station{position:absolute;width:8px;height:8px;background:var(--cyan-400);border-radius:50%;box-shadow:0 0 0 1.5px #fff,0 0 0 3px var(--cyan-700),0 0 8px var(--cyan-400);transform:translate(-50%,-50%)}
+.gis-pin{position:absolute;width:10px;height:10px;background:var(--bronze-400);box-shadow:0 0 0 1.5px #fff,0 1px 3px rgba(0,0,0,.3);transform:translate(-50%,-50%);border:1.5px solid var(--graphite-900)}
+.gis-pin.eco{background:var(--canopy-500)}
+.gis-pin.crit{background:var(--signal-critical)}
+
+/* ============================================================
+   APPLICATION SURFACES
+   ============================================================ */
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.app{border:1px solid var(--rule-bold);background:var(--bg-elevated);overflow:hidden;display:flex;flex-direction:column}
+.app .app-head{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--graphite-900);color:#dbddd5;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.app .app-head b{color:#fff;font-weight:500}
+.app .app-head span{color:var(--graphite-300)}
+.app .app-body{padding:0;flex:1}
+
+/* Mobile field reporter */
+.am-mobile{padding:24px;background:linear-gradient(180deg,var(--paper-2),var(--paper-1));display:flex;justify-content:center;flex:1}
+.phone{width:240px;background:var(--bg);overflow:hidden;border:6px solid var(--graphite-900);box-shadow:0 2px 0 var(--graphite-900),0 8px 24px rgba(11,14,13,.15)}
+.phone .ph-status{background:var(--graphite-900);color:#dbddd5;padding:6px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;display:flex;justify-content:space-between;text-transform:uppercase}
+.phone .ph-content{padding:14px;display:flex;flex-direction:column;gap:10px;min-height:340px}
+.phone .ph-section{font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin:6px 0 0;padding-bottom:4px;border-bottom:1px solid var(--rule);font-weight:500}
+.phone .ph-task{padding:10px;border:1px solid var(--rule-strong);font-size:11px;line-height:1.4;background:var(--bg-elevated);position:relative}
+.phone .ph-task .tid{font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-3);position:absolute;top:8px;right:10px}
+.phone .ph-task b{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:3px}
+.phone .ph-task .meta{font-family:var(--font-mono);font-size:9px;color:var(--ink-3);letter-spacing:.06em;margin-top:6px}
+.phone .ph-task.priority{border-left:3px solid var(--bronze-400)}
+.phone .ph-task.eco{border-left:3px solid var(--canopy-500)}
+.phone .ph-nav{margin-top:auto;display:flex;border-top:1px solid var(--rule-strong);background:var(--bg-elevated)}
+.phone .ph-nav i{flex:1;height:32px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;border-right:1px solid var(--rule);font-style:normal}
+.phone .ph-nav i:last-child{border-right:none}
+.phone .ph-nav i.on{color:var(--ink);background:var(--paper-2);position:relative}
+.phone .ph-nav i.on::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--cyan-500)}
+
+/* GIS embedded panel */
+.am-gis-mini{height:380px;position:relative;background:linear-gradient(180deg,#e8e7df,#cdcdc1)}
+.am-gis-mini svg{position:absolute;inset:0;width:100%;height:100%}
+.am-gis-mini .mini-leg{position:absolute;left:14px;bottom:14px;background:var(--graphite-900);color:#dbddd5;padding:12px;font-size:10px;line-height:1.6;border:1px solid var(--graphite-700);min-width:160px}
+.am-gis-mini .mini-leg b{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;color:var(--graphite-300);text-transform:uppercase;margin-bottom:6px;font-weight:500;border-bottom:1px solid var(--graphite-700);padding-bottom:5px}
+.am-gis-mini .mini-leg .li{display:flex;align-items:center;gap:8px;color:var(--graphite-200);font-size:10px}
+.am-gis-mini .mini-leg .li i{display:inline-block}
+.am-gis-mini .mini-toolbar{position:absolute;top:14px;left:14px;display:flex;border:1px solid var(--ink);background:#fbfaf4}
+.am-gis-mini .mini-toolbar button{appearance:none;border:none;background:transparent;font:inherit;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:5px 10px;cursor:pointer;border-right:1px solid var(--rule-strong)}
+.am-gis-mini .mini-toolbar button:last-child{border-right:none}
+.am-gis-mini .mini-toolbar button.on{background:var(--ink);color:#fbfaf4}
+
+/* CRM */
+.am-crm{padding:14px 16px 16px}
+.am-crm .crmh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid var(--ink)}
+.am-crm .crmh h6{font-family:var(--font-display);font-size:14px;margin:0;font-weight:600}
+.am-crm .crmh .crm-meta{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase}
+.am-crm table{width:100%;border-collapse:collapse;font-size:12px}
+.am-crm th{text-align:left;padding:8px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--ink)}
+.am-crm td{padding:9px 10px;border-bottom:1px solid var(--rule);color:var(--ink-2)}
+.am-crm tr:nth-child(even) td{background:var(--paper-2)}
+.am-crm tr:hover td{background:var(--cyan-100)}
+.am-crm td .name{color:var(--ink);font-weight:500}
+.am-crm td .av{width:18px;height:18px;background:var(--graphite-200);display:inline-block;vertical-align:middle;margin-right:8px;border:1px solid var(--graphite-300);position:relative;font-family:var(--font-mono);font-size:8px;color:var(--ink-2);text-align:center;line-height:18px;font-weight:500}
+.am-crm td .av.b{background:var(--bronze-200);border-color:var(--bronze-400)}
+.am-crm td .av.c{background:var(--cyan-200);border-color:var(--cyan-500)}
+.am-crm td .av.e{background:var(--canopy-100);border-color:var(--canopy-500)}
+.am-crm td .st{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;display:inline-block}
+.am-crm td .st.live{color:var(--canopy-700);background:var(--canopy-100);border-color:var(--canopy-300)}
+.am-crm td .st.warm{color:var(--bronze-700);background:var(--bronze-100);border-color:var(--bronze-300)}
+.am-crm td .st.cold{color:var(--ink-3);background:var(--paper-2);border-color:var(--rule-strong)}
+.am-crm td .num{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+
+/* AI Chat */
+.am-chat{display:flex;flex-direction:column;background:var(--paper-1);min-height:380px}
+.am-chat .session{background:var(--paper-2);border-bottom:1px solid var(--rule-strong);padding:8px 16px;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;display:flex;justify-content:space-between}
+.am-chat .session b{color:var(--ink-2)}
+.am-chat .stream{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1;overflow:hidden}
+.b{max-width:80%;font-size:13px;line-height:1.5}
+.b.user{align-self:flex-end;background:var(--ink);color:var(--bg);padding:9px 14px;border:1px solid var(--ink)}
+.b.ai{align-self:flex-start;background:var(--bg-elevated);border:1px solid var(--rule-strong);border-left:3px solid var(--cyan-500);padding:10px 14px 12px}
+.b.ai .agent{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--cyan-700);text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.b.ai .citations{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule-strong);display:flex;flex-wrap:wrap;gap:4px}
+.b.ai .citations .c{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em;padding:2px 6px;background:var(--paper-2);border:1px solid var(--rule-strong)}
+.b.ai .citations .c b{color:var(--ink);font-weight:500}
+.b.ai .think{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.b.ai .think i{width:5px;height:5px;background:var(--cyan-500);display:block;animation:thinkfade 1.4s ease-in-out infinite}
+.b.ai .think i:nth-child(2){animation-delay:.2s}
+.b.ai .think i:nth-child(3){animation-delay:.4s}
+@keyframes thinkfade{0%,100%{opacity:.2}50%{opacity:1}}
+.am-chat .composer{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-elevated);border-top:1.5px solid var(--ink)}
+.am-chat .composer input{flex:1;border:none;background:transparent;font:inherit;font-size:13px;outline:none;color:var(--ink)}
+.am-chat .composer .audit{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.08em;padding:6px 10px;background:var(--paper-2);border:1px solid var(--rule-strong)}
+.am-chat .composer .send{width:30px;height:28px;background:var(--ink);color:var(--bg);border:none;cursor:pointer;font-family:var(--font-mono);font-size:14px}
+
+/* AI Image gen — operational */
+.am-ig{padding:18px;display:grid;grid-template-columns:180px 1fr;gap:18px}
+.am-ig .ctrl{display:flex;flex-direction:column;gap:14px}
+.am-ig .field-label{margin-bottom:6px}
+.am-ig .prompt{font-family:var(--font-serif);font-style:italic;font-size:12.5px;color:var(--ink);padding:8px 10px;background:var(--paper-2);border-left:2px solid var(--cyan-500);line-height:1.5}
+.am-ig .slider{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)}
+.am-ig .slider .track{flex:1;height:2px;background:var(--rule-strong);position:relative}
+.am-ig .slider .track::after{content:"";position:absolute;left:0;top:0;height:100%;width:62%;background:var(--ink)}
+.am-ig .slider .knob{position:absolute;left:62%;top:50%;width:10px;height:10px;background:var(--bg-elevated);border:1.5px solid var(--ink);transform:translate(-50%,-50%)}
+.am-ig .results{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.am-ig .tile{aspect-ratio:1;border:1px solid var(--rule-strong);position:relative;overflow:hidden}
+.am-ig .tile.t1{background:radial-gradient(circle at 30% 35%,var(--canopy-300),var(--canopy-700) 90%)}
+.am-ig .tile.t2{background:radial-gradient(circle at 70% 45%,var(--bronze-200),var(--bronze-500) 90%)}
+.am-ig .tile.t3{background:radial-gradient(circle at 50% 70%,var(--graphite-200),var(--graphite-700) 90%)}
+.am-ig .tile.t4{background:radial-gradient(circle at 40% 50%,var(--cyan-200),var(--cyan-700) 95%)}
+.am-ig .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(0,0,0,.15));pointer-events:none}
+.am-ig .tile .runtag{position:absolute;bottom:6px;left:6px;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.06em;color:rgba(255,255,255,.85);padding:1px 5px;background:rgba(11,14,13,.5);text-transform:uppercase}
+
+/* ============================================================
+   INSTITUTIONAL RITUAL
+   ============================================================ */
+.ritual{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule-strong)}
+.ritual .r{padding:22px 24px;border-right:1px solid var(--rule-strong)}
+.ritual .r:nth-child(2n){border-right:none}
+.ritual .r:nth-child(n+3){border-top:1px solid var(--rule-strong)}
+.ritual .r .rh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--cyan-700);text-transform:uppercase;margin-bottom:8px;font-weight:500}
+.ritual .r h4{font-family:var(--font-display);font-size:16px;margin:0 0 8px;font-weight:600}
+.ritual .r p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.55}
+.ritual .r code{font-family:var(--font-mono);font-size:11.5px;color:var(--ink);background:var(--paper-2);padding:1px 6px;border:1px solid var(--rule-strong)}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+.a11y-list{margin:0;padding:0;list-style:none;border:1px solid var(--rule-strong)}
+.a11y-list li{padding:16px 20px;border-bottom:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px;line-height:1.6;display:grid;grid-template-columns:140px 1fr;gap:24px}
+.a11y-list li:last-child{border-bottom:none}
+.a11y-list li b{color:var(--ink);font-weight:500}
+.a11y-list li .anchor{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;padding-top:2px}
+
+.footnote{padding:32px 56px;background:var(--graphite-900);color:var(--graphite-300);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-align:center;text-transform:uppercase;line-height:1.6}
+.footnote b{color:#fff;font-weight:500}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:relative;height:auto;display:none}
+  section.s{padding:48px 24px}
+  .thesis{padding:48px 24px;grid-template-columns:1fr;gap:32px}
+  .thesis h1{font-size:42px}
+  .s-head{grid-template-columns:1fr;gap:16px}
+  .princ,.semantic,.ritual,.gis-intro,.motion-grid,.dens-grid{grid-template-columns:1fr}
+  .princ .p,.sem,.ritual .r,.gis-rule,.m-cell,.dens-col{border-right:none !important;border-bottom:1px solid var(--rule-strong)}
+  .comp-grid,.frame-row,.apps{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ LEFT RAIL (institutional) ============ -->
+  <aside class="rail">
+    <div class="mark">
+      <div class="glyph" aria-hidden="true"></div>
+      <div class="name">Conservatory<span>v0.2 — TCF</span></div>
+    </div>
+    <nav>
+      <a href="#thesis" class="on"><span class="num">00</span>Thesis</a>
+      <a href="#principles"><span class="num">01</span>Principles</a>
+      <a href="#color"><span class="num">02</span>Color</a>
+      <a href="#type"><span class="num">03</span>Typography</a>
+      <a href="#frame"><span class="num">04</span>Frame &amp; shape</a>
+      <a href="#density"><span class="num">05</span>Density modes</a>
+      <a href="#components"><span class="num">06</span>Components</a>
+      <a href="#motion"><span class="num">07</span>Motion</a>
+      <a href="#gis"><span class="num">08</span>Cartography</a>
+      <a href="#apps"><span class="num">09</span>Surfaces</a>
+      <a href="#ritual"><span class="num">10</span>Ritual</a>
+      <a href="#a11y"><span class="num">11</span>Accessibility</a>
+    </nav>
+    <div class="rail-foot">
+      <b>Tropical Civic Futurism</b>
+      Doctrine for civic intelligence infrastructure. Built for governance, planning, and ecological operations.
+    </div>
+  </aside>
+
+  <!-- ============ CANVAS ============ -->
+  <main class="canvas">
+
+    <!-- ============ STATION BOARD (wayfinding header) ============ -->
+    <header class="station">
+      <div class="crumb">
+        <span>System</span><span class="bar"></span><b>Conservatory</b><span class="bar"></span><span>v0.2</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Density</span>
+          <div class="seg" id="seg-density">
+            <button data-d="ambient">Ambient</button>
+            <button data-d="operational" class="on">Operational</button>
+            <button data-d="dense">Dense</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Mode</span>
+          <div class="seg" id="seg-mode">
+            <button data-m="light" class="on">Day</button>
+            <button data-m="dark">Night</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ 00 THESIS ============ -->
+    <section id="thesis" class="thesis">
+      <div>
+        <div class="tag-list">
+          <span class="tag cool">Civic intelligence</span>
+          <span class="tag">v0.2 — refined</span>
+          <span class="tag warm">Tropical Civic Futurism</span>
+        </div>
+        <h1>A design language for <em>civic intelligence,</em> <b>not a creative lab.</b></h1>
+        <p class="lede">Conservatory v0.2 reframes biophilic UI as something heavier: an interface system for planning, governance, and ecological operations. Calm where calm earns trust. Disciplined where decisions have consequences. Climate-aware throughout.</p>
+      </div>
+      <aside class="card-thesis">
+        <h4>Positioning</h4>
+        <dl>
+          <dt>Was</dt><dd>Biophilic UI — atmospheric, aestheticised, mood-led.</dd>
+          <dt>Is</dt><dd>Tropical Civic Futurism — infrastructural, operational, climate-aware.</dd>
+          <dt>Reads as</dt><dd>Trusted civic intelligence infrastructure.</dd>
+          <dt>Used for</dt><dd>Planning, GIS, governance, AI ops, public portals.</dd>
+        </dl>
+      </aside>
+
+      <div class="shift-row" style="grid-column:1 / -1">
+        <div class="from">
+          <span class="lbl">Net move from v0.1</span>
+          <b>−20% softness</b>
+          Less translucency, glow, floating cards, decorative greens, lifestyle warmth.
+        </div>
+        <div class="arrow">↦</div>
+        <div class="to">
+          <span class="lbl">Toward v0.2</span>
+          <b>+30% framing</b>
+          More hierarchy, permanence, cartographic identity, disciplined contrast, civic gravity — while preserving calm, spatiality, atmosphere.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 01 PRINCIPLES ============ -->
+    <section id="principles" class="s">
+      <div class="s-head">
+        <div class="s-num">Doctrine<b>01</b></div>
+        <div>
+          <h2>Four commitments. Ordered.</h2>
+          <p class="blurb">When two principles conflict, the earlier wins. These replace v0.1's softer framing — each commitment now carries an operational test that the user-facing surface has to pass before it ships.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>Civic operability over visual delight</div>
+      </div>
+
+      <div class="princ">
+        <div class="p">
+          <div class="pnum">01 / Authority</div>
+          <h3>Hierarchy is load-bearing</h3>
+          <p>The interface must communicate <i>structure</i> before mood. Panels, nav, and content sit at clearly different perceptual weights — a screenshot at 20% size should still reveal the page's spine.</p>
+          <div class="test"><b>Test</b>Squint test: can you describe the layout?</div>
+        </div>
+        <div class="p">
+          <div class="pnum">02 / Permanence</div>
+          <h3>Built, not floated</h3>
+          <p>Surfaces feel anchored, framed, and engineered. Glow and translucency are rationed. Shadows are hairlines. The system reads like architecture, not concept renders.</p>
+          <div class="test"><b>Test</b>Will it still feel right in 2040?</div>
+        </div>
+        <div class="p">
+          <div class="pnum">03 / Climate</div>
+          <h3>Atmospheric, not decorative</h3>
+          <p>Light, depth, and color shift with state — but slowly, like weather. Motion is climatological: fog, light, airflow. Decoration that doesn't carry information is removed.</p>
+          <div class="test"><b>Test</b>Could it run for 60s without distracting?</div>
+        </div>
+        <div class="p">
+          <div class="pnum">04 / Operability</div>
+          <h3>Reads at every density</h3>
+          <p>The system must function at three working densities: ambient (portals, exploration), operational (dashboards, workflows), dense (tables, GIS, approvals). One DNA, three calibrations.</p>
+          <div class="test"><b>Test</b>Does a 14-column table still feel calm?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 COLOR ============ -->
+    <section id="color" class="s">
+      <div class="s-head">
+        <div class="s-num">Palette<b>02</b></div>
+        <div>
+          <h2>Atmospheric luminance, not green identity</h2>
+          <p class="blurb">v0.1 leaned on canopy green as identity — predictable for "urban + biophilic." v0.2 rebalances: <b>graphite</b> carries authority, <b>paper</b> carries calm, <b>reflected cyan</b> carries atmosphere, <b>bronze</b> carries warmth. Canopy is demoted to semantic ecology only.</p>
+        </div>
+        <div class="s-meta"><b>Shift</b>Identity ← luminance, not chroma</div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Graphite</b><span class="role"><em>Primary</em> — institutional ink, dark rails, monumental panels</span></div>
+        <div class="scale">
+          <div class="swatch lt" style="background:#eaeae3"><span class="step">050</span><span class="hex">#EAEAE3</span></div>
+          <div class="swatch lt" style="background:#dbddd5"><span class="step">100</span><span class="hex">#DBDDD5</span></div>
+          <div class="swatch lt" style="background:#c2c4bc"><span class="step">200</span><span class="hex">#C2C4BC</span></div>
+          <div class="swatch lt" style="background:#9a9d96"><span class="step">300</span><span class="hex">#9A9D96</span></div>
+          <div class="swatch" style="background:#6d736e"><span class="step">400</span><span class="hex">#6D736E</span></div>
+          <div class="swatch" style="background:#4a504c"><span class="step">500</span><span class="hex">#4A504C</span></div>
+          <div class="swatch" style="background:#363c39"><span class="step">600</span><span class="hex">#363C39</span></div>
+          <div class="swatch" style="background:#222826"><span class="step">700</span><span class="hex">#222826</span></div>
+          <div class="swatch" style="background:#161a18"><span class="step">800</span><span class="hex">#161A18</span></div>
+          <div class="swatch" style="background:#0b0e0d"><span class="step">900</span><span class="hex">#0B0E0D</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Paper</b><span class="role"><em>Surface</em> — humid white, atmospheric ground</span></div>
+        <div class="scale" style="grid-template-columns:repeat(4,1fr)">
+          <div class="swatch lt" style="background:#ffffff"><span class="step">000</span><span class="hex">#FFFFFF</span></div>
+          <div class="swatch lt" style="background:#fbfaf4"><span class="step">100</span><span class="hex">#FBFAF4</span></div>
+          <div class="swatch lt" style="background:#f4f3ec"><span class="step">200</span><span class="hex">#F4F3EC</span></div>
+          <div class="swatch lt" style="background:#ebeae2"><span class="step">300</span><span class="hex">#EBEAE2</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Reflected cyan</b><span class="role"><em>Atmospheric accent</em> — transit veins, focus, info, calm signal</span></div>
+        <div class="scale" style="grid-template-columns:repeat(5,1fr)">
+          <div class="swatch lt" style="background:#e2ecf0"><span class="step">100</span><span class="hex">#E2ECF0</span></div>
+          <div class="swatch lt" style="background:#c9dde4"><span class="step">200</span><span class="hex">#C9DDE4</span></div>
+          <div class="swatch" style="background:#7fa6b6"><span class="step">400</span><span class="hex">#7FA6B6</span></div>
+          <div class="swatch" style="background:#5d8a9b"><span class="step">500</span><span class="hex">#5D8A9B</span></div>
+          <div class="swatch" style="background:#2d5566"><span class="step">700</span><span class="hex">#2D5566</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Bronze</b><span class="role"><em>Warm artificial light</em> — sodium streetlamp, hospitality, secondary</span></div>
+        <div class="scale" style="grid-template-columns:repeat(7,1fr)">
+          <div class="swatch lt" style="background:#faf4ec"><span class="step">050</span><span class="hex">#FAF4EC</span></div>
+          <div class="swatch lt" style="background:#f0e3cc"><span class="step">100</span><span class="hex">#F0E3CC</span></div>
+          <div class="swatch lt" style="background:#e0c79a"><span class="step">200</span><span class="hex">#E0C79A</span></div>
+          <div class="swatch lt" style="background:#c9a36a"><span class="step">300</span><span class="hex">#C9A36A</span></div>
+          <div class="swatch" style="background:#a87f49"><span class="step">400</span><span class="hex">#A87F49</span></div>
+          <div class="swatch" style="background:#8a6336"><span class="step">500</span><span class="hex">#8A6336</span></div>
+          <div class="swatch" style="background:#6e4d28"><span class="step">700</span><span class="hex">#6E4D28</span></div>
+        </div>
+      </div>
+
+      <div class="scale-block">
+        <div class="scale-name"><b>Canopy</b> <span class="role"><em>Demoted</em> — ecology layers + positive signal only · never chrome</span></div>
+        <div class="scale" style="grid-template-columns:repeat(4,1fr)">
+          <div class="swatch lt" style="background:#d4dec9"><span class="step">100</span><span class="hex">#D4DEC9</span></div>
+          <div class="swatch lt" style="background:#a8bb9a"><span class="step">300</span><span class="hex">#A8BB9A</span></div>
+          <div class="swatch" style="background:#4a7140"><span class="step">500</span><span class="hex">#4A7140</span></div>
+          <div class="swatch" style="background:#2f4a24"><span class="step">700</span><span class="hex">#2F4A24</span></div>
+        </div>
+      </div>
+
+      <div class="semantic">
+        <div class="sem"><div class="chip" style="background:var(--signal-positive)"></div><span class="role">Positive</span><b class="label">#3F7A4A</b><span class="use">Confirmations, healthy ecology, growth metrics.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-warning)"></div><span class="role">Warning</span><b class="label">#C08434</b><span class="use">Drift, attention, soft warnings, heat-island flags.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-critical)"></div><span class="role">Critical</span><b class="label">#8C2E20</b><span class="use">Errors, hard blocks, destructive actions, quota breach.</span></div>
+        <div class="sem"><div class="chip" style="background:var(--signal-info)"></div><span class="role">Info</span><b class="label">#5D8A9B</b><span class="use">Neutral notices, system messages, agent voice.</span></div>
+      </div>
+
+      <p class="palette-note"><b>Why the rebalance:</b> a green-led palette reads as "biophilic lifestyle." A graphite-led palette with cyan atmosphere and bronze warmth reads as "civic infrastructure" — closer to MRT signage, Apple Marina Bay, and institutional cartography than to a creative studio. Green still appears, but only where it <i>means</i> something.</p>
+    </section>
+
+    <!-- ============ 03 TYPOGRAPHY ============ -->
+    <section id="type" class="s">
+      <div class="s-head">
+        <div class="s-num">Type<b>03</b></div>
+        <div>
+          <h2>A monumental scale, used sparingly</h2>
+          <p class="blurb">v0.1 leaned warm and serif-led. v0.2 adds a monumental display weight for civic moments (landing, mission, public portals) and disciplines mono-uppercase eyebrows in the style of MRT signage and airport wayfinding. Serif italic survives — but now reserved for editorial and AI-prompted prose only.</p>
+        </div>
+        <div class="s-meta"><b>Faces</b>Söhne · Inter · Iowan Old Style · JetBrains Mono</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta"><b>Monument</b>64 / 0.96<br/>300 weight<br/>−.025em</div>
+        <div class="t-monument">Civic intelligence,<br/>built to last.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>Display</b>42 / 1.04<br/>500 weight<br/>−.02em</div>
+        <div class="t-display">A pedagogy for <em>Urban AI.</em></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>H1 — section</b>28 / 1.18<br/>500 weight<br/>−.012em</div>
+        <div class="t-h1">Atmospheric luminance, not green identity</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>H2 — subsection</b>20 / 1.25<br/>600 weight</div>
+        <div class="t-h2">Three operational densities, one DNA</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>Lede serif</b>18 / 1.55<br/>regular italic<br/>Editorial only</div>
+        <div class="t-body-serif">The clearest tell: data centers. If your discipline doesn't already treat siting and permitting of AI infrastructure as a first-class problem, it isn't doing Urban AI.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>Body</b>15 / 1.6<br/>regular</div>
+        <div class="t-body">Components never read raw hex; they read semantic names. Tokens travel as CSS custom properties at the root, scoped per theme variant, density mode, and platform export.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>Mono — data</b>12.5 / 1.5<br/>+.04em</div>
+        <div class="t-mono">Marina South · 13.7421°N 100.5018°E · LUT 24-A · q2-2025</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><b>Eyebrow</b>10.5 / 1.5<br/>+.16em uppercase<br/>Wayfinding tag</div>
+        <div class="t-tag">Planning brief · 002 / canopy continuity</div>
+      </div>
+    </section>
+
+    <!-- ============ 04 FRAME ============ -->
+    <section id="frame" class="s">
+      <div class="s-head">
+        <div class="s-num">Frame<b>04</b></div>
+        <div>
+          <h2>Hairlines, squarer radii, structural framing</h2>
+          <p class="blurb">v0.1's elevation language relied on soft drop shadows. v0.2 replaces most of that with disciplined hairlines and an explicit <i>frame</i> primitive — corner ticks, top brackets, or strong top rules that signal "this is a contained, governed surface." Radius is reduced; pill is reserved for status only.</p>
+        </div>
+        <div class="s-meta"><b>Posture</b>Built, not floated</div>
+      </div>
+
+      <div class="frame-row">
+        <div class="fr">
+          <h4 class="t-tag">Spacing scale · 4px base</h4>
+          <div class="space-row"><span class="lbl">s-1</span><div class="bar" style="width:4px"></div><span>4px</span></div>
+          <div class="space-row"><span class="lbl">s-2</span><div class="bar" style="width:8px"></div><span>8px</span></div>
+          <div class="space-row"><span class="lbl">s-3</span><div class="bar" style="width:12px"></div><span>12px</span></div>
+          <div class="space-row"><span class="lbl">s-4</span><div class="bar" style="width:16px"></div><span>16px</span></div>
+          <div class="space-row"><span class="lbl">s-5</span><div class="bar" style="width:24px"></div><span>24px</span></div>
+          <div class="space-row"><span class="lbl">s-6</span><div class="bar" style="width:32px"></div><span>32px</span></div>
+          <div class="space-row"><span class="lbl">s-7</span><div class="bar" style="width:48px"></div><span>48px</span></div>
+          <div class="space-row"><span class="lbl">s-8</span><div class="bar" style="width:64px"></div><span>64px</span></div>
+        </div>
+        <div class="fr">
+          <h4 class="t-tag">Radii — disciplined</h4>
+          <div class="radius-row">
+            <div class="swatch-r" style="border-radius:0">0</div>
+            <div class="swatch-r" style="border-radius:2px">2</div>
+            <div class="swatch-r" style="border-radius:4px">4</div>
+            <div class="swatch-r" style="border-radius:8px">8</div>
+            <div class="swatch-r" style="border-radius:999px">pill</div>
+          </div>
+          <h4 class="t-tag" style="margin-top:24px">Elevation tiers — hairline-first</h4>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e0</div>
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border:1px solid var(--rule-strong);box-shadow:0 1px 0 var(--rule-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e1</div>
+            <div style="width:60px;height:60px;background:var(--bg-elevated);border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--ink-3)">e2</div>
+          </div>
+          <p style="margin:14px 0 0;font-size:11.5px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:.04em;line-height:1.55">Tier 0 — content. Tier 1 — anchored panel. Tier 2 — bordered authority (forms, modals, governed surfaces).</p>
+        </div>
+      </div>
+
+      <div class="frame-spec">
+        <h5>The Frame primitive</h5>
+        <p>Any governed surface uses a <b>frame</b> — a 1px outline plus corner ticks at top-left and top-right. The ticks are the system's signature: small, structural, deliberate. They tell users "this is a contained operational region with rules." See the <b>Thesis card</b> above for the canonical example, and the <b>cartouche</b> in the cartography section.</p>
+      </div>
+    </section>
+
+    <!-- ============ 05 DENSITY MODES ============ -->
+    <section id="density" class="s">
+      <div class="s-head">
+        <div class="s-num">Density<b>05</b></div>
+        <div>
+          <h2>Three operational densities, one DNA</h2>
+          <p class="blurb">A single record card, rendered at three calibrations. Switch via the <b>Density</b> control in the station board above — every section on this page responds. Most v0.1 surfaces sat too close to Ambient; v0.2 makes the difference an explicit, named state on <code>data-density</code>.</p>
+        </div>
+        <div class="s-meta"><b>Switch</b>data-density="ambient | operational | dense"</div>
+      </div>
+
+      <div class="dens-grid">
+        <div class="dens-col" data-d="ambient">
+          <div class="dh">Mode · 01</div>
+          <h4>Ambient</h4>
+          <p class="duse">Public portals, AI exploration, hero pages, marketing surfaces, single-task focus.</p>
+          <div class="demo-rec">
+            <div class="head"><b>Marina South · S-04</b><span class="id">PR-1042</span></div>
+            <div class="body">Canopy continuity audit. Phase one focuses on three precincts adjacent to MRT works.</div>
+            <div class="row"><span class="k">Canopy</span><span class="v">62%</span></div>
+            <div class="row"><span class="k">Reports</span><span class="v">11</span></div>
+          </div>
+        </div>
+        <div class="dens-col" data-d="operational">
+          <div class="dh">Mode · 02</div>
+          <h4>Operational</h4>
+          <p class="duse">Planner workflows, dashboards, AI ops, multi-record review, day-to-day work.</p>
+          <div class="demo-rec">
+            <div class="head"><b>Marina South · S-04</b><span class="id">PR-1042</span></div>
+            <div class="body">Canopy continuity audit. Phase one — 3 precincts.</div>
+            <div class="row"><span class="k">Canopy</span><span class="v">62%</span></div>
+            <div class="row"><span class="k">Surface temp</span><span class="v">+3.4°C</span></div>
+            <div class="row"><span class="k">Reports</span><span class="v">11</span></div>
+            <div class="row"><span class="k">Owner</span><span class="v">S.Koh</span></div>
+          </div>
+        </div>
+        <div class="dens-col" data-d="dense">
+          <div class="dh">Mode · 03</div>
+          <h4>Dense</h4>
+          <p class="duse">Tables, approval queues, GIS attribute panes, audit logs, financial reconciliation.</p>
+          <div class="demo-rec">
+            <div class="head"><b>S-04 · canopy audit</b><span class="id">PR-1042</span></div>
+            <div class="row"><span class="k">cnpy</span><span class="v">62%</span></div>
+            <div class="row"><span class="k">surf-t</span><span class="v">+3.4°</span></div>
+            <div class="row"><span class="k">rpts</span><span class="v">11</span></div>
+            <div class="row"><span class="k">own</span><span class="v">S.K</span></div>
+            <div class="row"><span class="k">due</span><span class="v">05-30</span></div>
+            <div class="row"><span class="k">prio</span><span class="v">P1</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 COMPONENTS ============ -->
+    <section id="components" class="s">
+      <div class="s-head">
+        <div class="s-num">Kit<b>06</b></div>
+        <div>
+          <h2>Squarer, anchored, named</h2>
+          <p class="blurb">Components shed the pill-and-shadow vocabulary of v0.1 for harder edges, hairline borders, and mono-typed labels. Pill remains only for chips and status. Buttons read as switches; inputs sit on rules; toasts use a left bar instead of a soft glow.</p>
+        </div>
+        <div class="s-meta"><b>Posture</b>Industrial restraint</div>
+      </div>
+
+      <div class="comp-grid">
+        <div class="comp">
+          <div class="clabel">Buttons<span>square · radius 2</span></div>
+          <div class="crow">
+            <button class="btn">Approve <span class="key">⌘↵</span></button>
+            <button class="btn secondary">Secondary</button>
+            <button class="btn ghost">Ghost</button>
+          </div>
+          <div class="crow">
+            <button class="btn cool">Run model</button>
+            <button class="btn warm">Flag for review</button>
+          </div>
+        </div>
+
+        <div class="comp">
+          <div class="clabel">Inputs<span>bottom-rule · uppercase labels</span></div>
+          <div class="field">
+            <label class="field-label">Property address</label>
+            <input class="input" value="18 Marina Gardens Drive"/>
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label class="field-label">Record ID</label>
+            <input class="input boxed" placeholder="PR-####"/>
+          </div>
+        </div>
+
+        <div class="comp">
+          <div class="clabel">Status chips<span>pill · only here</span></div>
+          <div class="crow">
+            <span class="tag active">Active</span>
+            <span class="tag warm">In review</span>
+            <span class="tag cool">Synced</span>
+            <span class="tag">Archived</span>
+            <span class="tag crit">Blocked</span>
+          </div>
+          <div class="crow" style="margin-top:14px">
+            <div class="toggle">
+              <button class="on">Day</button><button>Night</button><button>Auto</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp">
+          <div class="clabel">Banners<span>left rule · no shadow</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="toast positive"><div class="icon"></div><div class="body"><b>Model fine-tune complete</b><span>15 of 15 evaluations passed. Promoted to canary.</span><span class="meta">RUN 41 · 14:22 SGT · canary slot 2</span></div></div>
+            <div class="toast warning"><div class="icon"></div><div class="body"><b>Canopy drift detected</b><span>Marina South sector 4 down 3.1pp since baseline.</span><span class="meta">DETECTOR 02 · q2-2025</span></div></div>
+            <div class="toast critical"><div class="icon"></div><div class="body"><b>DC quota exceeded</b><span>Requires infrastructure team approval.</span><span class="meta">GATE 07 · MWh budget</span></div></div>
+          </div>
+        </div>
+
+        <div class="comp" style="grid-column:span 2">
+          <div class="clabel">Institutional stats<span>monumental numerals · hairline frame</span></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule-strong)">
+            <div class="stat-card" style="border-right:1px solid var(--rule-strong);border:none">
+              <div class="scap">Canopy coverage</div>
+              <div class="sval">62%</div>
+              <div class="sdelta"><b class="up">↑ 2.1pp</b> · since 2022 baseline</div>
+            </div>
+            <div class="stat-card" style="border-left:1px solid var(--rule-strong);border-right:1px solid var(--rule-strong);border-top:none;border-bottom:none">
+              <div class="scap">Active reports</div>
+              <div class="sval">11</div>
+              <div class="sdelta"><b class="up">↑ 4</b> · last 7 days</div>
+            </div>
+            <div class="stat-card" style="border-right:1px solid var(--rule-strong);border-top:none;border-bottom:none">
+              <div class="scap">Surface temp</div>
+              <div class="sval">+3.4°</div>
+              <div class="sdelta"><b class="down">↑ 0.7°</b> · vs. sector mean</div>
+            </div>
+            <div class="stat-card" style="border:none">
+              <div class="scap">DC load</div>
+              <div class="sval">71%</div>
+              <div class="sdelta"><b>↑ 6.2%</b> · MWh forecast</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 07 MOTION ============ -->
+    <section id="motion" class="s">
+      <div class="s-head">
+        <div class="s-num">Motion<b>07</b></div>
+        <div>
+          <h2>Climatological, not animated</h2>
+          <p class="blurb">v0.1's curves were named for plants. v0.2's are named for atmosphere: a puck that <i>settles</i> like a leaf, a <i>fog-pass</i> that crosses a surface without changing its content, a slow <i>light-shift</i> that hints at state without alarm. Decoration that isn't carrying information has been pulled.</p>
+        </div>
+        <div class="s-meta"><b>Default duration</b>200ms · slower on idle</div>
+      </div>
+      <div class="motion-grid">
+        <div class="m-cell">
+          <div class="ml">Curve · 01</div>
+          <h4>Settle</h4>
+          <p>cubic-bezier(.4,0,.2,1) · 200–420ms · default for state changes, layout shifts, dismissals.</p>
+          <div class="stage"><span class="puck"></span></div>
+        </div>
+        <div class="m-cell">
+          <div class="ml">Curve · 02</div>
+          <h4>Fog-pass</h4>
+          <p>Linear · 5s+ · slow translucent shimmer across loading or idle surfaces. No spinners.</p>
+          <div class="stage"><span class="puck"></span></div>
+        </div>
+        <div class="m-cell">
+          <div class="ml">Curve · 03</div>
+          <h4>Light-shift</h4>
+          <p>ease-in-out · 4s loop · slow tint drift to suggest live state. Used on agent surfaces and live data tiles.</p>
+          <div class="stage"><span class="puck"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 CARTOGRAPHY ============ -->
+    <section id="gis" class="s deep">
+      <div class="s-head">
+        <div class="s-num">Maps<b>08</b></div>
+        <div>
+          <h2>A tropical civic cartography</h2>
+          <p class="blurb">v0.1's map mock leaned on bright pins and a soft green wash — generic enterprise GIS. v0.2 proposes a discrete spatial language: <b>roads as embedded hairlines</b>, <b>transit as luminous veins</b>, <b>greens as translucent ecological strata</b>, <b>terrain as humid-air depth</b>, and <b>labels as institutional cartouches</b>. The map is part of the brand, not a Mapbox default.</p>
+        </div>
+        <div class="s-meta"><b>Doctrine</b>The map carries identity, not just data</div>
+      </div>
+
+      <div class="gis-intro">
+        <div class="gis-rule"><div class="gh">Layer · 01</div><h4>Roads — embedded</h4><p>Hairline strokes in graphite-400, never bright. They scaffold, they don't shout. Major arteries gain a 0.5px halo, not color.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 02</div><h4>Transit — luminous veins</h4><p>Cyan lines with a 2px outer glow. The only place in the system where glow is licensed. Reads as the city's nervous system.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 03</div><h4>Ecology — translucent strata</h4><p>Canopy and parks overlay as 35–50% green washes with hard 1px boundaries. They feel layered onto the city, not painted over it.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 04</div><h4>Heat &amp; humidity — atmospheric depth</h4><p>Surface temperature as bronze washes; terrain elevation as gradient from warm to cool grey. Climate visible without needing a legend at first glance.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 05</div><h4>Labels — cartouches</h4><p>Information panels are <i>cartouches</i>: hard-edged cream rectangles with a corner tick, set against the dark map. They feel placed by a hand, not floated by JavaScript.</p></div>
+        <div class="gis-rule"><div class="gh">Layer · 06</div><h4>Chrome — dark legend rail</h4><p>The legend is a graphite-900 panel matching the platform's left rail. Continuity between app shell and map is the strongest signal that "this map is part of this system."</p></div>
+      </div>
+
+      <div class="gis-map-wrap">
+        <div class="gtitle">
+          <b>Marina South · canopy + heat composite</b>
+          <span class="coords">1.2766°N 103.8518°E · z14 · q2-2025</span>
+        </div>
+        <div class="gis-map">
+          <svg viewBox="0 0 800 460" preserveAspectRatio="none">
+            <!-- ecology strata (canopy patches) -->
+            <path d="M 80 60 Q 180 40 280 80 L 320 160 Q 240 200 140 180 Z" fill="#4a7140" fill-opacity=".42" stroke="#2f4a24" stroke-opacity=".4"/>
+            <path d="M 480 280 Q 600 260 700 320 L 680 400 Q 580 410 500 380 Z" fill="#4a7140" fill-opacity=".38" stroke="#2f4a24" stroke-opacity=".4"/>
+            <path d="M 600 60 Q 700 50 760 120 L 740 200 Q 660 180 600 140 Z" fill="#a8bb9a" fill-opacity=".4" stroke="#4a7140" stroke-opacity=".35"/>
+            <!-- heat wash -->
+            <path d="M 320 200 Q 440 180 560 220 Q 600 280 540 340 Q 420 360 300 320 Z" fill="#a87f49" fill-opacity=".32"/>
+            <!-- roads -->
+            <path d="M 0 220 Q 200 200 400 240 T 800 230" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".85"/>
+            <path d="M 0 320 Q 220 310 420 330 T 800 320" stroke="#6d736e" stroke-width="1" fill="none" opacity=".7"/>
+            <path d="M 0 120 Q 220 110 420 130 T 800 120" stroke="#6d736e" stroke-width=".8" fill="none" opacity=".55"/>
+            <path d="M 120 0 Q 130 200 140 460" stroke="#6d736e" stroke-width="1" fill="none" opacity=".7"/>
+            <path d="M 360 0 Q 370 230 380 460" stroke="#6d736e" stroke-width="1.4" fill="none" opacity=".85"/>
+            <path d="M 580 0 Q 590 200 600 460" stroke="#6d736e" stroke-width=".9" fill="none" opacity=".65"/>
+            <!-- minor street grid -->
+            <path d="M 200 0 L 210 460 M 280 0 L 290 460 M 440 0 L 450 460 M 520 0 L 530 460 M 660 0 L 670 460 M 720 0 L 730 460" stroke="#9a9d96" stroke-width=".5" fill="none" opacity=".5"/>
+            <path d="M 0 60 L 800 70 M 0 160 L 800 170 M 0 280 L 800 290 M 0 380 L 800 390" stroke="#9a9d96" stroke-width=".5" fill="none" opacity=".5"/>
+            <!-- transit veins -->
+            <g style="filter:drop-shadow(0 0 4px rgba(127,166,182,.85))">
+              <path d="M 0 250 Q 200 240 380 260 Q 540 270 680 240 L 800 235" stroke="#7fa6b6" stroke-width="2.2" fill="none"/>
+              <path d="M 400 0 Q 410 150 420 260 Q 430 360 440 460" stroke="#7fa6b6" stroke-width="2.2" fill="none"/>
+            </g>
+            <!-- water / coastline hint -->
+            <path d="M 0 420 Q 200 440 400 425 T 800 440 L 800 460 L 0 460 Z" fill="#5d8a9b" fill-opacity=".18"/>
+          </svg>
+
+          <!-- stations along transit -->
+          <div class="gis-station" style="left:18%;top:53.5%"></div>
+          <div class="gis-station" style="left:46%;top:56%"></div>
+          <div class="gis-station" style="left:74%;top:51%"></div>
+          <div class="gis-station" style="left:52%;top:32%"></div>
+          <div class="gis-station" style="left:53%;top:78%"></div>
+
+          <!-- pins -->
+          <div class="gis-pin" style="left:38%;top:38%"></div>
+          <div class="gis-pin eco" style="left:22%;top:24%"></div>
+          <div class="gis-pin eco" style="left:72%;top:74%"></div>
+          <div class="gis-pin crit" style="left:48%;top:62%"></div>
+          <div class="gis-pin" style="left:62%;top:46%"></div>
+
+          <!-- scale bar -->
+          <div class="gis-scale"><i></i>500 m</div>
+
+          <!-- cartouche -->
+          <div class="gis-cartouche">
+            <b>S-04 · Marina South</b>
+            <div class="row"><span class="k">Canopy</span><span class="v">62.0%</span></div>
+            <div class="row"><span class="k">Surface temp</span><span class="v">+3.4°C</span></div>
+            <div class="row"><span class="k">Heat-island</span><span class="v">moderate</span></div>
+            <div class="row"><span class="k">Active reports</span><span class="v">11</span></div>
+            <div class="row"><span class="k">DC siting</span><span class="v">restricted</span></div>
+          </div>
+
+          <!-- legend -->
+          <div class="gis-legend">
+            <b>Layers · q2 2025</b>
+            <div class="li"><i class="swatch-rd"></i>Roads</div>
+            <div class="li"><i class="swatch-mrt"></i>MRT lines</div>
+            <div class="li"><i class="swatch-eco"></i>Canopy</div>
+            <div class="li"><i class="swatch-heat"></i>Heat island</div>
+            <div class="li"><i class="swatch-pin"></i>Field report</div>
+            <div class="li"><i style="width:8px;height:8px;background:#4a7140"></i>Ecology asset</div>
+            <div class="li"><i style="width:8px;height:8px;background:#8c2e20"></i>Critical alert</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 09 APPLICATION SURFACES ============ -->
+    <section id="apps" class="s">
+      <div class="s-head">
+        <div class="s-num">Surfaces<b>09</b></div>
+        <div>
+          <h2>One atmosphere, four surfaces, operational tone</h2>
+          <p class="blurb">Same tokens, calibrated for very different work. Each mock has been retuned from v0.1 to feel less like a portfolio piece and more like a live tool — citation chips on the AI agent, audit trails on the chat composer, MRT-style toolbar on the embedded map, and a CRM that doesn't shy from row striping.</p>
+        </div>
+        <div class="s-meta"><b>Tone</b>Operational. Citation-aware. Auditable.</div>
+      </div>
+
+      <div class="apps">
+
+        <!-- Mobile -->
+        <div class="app">
+          <div class="app-head"><b>Mobile · field reporter</b><span>iOS · ops mode</span></div>
+          <div class="app-body am-mobile">
+            <div class="phone">
+              <div class="ph-status"><span>14:22 SGT</span><span>5G · 84%</span></div>
+              <div class="ph-content">
+                <div class="ph-section">Today · Bay East · sector 4</div>
+                <div class="ph-task priority">
+                  <span class="tid">T-014</span>
+                  <b>Heat-island survey</b>
+                  3 zones · 12 photo points
+                  <div class="meta">Due 16:00 · Priority P1</div>
+                </div>
+                <div class="ph-task eco">
+                  <span class="tid">T-015</span>
+                  <b>Tree-health check · Plot 4-B</b>
+                  Visual + bark inspection
+                  <div class="meta">Due 17:00 · ecology</div>
+                </div>
+                <div class="ph-task">
+                  <span class="tid">T-016</span>
+                  <b>Path audit</b>
+                  Linkway 4 · drainage condition
+                  <div class="meta">Optional</div>
+                </div>
+                <div class="ph-section">Sync</div>
+                <div class="ph-task">
+                  <span class="tid">Q-4</span>
+                  4 photos uploaded · 2 awaiting connection
+                </div>
+              </div>
+              <div class="ph-nav">
+                <i class="on">Tasks</i><i>Map</i><i>Notes</i><i>Sync</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GIS embedded -->
+        <div class="app">
+          <div class="app-head"><b>GIS · planner workspace</b><span>desktop · operational</span></div>
+          <div class="app-body am-gis-mini">
+            <svg viewBox="0 0 600 380" preserveAspectRatio="none">
+              <path d="M 60 50 Q 160 30 240 70 L 280 150 Q 200 180 100 160 Z" fill="#4a7140" fill-opacity=".4"/>
+              <path d="M 360 220 Q 480 200 560 260 L 540 340 Q 440 350 380 320 Z" fill="#4a7140" fill-opacity=".38"/>
+              <path d="M 240 160 Q 360 140 460 180 Q 500 240 440 290 Q 320 310 240 270 Z" fill="#a87f49" fill-opacity=".32"/>
+              <path d="M 0 200 Q 200 190 400 220 T 600 215" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".8"/>
+              <path d="M 0 290 Q 200 280 400 300 T 600 295" stroke="#6d736e" stroke-width=".9" fill="none" opacity=".65"/>
+              <path d="M 0 100 Q 200 95 400 105 T 600 100" stroke="#6d736e" stroke-width=".7" fill="none" opacity=".5"/>
+              <path d="M 280 0 Q 290 190 300 380" stroke="#6d736e" stroke-width="1.2" fill="none" opacity=".8"/>
+              <path d="M 460 0 Q 470 180 480 380" stroke="#6d736e" stroke-width=".9" fill="none" opacity=".6"/>
+              <g style="filter:drop-shadow(0 0 4px rgba(127,166,182,.85))">
+                <path d="M 0 230 Q 200 220 380 240 Q 520 250 600 220" stroke="#7fa6b6" stroke-width="2" fill="none"/>
+              </g>
+            </svg>
+            <div class="gis-station" style="left:22%;top:60%"></div>
+            <div class="gis-station" style="left:56%;top:63%"></div>
+            <div class="gis-station" style="left:84%;top:57%"></div>
+            <div class="gis-pin" style="left:42%;top:42%"></div>
+            <div class="gis-pin eco" style="left:24%;top:28%"></div>
+            <div class="gis-pin crit" style="left:55%;top:68%"></div>
+
+            <div class="mini-toolbar">
+              <button class="on">Composite</button><button>Canopy</button><button>Heat</button><button>Transit</button>
+            </div>
+            <div class="mini-leg">
+              <b>Layers</b>
+              <div class="li"><i style="width:16px;height:1.5px;background:#6d736e"></i>Roads</div>
+              <div class="li"><i style="width:16px;height:2px;background:#7fa6b6"></i>MRT</div>
+              <div class="li"><i style="width:12px;height:7px;background:#4a7140;opacity:.5"></i>Canopy</div>
+              <div class="li"><i style="width:12px;height:7px;background:#a87f49;opacity:.4"></i>Heat</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRM -->
+        <div class="app">
+          <div class="app-head"><b>CRM · stakeholder pipeline</b><span>web · dense</span></div>
+          <div class="app-body am-crm">
+            <div class="crmh">
+              <h6>Q2 Pipeline · 1,284 records</h6>
+              <span class="crm-meta">View · partnership / civic</span>
+            </div>
+            <table>
+              <thead><tr><th>Account</th><th>Stage</th><th>Value</th><th>Owner</th><th>Updated</th></tr></thead>
+              <tbody>
+                <tr><td><span class="av c">MB</span><span class="name">Marina Bay Sands</span></td><td><span class="st live">Active</span></td><td><span class="num">S$ 240k</span></td><td>K. Tan</td><td><span class="num">05-14</span></td></tr>
+                <tr><td><span class="av e">NP</span><span class="name">NParks Operations</span></td><td><span class="st warm">Review</span></td><td><span class="num">S$ 96k</span></td><td>S. Koh</td><td><span class="num">05-15</span></td></tr>
+                <tr><td><span class="av b">UR</span><span class="name">URA Planning Dept</span></td><td><span class="st live">Active</span></td><td><span class="num">S$ 410k</span></td><td>S. Koh</td><td><span class="num">05-16</span></td></tr>
+                <tr><td><span class="av">SU</span><span class="name">SUTD Architecture</span></td><td><span class="st cold">Dormant</span></td><td><span class="num">S$ 18k</span></td><td>M. Lim</td><td><span class="num">04-22</span></td></tr>
+                <tr><td><span class="av e">GB</span><span class="name">Gardens by the Bay</span></td><td><span class="st warm">Review</span></td><td><span class="num">S$ 312k</span></td><td>K. Tan</td><td><span class="num">05-13</span></td></tr>
+                <tr><td><span class="av b">CN</span><span class="name">Changi Airport Grp</span></td><td><span class="st live">Active</span></td><td><span class="num">S$ 580k</span></td><td>S. Koh</td><td><span class="num">05-16</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AI Chat -->
+        <div class="app">
+          <div class="app-head"><b>AI · planning agent</b><span>session · auditable</span></div>
+          <div class="app-body am-chat">
+            <div class="session"><span>Session AT-2071 · ATRIUM v3.1</span><b>Audit · on</b></div>
+            <div class="stream">
+              <div class="b user">Where in the central region is canopy cover falling fastest, and why?</div>
+              <div class="b ai">
+                <span class="agent">⌬ Atrium · planning analyst</span>
+                Bishan and Toa Payoh show the steepest drop — about 3.1pp since 2022. Main contributors: MRT line works (DTL3e) and estate renewal in three precincts.
+                <div class="citations">
+                  <span class="c"><b>SRC</b> · canopy-raster q1-2025</span>
+                  <span class="c"><b>SRC</b> · URA renewal log</span>
+                  <span class="c"><b>SRC</b> · LTA construction schedule</span>
+                </div>
+              </div>
+              <div class="b user">Plot affected blocks, group by precinct.</div>
+              <div class="b ai">
+                <span class="agent">⌬ Atrium</span>
+                <span class="think"><i></i><i></i><i></i> querying canopy raster · 2022→2025</span>
+              </div>
+            </div>
+            <div class="composer">
+              <input placeholder="Ask Atrium…"/>
+              <span class="audit">↓ TRAIL</span>
+              <button class="send">↑</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image gen / operational -->
+        <div class="app" style="grid-column:span 2">
+          <div class="app-head"><b>AI · scenario studio</b><span>generative · run-tracked</span></div>
+          <div class="app-body am-ig">
+            <div class="ctrl">
+              <div>
+                <label class="field-label">Scenario prompt</label>
+                <div class="prompt">A shaded pedestrian street in tropical Singapore at golden hour. Low-rise vernacular, rain trees overhead. Reference: Joo Chiat 1985.</div>
+              </div>
+              <div>
+                <label class="field-label">Style fidelity</label>
+                <div class="slider"><span>0</span><div class="track"><div class="knob"></div></div><span>100</span></div>
+              </div>
+              <div>
+                <label class="field-label">Aspect</label>
+                <div class="toggle" style="margin-top:0">
+                  <button>1:1</button><button class="on">3:2</button><button>16:9</button>
+                </div>
+              </div>
+              <div>
+                <label class="field-label">Model</label>
+                <div class="toggle" style="margin-top:0">
+                  <button class="on">SG-v3</button><button>v3-arch</button>
+                </div>
+              </div>
+              <button class="btn cool" style="margin-top:6px">Generate · 4 variants</button>
+              <span class="tag" style="align-self:flex-start;margin-top:4px">Run 24 · 12s · 4 cred</span>
+            </div>
+            <div class="results">
+              <div class="tile t1"><span class="runtag">24-A · canopy</span></div>
+              <div class="tile t2"><span class="runtag">24-B · bronze</span></div>
+              <div class="tile t3"><span class="runtag">24-C · graphite</span></div>
+              <div class="tile t4"><span class="runtag">24-D · monsoon</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ 10 INSTITUTIONAL RITUAL ============ -->
+    <section id="ritual" class="s">
+      <div class="s-head">
+        <div class="s-num">Ritual<b>10</b></div>
+        <div>
+          <h2>Repetition is trust</h2>
+          <p class="blurb">A civic system earns trust through consistency — the same gestures, in the same places, at the same speed. v0.2 codifies six rituals. Departures from these rules require an explicit reason recorded in the design system changelog.</p>
+        </div>
+        <div class="s-meta"><b>Reliability via</b>Procedural sameness</div>
+      </div>
+      <div class="ritual">
+        <div class="r">
+          <div class="rh">Ritual · 01</div>
+          <h4>Section heading form</h4>
+          <p>Every major section opens with a <code>s-num</code> (three lines: label, numeral, eyebrow), a left-aligned title, blurb, and right-aligned meta strip. Never a hero image. Never centered.</p>
+        </div>
+        <div class="r">
+          <div class="rh">Ritual · 02</div>
+          <h4>Panel spacing</h4>
+          <p>Card padding follows <code>--pad-card</code> (currently 18px operational). All cards in a region share padding. Never visually different paddings inside one screen.</p>
+        </div>
+        <div class="r">
+          <div class="rh">Ritual · 03</div>
+          <h4>AI response template</h4>
+          <p>Agent name in mono uppercase, then prose, then a citation strip. Every consequential answer carries citations. Citation-less answers must be flagged with a <code>think</code> indicator.</p>
+        </div>
+        <div class="r">
+          <div class="rh">Ritual · 04</div>
+          <h4>Map transitions</h4>
+          <p>Zoom and layer toggles use the <i>fog-pass</i> curve for 420ms. Pins never bounce or pulse on appear — they fade in over 200ms with their cartouche.</p>
+        </div>
+        <div class="r">
+          <div class="rh">Ritual · 05</div>
+          <h4>Approval surfaces</h4>
+          <p>Any destructive or irreversible action uses tier-2 elevation (1.5px ink border), a left rule in <code>signal-critical</code>, and a typed confirmation. No "are you sure?" modals.</p>
+        </div>
+        <div class="r">
+          <div class="rh">Ritual · 06</div>
+          <h4>Time &amp; coordinates</h4>
+          <p>Times in SGT, 24-hour, mono. Coordinates in decimal degrees, 4dp, mono. Dates as <code>YYYY-MM-DD</code>. The system speaks one numerical dialect.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 11 ACCESSIBILITY ============ -->
+    <section id="a11y" class="s">
+      <div class="s-head">
+        <div class="s-num">Guard<b>11</b></div>
+        <div>
+          <h2>Calm must be legible</h2>
+          <p class="blurb">Civic interfaces serve the public — including users on glare-flooded screens, with low-vision, motion-sensitivity, or working through translation. The atmospheric palette is held to AAA where the type allows, AA-Large at minimum.</p>
+        </div>
+        <div class="s-meta"><b>Targets</b>WCAG AAA on body · AA on chrome</div>
+      </div>
+      <ul class="a11y-list">
+        <li><span class="anchor">Contrast</span><span><b>Body text contrast ≥ 7:1.</b> Graphite-900 ink on Paper-100 surface. In Night mode, Graphite-100 ink on Graphite-900 surface. Tier-2 framed surfaces use the bold rule to ensure they remain readable on warm backgrounds.</span></li>
+        <li><span class="anchor">Color-only</span><span><b>No state communicated by color alone.</b> Status pills always pair color with a typed label. Map layers always have a legend entry. A greyscale screenshot should still be operable.</span></li>
+        <li><span class="anchor">Focus</span><span><b>Focus is visible and atmospheric.</b> Keyboard focus uses a 2px Cyan-400 ring on the outside, regardless of mode. Never suppressed. On dark rails, the ring inverts to a 1px white inset.</span></li>
+        <li><span class="anchor">Motion</span><span><b>Respects prefers-reduced-motion.</b> Settle collapses to instant. Fog-pass and Light-shift stop entirely. Loading communicates via static <code>think</code> text instead of animation.</span></li>
+        <li><span class="anchor">Type</span><span><b>Minimum 13px body, 12.5px in Dense mode</b> with line-height ≥ 1.5. Mono captions never below 11px. Display weights never used for body. Italics never used for whole paragraphs except editorial leads.</span></li>
+        <li><span class="anchor">Map</span><span><b>Cartouches are anchored, not floating.</b> Always positioned outside zones of high feature density. Cartouche text contrast checked against the darkest underlying tile, not the average.</span></li>
+      </ul>
+    </section>
+
+    <p class="footnote">Conservatory · v0.2 · <b>Tropical Civic Futurism</b> · A doctrine for trusted civic intelligence infrastructure</p>
+
+  </main>
+</div>
+
+<script>
+  const root=document.documentElement;
+  // Mode toggle
+  document.querySelectorAll('#seg-mode button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#seg-mode button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      root.dataset.mode=b.dataset.m;
+    });
+  });
+  // Density toggle
+  document.querySelectorAll('#seg-density button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#seg-density button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      root.dataset.density=b.dataset.d;
+    });
+  });
+  // Generic seg toggles
+  document.querySelectorAll('.toggle').forEach(tg=>{
+    tg.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        tg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+  // Scrollspy
+  const links=[...document.querySelectorAll('.rail nav a')];
+  const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id='#'+e.target.id;
+        links.forEach(a=>a.classList.toggle('on', a.getAttribute('href')===id));
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  sections.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
