@@ -239,6 +239,13 @@ select.input{background-image:linear-gradient(45deg,transparent 50%,var(--ink-2)
 .range-row{display:flex;align-items:center;gap:14px;width:100%}
 .range-row .rval{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);min-width:40px}
 .range-row .rmark{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.04em}
+/* Temporal scrub — track stacked over proportionally-positioned year marks.
+   Padding on .rmarks accounts for thumb half-width so 0% and 100% sit
+   under the thumb's actual leftmost / rightmost centres. */
+.range-stack{flex:1;min-width:0;display:flex;flex-direction:column}
+.range-stack .range{max-width:none;width:100%}
+.range-stack .rmarks{position:relative;height:14px;margin-top:6px;padding:0 7px}
+.range-stack .rmark{position:absolute;font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.04em;transform:translateX(-50%);white-space:nowrap;top:0}
 
 /* =============================================================
    BADGES / CHIPS / TAGS / PILLS
@@ -895,8 +902,20 @@ pre.code .c-num{color:var(--signal-warning)}
         <div class="demo">
           <div class="demo-h"><span class="dlbl">Temporal scrub</span><span class="dnum">range · year</span></div>
           <div class="demo-body" style="width:100%">
-            <div class="field" style="max-width:100%"><label class="flbl">Year · 1965 → 2040<span>2026 · today</span></label><div class="range-row"><input type="range" class="range" min="1965" max="2040" value="2026"/><span class="rval">2026</span></div>
-              <div style="display:flex;justify-content:space-between;width:100%;margin-top:6px;color:var(--ink-3)"><span class="rmark">1965</span><span class="rmark">1985</span><span class="rmark">2005</span><span class="rmark">2026</span><span class="rmark">2040</span></div>
+            <div class="field" style="max-width:100%"><label class="flbl">Year · 1965 → 2040<span>2026 · today</span></label>
+              <div class="range-row">
+                <div class="range-stack">
+                  <input type="range" class="range" min="1965" max="2040" value="2026"/>
+                  <div class="rmarks">
+                    <span class="rmark" style="left:7px;transform:translateX(0)">1965</span>
+                    <span class="rmark" style="left:calc(26.67% + 1.6px)">1985</span>
+                    <span class="rmark" style="left:calc(53.33% - 1.6px)">2005</span>
+                    <span class="rmark" style="left:calc(81.33% - 3.4px)">2026</span>
+                    <span class="rmark" style="right:7px;left:auto;transform:translateX(0)">2040</span>
+                  </div>
+                </div>
+                <span class="rval">2026</span>
+              </div>
             </div>
           </div>
         </div>
