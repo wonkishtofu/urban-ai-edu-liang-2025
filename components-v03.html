@@ -72,6 +72,10 @@
   --paper-0:#161a18; --paper-1:#0e1110; --paper-2:#0a0d0c; --paper-3:#222826;
   --paper-warm:#1c1813; --paper-cool:#0e1414;
   --cyan-100:#15282e; --bronze-50:#1a140d;
+  /* Signal colors re-tuned for dark luminance — slightly desaturated, brought up so they read at the right weight on a near-black surface */
+  --signal-positive:#6aa777; --signal-warning:#d6a058; --signal-critical:#c66258; --signal-info:var(--cyan-400);
+  /* The -700 accent shades are designed as text on cream paper; on dark they're nearly invisible. Flip them to their -300 counterparts so anywhere the system reaches for "deep accent text" it gets a readable luminance instead. */
+  --cyan-700:#a8c4cf; --bronze-700:var(--bronze-300); --canopy-700:var(--canopy-300); --sepia-700:var(--sepia-300);
 }
 [data-room="review"]{
   --t-body:16px; --t-h1:32px; --t-h2:22px;
@@ -477,7 +481,9 @@ table.t .row-chk{width:20px}
 .cal .calh b{font-family:var(--font-display);font-size:13.5px;font-weight:600}
 .cal .calh .calnav{display:flex;gap:6px}
 .cal .calh button{appearance:none;border:1px solid var(--rule-strong);background:transparent;width:22px;height:22px;font:inherit;font-family:var(--font-mono);color:var(--ink-2);cursor:pointer}
-.cal table.calt{width:100%;border-collapse:collapse}
+.cal{width:300px}
+.cal table.calt{width:100%;border-collapse:collapse;table-layout:fixed}
+.cal table.calt th,.cal table.calt td{width:14.2857%}
 .cal table.calt th{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;padding:6px 0;font-weight:500;text-align:center}
 .cal table.calt td{text-align:center;padding:0}
 .cal table.calt td button{appearance:none;border:none;background:transparent;font:inherit;font-family:var(--font-mono);font-size:11.5px;color:var(--ink);width:100%;padding:6px 0;cursor:pointer}
